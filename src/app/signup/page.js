@@ -1,17 +1,10 @@
-
-import React from "react";
-
+import { Suspense } from "react";
 import Signup from "@/components/Signup";
 
-const signup = () => {
+export default function SignupPage() {
   return (
-    <div>
-         
-
-          <Signup/>
-   
-    </div>
+    <Suspense fallback={<p>Loading signup...</p>}>
+      <Signup />
+    </Suspense>
   );
-};
-
-export default signup;
+}

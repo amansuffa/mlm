@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { motion } from "framer-motion";
-// import SocialLogin from "./SocialLogin";
 
 // 🔠 Typewriter animation helper
 const TypewriterText = ({ text, delayOffset = 0 }) => (
@@ -23,7 +22,7 @@ const TypewriterText = ({ text, delayOffset = 0 }) => (
   </>
 );
 
-const Signup = () => {
+export default function Signup() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [referralId, setReferralId] = useState("");
@@ -31,11 +30,8 @@ const Signup = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Check if referral is present in URL
     const refFromUrl = searchParams.get("ref");
-    if (refFromUrl) {
-      setReferralId(refFromUrl);
-    }
+    if (refFromUrl) setReferralId(refFromUrl);
   }, [searchParams]);
 
   async function handleSubmit(e) {
@@ -53,7 +49,7 @@ const Signup = () => {
         name,
         email,
         password,
-        referredBy: referralId || null, // ✅ Send referral if available
+        referredBy: referralId || null,
       });
 
       if (res.status === 201) {
@@ -67,15 +63,14 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br ffrom-purple-100 via-purple-200 to-purple-200 px-6 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-purple-200 to-purple-200 px-6 py-10">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="bg-white/70 backdrop-blur-xl shadow-2xl rounded-3xl p-10 w-full max-w-md border border-white/40"
       >
-        {/* Heading with typewriter effect */}
-        <motion.h1 className="text-3xl font-bold text-center bg-gradient-to-r from-violet-500 via-purple-700 to-fuchsia-900  bg-clip-text text-transparent mb-3">
+        <motion.h1 className="text-3xl font-bold text-center bg-gradient-to-r from-violet-500 via-purple-700 to-fuchsia-900 bg-clip-text text-transparent mb-3">
           <TypewriterText text="Create Account ✨" />
         </motion.h1>
 
@@ -96,7 +91,6 @@ const Signup = () => {
           </motion.p>
         )}
 
-        {/* Signup Form */}
         <motion.form
           onSubmit={handleSubmit}
           className="space-y-5 py-6"
@@ -126,7 +120,6 @@ const Signup = () => {
             required
           />
 
-          {/* Referral ID Field */}
           {referralId ? (
             <input
               type="text"
@@ -151,18 +144,13 @@ const Signup = () => {
             className={`w-full py-3 font-semibold rounded-xl shadow-lg text-white transition ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-600 to-fuchsia-800 to-white-300 hover:opacity-90"
+                : "bg-gradient-to-r from-purple-600 to-fuchsia-800 hover:opacity-90"
             }`}
           >
             {loading ? "Creating..." : "Create Account"}
           </motion.button>
         </motion.form>
-
-        {/* Social logins */}
-        {/* <SocialLogin /> */}
       </motion.div>
     </div>
   );
-};
-
-export default Signup;
+}

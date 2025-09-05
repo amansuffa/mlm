@@ -8,6 +8,7 @@ import client from "./lib/db"
 
  import { User } from "./models/User"
 import bcrypt from "bcryptjs";
+import { connectDB } from "./lib/mongodb";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   
   session:{
@@ -27,6 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
     Credentials({
       async authorize(credentials) {
+        await connectDB();
     const user = await User.findOne({ email: credentials.email });
     if (!user) return null;
 
