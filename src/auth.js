@@ -1,0 +1,41 @@
+export const runtime = "nodejs";
+import NextAuth from "next-auth"
+import Google from "next-auth/providers/google"
+import Credentials from "next-auth/providers/credentials"
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import client from "./lib/db"
+
+
+ import { User } from "./models/User"
+import bcrypt from "bcryptjs";
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  
+  session:{
+    strategy: 'jwt'
+  },
+    adapter: MongoDBAdapter(client),
+
+  providers: [
+    Google({
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
+    Credentials({
+      async authorize(credentials) {
+    const user = await User.findOne({ email: credentials.email });
+    if (!user) return null;
+
+    const validPassword = await bcrypt.compare(credentials.password, user.password);
+    if (!validPassword) return null;
+
+    return { id: user._id, email: user.email, name: user.name }; // must return object
+  }
+    })
+  ],
+})
+

@@ -1,5 +1,5 @@
 {
-  "name": "auth-js",
+  "name": "mlm",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,15 +9,30 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.10.0",
+    "axios": "^1.11.0",
+    "bcryptjs": "^3.0.2",
+    "framer-motion": "^12.23.12",
+    "lottie-react": "^2.4.1",
+    "lucide-react": "^0.542.0",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.18.0",
+    "next": "15.5.0",
+    "next-auth": "^5.0.0-beta.29",
     "react": "19.1.0",
+    "react-d3-tree": "^3.6.6",
     "react-dom": "19.1.0",
-    "next": "15.5.0"
+    "react-icons": "^5.5.0",
+    "react-svg-worldmap": "^2.0.0-alpha.16",
+    "recharts": "^3.1.2",
+    "swr": "^2.3.6",
+    "twilio": "^5.8.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4"
   }
 }
