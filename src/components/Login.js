@@ -7,21 +7,30 @@ import { motion } from "framer-motion";
 
 export default function Login() {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // 👈 loading state
   const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true); // start loading
+    setError("");
+
     try {
       const formData = new FormData(e.currentTarget);
       const res = await doLogin(formData);
-      if (res?.error) setError(res.error);
-      else router.push("/dashboard");
+
+      if (res?.error) {
+        setError(res.error);
+        setLoading(false); // stop loading if error
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       setError("Check Credentials");
+      setLoading(false);
     }
   }
 
-  // Typewriter animation
   const typewriterText = (text, delayOffset = 0) =>
     text.split("").map((char, i) => (
       <motion.span
@@ -36,37 +45,36 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-purple-200 to-purple-200 px-6 py-10">
-      {/* Main login box */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl flex flex-col md:flex-row overflow-hidden w-full max-w-4xl min-h-[550px]"
       >
-        {/* Left side with background image */}
+        {/* Left side */}
         <motion.div
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="md:w-1/2 flex flex-col items-center justify-center text-white p-8 bg-cover bg-center"
-          style={{ backgroundImage: "url('/employee-working-marketing-setting.jpg')" }} // 👈 background image here
-        >
-         
-        </motion.div>
+          style={{
+            backgroundImage: "url('/employee-working-marketing-setting.jpg')",
+          }}
+        ></motion.div>
 
-        {/* Right side form */}
+        {/* Right side */}
         <motion.div
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="md:w-1/2 flex flex-col justify-center p-10"
         >
-          <div className=" w-full flex justify-center p-4 rounded-xl">
-            <h1 className="text-4xl font-extrabold mb-2 text-center   text-purple-700">
+          <div className="w-full flex justify-center p-4 rounded-xl">
+            <h1 className="text-4xl font-extrabold mb-2 text-center text-purple-700">
               {typewriterText("Welcome Back 👋")}
             </h1>
-          
           </div>
+
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -130,12 +138,23 @@ export default function Login() {
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={!loading ? { scale: 1.05 } : {}}
+              whileTap={!loading ? { scale: 0.95 } : {}}
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-fuchsia-800 text-white font-semibold rounded-xl shadow-lg hover:opacity-90 transition"
+              disabled={loading}
+              className={`w-full py-3 flex items-center justify-center bg-gradient-to-r from-purple-600 to-fuchsia-800 text-white font-semibold rounded-xl shadow-lg transition ${
+                loading ? "opacity-70 cursor-not-allowed" : "hover:opacity-90"
+              }`}
             >
-              Login
+              {loading ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                  className="h-5 w-5 border-2 border-white border-t-transparent rounded-full"
+                />
+              ) : (
+                "Login"
+              )}
             </motion.button>
           </motion.form>
         </motion.div>
