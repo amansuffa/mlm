@@ -6,7 +6,7 @@ import logo from "../assets/logo.png";
 
 const Navbar = ({ setIsOpen }) => {
   return (
-    <div className="bg-gray-50 h-[68px] px-6 flex items-center justify-between shadow-md sticky top-0 z-50">
+    <div className="bg-gray-50 h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50">
 
       {/* Logo */}
       <div className="flex justify-center overflow-hidden h-full">
@@ -30,7 +30,7 @@ const Navbar = ({ setIsOpen }) => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 text-white"
+            className="w-6 h-6 text-gray-700"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
