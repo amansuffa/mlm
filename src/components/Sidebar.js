@@ -10,6 +10,7 @@ import {
   FaClipboardList,
   FaExchangeAlt,
   FaUserCog,
+  FaEnvelope,   // ✅ added
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
@@ -21,7 +22,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     { href: "/downline", label: "Downline", icon: <FaUsers /> },
     { href: "/referrals", label: "My Referrals", icon: <FaUserFriends /> },
     { href: "/withdrawal", label: "Withdrawal", icon: <FaWallet /> },
-    { href: "/plans", label: "Plans", icon: <FaClipboardList /> },
+    { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList /> },
+    { href: "/email-tempelate", label: "Email Tempelate", icon: <FaEnvelope /> }, // ✅ changed
     { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt /> },
     { href: "/manage-users", label: "Manage Users", icon: <FaUserCog /> },
   ];
