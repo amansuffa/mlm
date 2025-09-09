@@ -27,7 +27,8 @@ export async function POST(req) {
       name,
       email,
       password: hashedPassword,
-      role: "admin", // ✅ Works now
+      role: "admin",
+      status: "Admin fee paid",
       referralId,
     });
 
