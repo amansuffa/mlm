@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardClient from "@/components/DashboardClient";
+import DashboardAdmin from "@/components/DashboardAdmin";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -8,6 +9,12 @@ export default async function DashboardPage() {
   if (!session?.user) {
     redirect("/");
   }
+  if (session?.user.role === "admin"){
 
-  return <DashboardClient session={session} />;
+    return <DashboardAdmin session={session} />;
+  }else{
+    
+    return <DashboardClient session={session} />;
+  }
+
 }

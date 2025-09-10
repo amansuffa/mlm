@@ -16,7 +16,7 @@ export async function POST(req) {
     const hashedPassword = await bcrypt.hash(password, 5);
     const referralId = Math.random().toString(36).substring(2, 10);
 
-    // ✅ If no referredBy, set to admin's referralId
+    // If no referredBy, set to admin's referralId
     let finalReferredBy = referredBy;
     if (!referredBy) {
       const admin = await User.findOne({ role: "admin" }); // assuming role field for admin
@@ -27,7 +27,6 @@ export async function POST(req) {
       name,
       email,
       password: hashedPassword,
-      isVerified: false,
       referralId,
       referredBy: finalReferredBy
     });

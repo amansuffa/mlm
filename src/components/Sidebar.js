@@ -10,10 +10,10 @@ import {
   FaClipboardList,
   FaExchangeAlt,
   FaUserCog,
-  FaEnvelope,   // ✅ added
+  FaEnvelope,   
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen, setIsOpen }) {
+export default function Sidebar({ isOpen, setIsOpen, role }) {
   const pathname = usePathname();
 
   const links = [
@@ -23,7 +23,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     { href: "/referrals", label: "My Referrals", icon: <FaUserFriends /> },
     { href: "/withdrawal", label: "Withdrawal", icon: <FaWallet /> },
     { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList /> },
-    { href: "/email-tempelate", label: "Email Tempelate", icon: <FaEnvelope /> }, // ✅ changed
+    { href: "/email-tempelate", label: "Email Tempelate", icon: <FaEnvelope /> }, 
     { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt /> },
     { href: "/manage-users", label: "Manage Users", icon: <FaUserCog /> },
   ];
