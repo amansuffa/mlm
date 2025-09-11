@@ -5,14 +5,17 @@ import { connectDB } from "@/lib/mongodb";
 
 export async function POST(req) {
   try {
-    const { email, password, name, referredBy } = await req.json();
+    const { email, password, name,username, referredBy } = await req.json();
     await connectDB();
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (user) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
-
+ user = await User.findOne({ username });
+    if (user) {
+      return NextResponse.json({ error: "Username is not available" }, { status: 400 });
+    }
     const hashedPassword = await bcrypt.hash(password, 5);
     const referralId = Math.random().toString(36).substring(2, 10);
 
@@ -26,6 +29,7 @@ export async function POST(req) {
     const newUser = await User.create({
       name,
       email,
+      username,
       password: hashedPassword,
       referralId,
       referredBy: finalReferredBy
@@ -34,7 +38,7 @@ export async function POST(req) {
     return NextResponse.json(
       {
         message: "Signup successful",
-        user: { id: newUser._id, email: newUser.email, name: newUser.name },
+        user: { id: newUser._id, email: newUser.email, name: newUser.name, username: newUser.username },
       },
       { status: 201 }
     );

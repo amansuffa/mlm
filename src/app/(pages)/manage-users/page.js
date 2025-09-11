@@ -59,6 +59,7 @@ export default function ManageUsersPage() {
             </thead>
             <tbody className="text-gray-700">
               {users.map((user) => (
+                console.log(user),
                 <tr
                   key={user._id}
                   className="border-t hover:bg-gray-50 transition"

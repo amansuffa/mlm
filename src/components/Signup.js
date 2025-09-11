@@ -42,6 +42,7 @@ export default function Signup() {
     try {
       const formData = new FormData(e.currentTarget);
       const name = formData.get("name");
+      const username = formData.get("username");
       const email = formData.get("email");
       const password = formData.get("password");
 
@@ -49,6 +50,7 @@ export default function Signup() {
         name,
         email,
         password,
+        username,
         referredBy: referralId || null,
       });
 
@@ -102,6 +104,13 @@ export default function Signup() {
             name="name"
             type="text"
             placeholder="Name"
+            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+            required
+          />
+          <input
+            name="username"
+            type="text"
+            placeholder="Username"
             className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
             required
           />
