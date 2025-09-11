@@ -21,7 +21,7 @@ export default function DashboardAdmin({ session }) {
 
       <div className="flex flex-1">
         {/* Sidebar */}
-        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role="admin"/>
+        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role={session?.user?.role}/>
 
       
 

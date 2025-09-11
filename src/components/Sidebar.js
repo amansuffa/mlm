@@ -1,6 +1,8 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react"; // ✅ Import hook
 import {
   FaTachometerAlt,
   FaUser,
@@ -13,30 +15,28 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen, setIsOpen, role }) {
+export default function Sidebar({ isOpen, setIsOpen }) {
   const pathname = usePathname();
-  console.log("User role in Sidebar:", role);
-  
+  const { data: session, status } = useSession();
+  const role = session?.user?.role;
 
-  // Define all links
+  if (status === "loading") {
+    return null; // or a skeleton loader to avoid flicker
+  }
+
   const allLinks = [
     { href: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
     { href: "/profile", label: "Profile", icon: <FaUser /> },
     { href: "/downline", label: "Downline", icon: <FaUsers /> },
     { href: "/referrals", label: "My Referrals", icon: <FaUserFriends /> },
     { href: "/withdrawal", label: "Withdrawal", icon: <FaWallet /> },
-    // Admin-only links
-    { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt /> , adminOnly: true},
-
+    { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt />, adminOnly: true },
     { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList />, adminOnly: true },
     { href: "/email-tempelate", label: "Email Templates", icon: <FaEnvelope />, adminOnly: true },
     { href: "/manage-users", label: "Manage Users", icon: <FaUserCog />, adminOnly: true },
   ];
 
- const filteredLinks = allLinks.filter(
-  (link) => role === "admin" || !link.adminOnly
-);
-
+  const filteredLinks = allLinks.filter(link => role === "admin" || !link.adminOnly);
 
   return (
     <>
@@ -46,7 +46,6 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
         md:translate-x-0 md:static md:block`}
       >
-        {/* Close button (mobile only) */}
         <button
           className="md:hidden self-end mb-6 text-gray-300 hover:text-white"
           onClick={() => setIsOpen(false)}
@@ -54,7 +53,6 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
           ✕
         </button>
 
-        {/* Logo */}
         <div className="mb-8 flex items-center gap-2">
           <div className="h-10 w-10 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg flex items-center justify-center font-bold text-lg shadow-md">
             A
@@ -64,7 +62,6 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
           </h1>
         </div>
 
-        {/* Navigation */}
         <nav className="flex flex-col gap-2">
           {filteredLinks.map(({ href, label, icon }) => (
             <Link
@@ -85,7 +82,6 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
         </nav>
       </aside>
 
-      {/* Overlay (mobile only) */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-30 md:hidden"
