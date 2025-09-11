@@ -10,34 +10,43 @@ import {
   FaClipboardList,
   FaExchangeAlt,
   FaUserCog,
-  FaEnvelope,   
+  FaEnvelope,
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, setIsOpen, role }) {
   const pathname = usePathname();
+  console.log("User role in Sidebar:", role);
+  
 
-  const links = [
+  // Define all links
+  const allLinks = [
     { href: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
     { href: "/profile", label: "Profile", icon: <FaUser /> },
     { href: "/downline", label: "Downline", icon: <FaUsers /> },
     { href: "/referrals", label: "My Referrals", icon: <FaUserFriends /> },
     { href: "/withdrawal", label: "Withdrawal", icon: <FaWallet /> },
-    { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList /> },
-    { href: "/email-tempelate", label: "Email Tempelate", icon: <FaEnvelope /> }, 
-    { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt /> },
-    { href: "/manage-users", label: "Manage Users", icon: <FaUserCog /> },
+    // Admin-only links
+    { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt /> , adminOnly: true},
+
+    { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList />, adminOnly: true },
+    { href: "/email-tempelate", label: "Email Templates", icon: <FaEnvelope />, adminOnly: true },
+    { href: "/manage-users", label: "Manage Users", icon: <FaUserCog />, adminOnly: true },
   ];
+
+ const filteredLinks = allLinks.filter(
+  (link) => role === "admin" || !link.adminOnly
+);
+
 
   return (
     <>
-      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 min-h-screen w-64 p-6 flex flex-col z-40 transform transition-transform duration-300
         bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 text-white shadow-2xl
         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
         md:translate-x-0 md:static md:block`}
       >
-        {/* Close button (only visible on mobile) */}
+        {/* Close button (mobile only) */}
         <button
           className="md:hidden self-end mb-6 text-gray-300 hover:text-white"
           onClick={() => setIsOpen(false)}
@@ -45,17 +54,19 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
           ✕
         </button>
 
-        {/* Logo / Brand */}
+        {/* Logo */}
         <div className="mb-8 flex items-center gap-2">
           <div className="h-10 w-10 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg flex items-center justify-center font-bold text-lg shadow-md">
             A
           </div>
-          <h1 className="text-xl font-bold text-white">Admin Panel</h1>
+          <h1 className="text-xl font-bold text-white">
+            {role === "admin" ? "Admin Panel" : "Client Dashboard"}
+          </h1>
         </div>
 
         {/* Navigation */}
         <nav className="flex flex-col gap-2">
-          {links.map(({ href, label, icon }) => (
+          {filteredLinks.map(({ href, label, icon }) => (
             <Link
               key={href}
               href={href}

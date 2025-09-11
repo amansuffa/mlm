@@ -19,7 +19,7 @@ export default function DashboardClient({ session }) {
 
       <div className="flex flex-1">
         {/* Sidebar */}
-        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role={session?.user?.role}/>
+        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role="user"/>
 
       
 

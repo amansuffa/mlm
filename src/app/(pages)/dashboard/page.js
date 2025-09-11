@@ -5,6 +5,9 @@ import DashboardAdmin from "@/components/DashboardAdmin";
 
 export default async function DashboardPage() {
   const session = await auth();
+let role = session?.user?.role;
+console.log("Hello", role);
+console.log("Session User:", session?.user);
 
   if (!session?.user) {
     redirect("/");
