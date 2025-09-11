@@ -99,8 +99,9 @@ export default function UserDetailsPage() {
                     className="w-full border px-2 py-1 rounded"
                   >
                     <option value="Free Member">Free Member</option>
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="Admin Fee Paid">Admin Fee Paid</option>
+                    <option value="Membership Paid">Membership Paid</option>
+                    <option value="Fully Active">Fully Active</option>
                   </select>
                 </td>
               </tr>
