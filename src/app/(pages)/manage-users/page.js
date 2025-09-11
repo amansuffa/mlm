@@ -25,7 +25,7 @@ export default function ManageUsersPage() {
   }, []);
 
   function handleViewDetails(userId) {
-    router.push(`/admin/users/${userId}`);
+    router.push(`manage-users/users/${userId}`);
   }
 
   return (

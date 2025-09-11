@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/mongodb";
-import { User } from "@/models/User"; // ✅ Ensure this matches your export
+import { User } from "@/models/User"; 
 import bcrypt from "bcryptjs";
 
 export async function POST(req) {
@@ -19,8 +19,8 @@ export async function POST(req) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Generate referralId automatically
-    const referralId = "ADMIN" + Math.floor(100000 + Math.random() * 900000);
+    // const referralId = "ADMIN" + Math.floor(100000 + Math.random() * 900000);
+    const referralId = "ref1";
 
     // Create admin user
     const admin = await User.create({
