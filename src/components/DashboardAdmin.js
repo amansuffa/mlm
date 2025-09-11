@@ -10,22 +10,15 @@ import TopReferrers from "@/components/TopReferrers";
 import TransactionsTable from "@/components/TransactionsTable";
 import DownlineTree from "@/components/DownlineTree";
 import WeeklyRevenue from "@/components/WeeklyRevenue";
+import Layout from "./Layout";
 
 export default function DashboardAdmin({ session }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
-      <Navbar setIsOpen={setIsOpen} />
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role={session?.user?.role}/>
-
-      
-
-<main className="p-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-100 min-h-screen">
+<Layout>
+  <main className="p-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-700">
               Welcome, {session?.user?.name || "User"} 👋
             </h1>
@@ -54,8 +47,6 @@ export default function DashboardAdmin({ session }) {
         <TransactionsTable />
       </div>
     </main>
-    
-      </div>
-    </div>
+</Layout>
   );
 }
