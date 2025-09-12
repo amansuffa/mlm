@@ -84,7 +84,6 @@ export default function DownlineTree() {
         )}
       </div>
 
-      {/* Gradients for better UI */}
       <svg width="0" height="0">
         <defs>
           <linearGradient id="blueGradient" x1="0" y1="0" x2="1" y2="1">

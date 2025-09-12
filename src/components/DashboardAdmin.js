@@ -18,7 +18,7 @@ export default function DashboardAdmin({ session }) {
   return (
 
 <Layout>
-  <main className="p-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-100 min-h-screen">
+  <main className="py-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-700">
               Welcome, {session?.user?.name || "User"} 👋
             </h1>

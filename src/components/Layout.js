@@ -17,7 +17,7 @@ export default function Layout({ children }) {
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
         {/* Main Content */}
-        <main className="px-6 w-full bg-gray-50 min-h-screen">
+        <main className="px-6 w-full bg-gray-100 min-h-screen">
           {children}
         </main>
       </div>
