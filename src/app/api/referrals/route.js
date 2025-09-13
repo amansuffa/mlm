@@ -18,11 +18,11 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const referrals = await User.find({ referredBy: currentUser.referralId })
-      .select("name email referralId");
+    const referrals = await User.find({ referredBy: currentUser.username })
+      .select("name email username createdAt");
 
     return NextResponse.json({
-      referralId: currentUser.referralId,
+      referralId: currentUser.username, 
       referrals,
     });
   } catch (error) {

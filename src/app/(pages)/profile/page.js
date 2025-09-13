@@ -51,11 +51,11 @@ export default function ProfilePage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <p className="text-sm text-gray-500">Reffer Id</p>
-                  <p className="font-medium text-gray-800">{user.referralId}</p>
+                  <p className="font-medium text-gray-800">{user.username}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Reffered By</p>
-                  <p className="font-medium text-gray-800">{user.referredBy || "Admin"}</p>
+                  <p className="font-medium text-gray-800">{user.referredBy}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Status</p>

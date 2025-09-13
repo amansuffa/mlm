@@ -17,13 +17,18 @@ export async function POST(req) {
       return NextResponse.json({ error: "Username is not available" }, { status: 400 });
     }
     const hashedPassword = await bcrypt.hash(password, 5);
-    const referralId = Math.random().toString(36).substring(2, 10);
 
-    // If no referredBy, set to admin's referralId
+    // If no referredBy, set to admin's username
     let finalReferredBy = referredBy;
     if (!referredBy) {
-      const admin = await User.findOne({ role: "admin" }); // assuming role field for admin
-      finalReferredBy = admin ? admin.referralId : null;
+      const admin = await User.findOne({ role: "admin" });
+      finalReferredBy = admin ? admin.username : null;
+    } else {
+      // Verify that the referrer exists
+      const referrer = await User.findOne({ username: referredBy });
+      if (!referrer) {
+        return NextResponse.json({ error: "Invalid referral username" }, { status: 400 });
+      }
     }
 
     const newUser = await User.create({
@@ -31,7 +36,6 @@ export async function POST(req) {
       email,
       username,
       password: hashedPassword,
-      referralId,
       referredBy: finalReferredBy
     });
 
