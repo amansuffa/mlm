@@ -15,7 +15,7 @@ const Navbar = ({ setIsOpen }) => {
           src={logo}
           alt="Logo"
           width={180}  
-          height={180} 
+          height="auto" 
         />
       </div>
 
