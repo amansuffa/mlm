@@ -20,7 +20,7 @@ export async function POST(req) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // const referralId = "ADMIN" + Math.floor(100000 + Math.random() * 900000);
-    const referralId = "ref1";
+    // const referralId = "ref1";
 
     // Create admin user
     const admin = await User.create({
@@ -29,7 +29,8 @@ export async function POST(req) {
       password: hashedPassword,
       role: "admin",
       status: "Admin fee paid",
-      referralId,
+      username: "admin",
+ 
     });
 
     return new Response(

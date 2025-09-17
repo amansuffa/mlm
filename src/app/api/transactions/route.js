@@ -6,3 +6,19 @@ export async function GET() {
     ]
   });
 }
+
+
+
+// import { db } from "./mongodb";
+
+// export async function getTransactionsForUser(user) {
+//   if (user.role === "superadmin") {
+//     return db.transactions.find(); 
+//   }
+//   if (user.role === "admin") {
+//     return db.transactions.find({ createdBy: user.id }); 
+//   }
+//   return db.transactions.find({ userId: user.id }); 
+
+
+// }

@@ -1,6 +1,3 @@
-
-
-
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -8,7 +5,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   username:{ type: String, unique: true }, 
-  referredBy: { type: String, default: null }, 
+  referredBy: { type: String, default: null },
   status:{type: String, default: "Free Member"}, 
   role: { type: String, default: "user" },
 },

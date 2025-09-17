@@ -1,5 +1,4 @@
 "use client";
-import Layout from "@/components/Layout";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -62,7 +61,7 @@ export default function UserDetailsPage() {
   if (!user) return <p className="text-center mt-10 text-red-500">{message}</p>;
 
   return (
-    <Layout>
+   
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow mt-6">
         <h1 className="text-2xl font-bold mb-6 text-gray-800">Edit User</h1>
 
@@ -144,6 +143,6 @@ export default function UserDetailsPage() {
           </div>
         </form>
       </div>
-    </Layout>
+ 
   );
 }

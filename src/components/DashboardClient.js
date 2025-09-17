@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import KPISection from "@/components/KPISection";
-import SalesOverview from "@/components/SalesOverview";
-import TopReferrers from "@/components/TopReferrers";
-import DownlineTree from "@/components/DownlineTree";
-import WeeklyRevenue from "@/components/WeeklyRevenue";
-import Layout from "./Layout";
+import KPISection from "@/components/dashboard/KPISection";
+import SalesOverview from "@/components/dashboard/SalesOverview";
+import TopReferrers from "@/components/dashboard/TopReferrers";
+import DownlineTree from "@/components/dashboard/DownlineTree";
+import WeeklyRevenue from "@/components/dashboard/WeeklyRevenue";
 
 export default function DashboardClient({ session }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +13,7 @@ export default function DashboardClient({ session }) {
   return (
 
 
-<Layout>
+
   <main className="py-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-700">
               Welcome, {session?.user?.name || "User"} 👋
@@ -41,6 +40,6 @@ export default function DashboardClient({ session }) {
 
     
     </main>
-</Layout>
+
   );
 }

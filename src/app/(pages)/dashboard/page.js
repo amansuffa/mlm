@@ -10,12 +10,12 @@ console.log("Hello", role);
 console.log("Session User:", session?.user);
 
   if (!session?.user) {
-    redirect("/");
+    redirect("/login");
   }
   if (session?.user.role === "admin"){
 
     return <DashboardAdmin session={session} />;
-  }else{
+  }else if (session?.user.role === "user"){
     
     return <DashboardClient session={session} />;
   }

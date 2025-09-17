@@ -55,7 +55,7 @@ export default function Signup() {
       });
 
       if (res.status === 201) {
-        router.push("/");
+        router.push("/login");
       }
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong");
@@ -78,7 +78,7 @@ export default function Signup() {
 
         <p className="text-sm text-center text-gray-700">
           Already have an account?{" "}
-          <Link href="/" className="font-semibold text-fuchsia-900 hover:underline">
+          <Link href="/login" className="font-semibold text-fuchsia-900 hover:underline">
             Log in
           </Link>
         </p>

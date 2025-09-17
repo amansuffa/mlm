@@ -4,15 +4,15 @@ import Link from "next/link";
 import { doLogin } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { getSession } from "next-auth/react";
 
 export default function Login() {
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // 👈 loading state
+  const [loading, setLoading] = useState(false); 
   const router = useRouter();
-
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true); // start loading
+    setLoading(true); 
     setError("");
 
     try {
@@ -21,9 +21,17 @@ export default function Login() {
 
       if (res?.error) {
         setError(res.error);
-        setLoading(false); // stop loading if error
+        setLoading(false); 
       } else {
-        router.push("/dashboard");
+   
+
+const session = await getSession();
+console.log("Session after login:", session?.user);
+
+        if (session?.user) {
+          router.push("/dashboard");
+        }  
+
       }
     } catch (err) {
       setError("Check Credentials");

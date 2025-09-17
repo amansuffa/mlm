@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Layout from "@/components/Layout";
 import { useRouter } from "next/navigation";
 
 export default function ManageUsersPage() {
@@ -29,7 +28,7 @@ export default function ManageUsersPage() {
   }
 
   return (
-    <Layout>
+<>
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Manage Users</h1>
 
       {loading ? (
@@ -105,6 +104,6 @@ export default function ManageUsersPage() {
           </table>
         </div>
       )}
-    </Layout>
+</>
   );
 }
