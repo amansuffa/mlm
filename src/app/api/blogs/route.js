@@ -75,6 +75,7 @@ export async function POST(request) {
     
     // Get the current user session
     const session = await auth();
+    console.log("session", session.user);
     
     if (!session || !session.user) {
       return NextResponse.json(
