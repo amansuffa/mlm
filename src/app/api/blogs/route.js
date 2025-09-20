@@ -85,8 +85,7 @@ export async function POST(request) {
     }
 
     const userId = session.user.id
-//    const { searchParams } = new URL(request.url);
-// let userId = searchParams.get("userId");
+
     
     // Check if user has permission
     const hasUserPermission = await hasPermission(userId);
@@ -133,159 +132,164 @@ export async function POST(request) {
 }
 
 // PUT update a blog (admin and paid members only)
-// export async function PUT(request) {
-//   try {
-//     await connectToDatabase();
+export async function PUT(request) {
+  try {
+    await connectDB();
     
-//     // Get the current user session
-//     const session = await getServerSession(authOptions);
+    // Get the current user session
+   const session = await auth();
+    console.log("session", session.user);
+
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
     
-//     if (!session || !session.user) {
-//       return NextResponse.json(
-//         { error: "Authentication required" },
-//         { status: 401 }
-//       );
-//     }
+    // Parse request body
+    const { blogId, title, content } = await request.json();
     
-//     // Parse request body
-//     const { blogId, title, content } = await request.json();
+    // Validate required fields
+    if (!blogId || !title || !content) {
+      return NextResponse.json(
+        { error: "Blog ID, title, and content are required" },
+        { status: 400 }
+      );
+    }
     
-//     // Validate required fields
-//     if (!blogId || !title || !content) {
-//       return NextResponse.json(
-//         { error: "Blog ID, title, and content are required" },
-//         { status: 400 }
-//       );
-//     }
+    // Find the blog
+    const blog = await Blog.findById(blogId);
     
-//     // Find the blog
-//     const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return NextResponse.json(
+        { error: "Blog not found" },
+        { status: 404 }
+      );
+    }
     
-//     if (!blog) {
-//       return NextResponse.json(
-//         { error: "Blog not found" },
-//         { status: 404 }
-//       );
-//     }
+    // Check if user is the author or an admin
+    const isAuthor = blog.authorId.toString() === session.user.id;
+    const isAdmin = (await User.findById(session.user.id))?.role === "admin";
     
-//     // Check if user is the author or an admin
-//     const isAuthor = blog.authorId.toString() === session.user.id;
-//     const isAdmin = (await User.findById(session.user.id))?.role === "admin";
+    if (!isAuthor && !isAdmin) {
+      return NextResponse.json(
+        { error: "You can only edit your own blogs" },
+        { status: 403 }
+      );
+    }
     
-//     if (!isAuthor && !isAdmin) {
-//       return NextResponse.json(
-//         { error: "You can only edit your own blogs" },
-//         { status: 403 }
-//       );
-//     }
-    
-//     // If not admin, check if user has permission
-//     if (!isAdmin) {
-//       const hasUserPermission = await hasPermission(session.user.id);
+    // If not admin, check if user has permission
+    if (!isAdmin) {
+      const hasUserPermission = await hasPermission(session.user.id);
       
-//       if (!hasUserPermission) {
-//         return NextResponse.json(
-//           { error: "Only admin and paid members can edit blogs" },
-//           { status: 403 }
-//         );
-//       }
-//     }
+      if (!hasUserPermission) {
+        return NextResponse.json(
+          { error: "Only admin and paid members can edit blogs" },
+          { status: 403 }
+        );
+      }
+    }
     
-//     // Update the blog
-//     blog.title = title;
-//     blog.content = content;
-//     await blog.save();
+    // Update the blog
+    blog.title = title;
+    blog.content = content;
+    await blog.save();
     
-//     return NextResponse.json(
-//       { message: "Blog updated successfully", blog }
-//     );
-//   } catch (error) {
-//     console.error("Error updating blog:", error);
-//     return NextResponse.json(
-//       { error: "Failed to update blog" },
-//       { status: 500 }
-//     );
-//   }
-// }
+    return NextResponse.json(
+      { message: "Blog updated successfully", blog }
+    );
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    return NextResponse.json(
+      { error: "Failed to update blog" },
+      { status: 500 }
+    );
+  }
+}
 
 // DELETE a blog (admin and paid members only)
-// export async function DELETE(request) {
-//   try {
-//     await connectToDatabase();
+export async function DELETE(request) {
+  try {
+    await connectDB();
     
-//     // Get the current user session
-//     const session = await getServerSession(authOptions);
+    // Get the current user session
+const session = await auth();
+    console.log("session", session.user);
+
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
     
-//     if (!session || !session.user) {
-//       return NextResponse.json(
-//         { error: "Authentication required" },
-//         { status: 401 }
-//       );
-//     }
+    // Get blog ID from URL
+    const { searchParams } = new URL(request.url);
+    const blogId = searchParams.get("id");
     
-//     // Get blog ID from URL
-//     const { searchParams } = new URL(request.url);
-//     const blogId = searchParams.get("id");
+    if (!blogId) {
+      return NextResponse.json(
+        { error: "Blog ID is required" },
+        { status: 400 }
+      );
+    }
     
-//     if (!blogId) {
-//       return NextResponse.json(
-//         { error: "Blog ID is required" },
-//         { status: 400 }
-//       );
-//     }
+    // Find the blog
+    const blog = await Blog.findById(blogId);
     
-//     // Find the blog
-//     const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return NextResponse.json(
+        { error: "Blog not found" },
+        { status: 404 }
+      );
+    }
     
-//     if (!blog) {
-//       return NextResponse.json(
-//         { error: "Blog not found" },
-//         { status: 404 }
-//       );
-//     }
+    // Check if user is the author or an admin
+    const isAuthor = blog.authorId.toString() === session.user.id;
+    const isAdmin = (await User.findById(session.user.id))?.role === "admin";
     
-//     // Check if user is the author or an admin
-//     const isAuthor = blog.authorId.toString() === session.user.id;
-//     const isAdmin = (await User.findById(session.user.id))?.role === "admin";
+    if (!isAuthor && !isAdmin) {
+      return NextResponse.json(
+        { error: "You can only delete your own blogs" },
+        { status: 403 }
+      );
+    }
     
-//     if (!isAuthor && !isAdmin) {
-//       return NextResponse.json(
-//         { error: "You can only delete your own blogs" },
-//         { status: 403 }
-//       );
-//     }
-    
-//     // If not admin, check if user has permission
-//     if (!isAdmin) {
-//       const hasUserPermission = await hasPermission(session.user.id);
+    // If not admin, check if user has permission
+    if (!isAdmin) {
+      const hasUserPermission = await hasPermission(session.user.id);
       
-//       if (!hasUserPermission) {
-//         return NextResponse.json(
-//           { error: "Only admin and paid members can delete blogs" },
-//           { status: 403 }
-//         );
-//       }
-//     }
+      if (!hasUserPermission) {
+        return NextResponse.json(
+          { error: "Only admin and paid members can delete blogs" },
+          { status: 403 }
+        );
+      }
+    }
     
-//     // Delete the blog
-//     await Blog.findByIdAndDelete(blogId);
+    // Delete the blog
+    await Blog.findByIdAndDelete(blogId);
     
-//     return NextResponse.json(
-//       { message: "Blog deleted successfully" }
-//     );
-//   } catch (error) {
-//     console.error("Error deleting blog:", error);
-//     return NextResponse.json(
-//       { error: "Failed to delete blog" },
-//       { status: 500 }
-//     );
-//   }
-// }
+    return NextResponse.json(
+      { message: "Blog deleted successfully" }
+    );
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+    return NextResponse.json(
+      { error: "Failed to delete blog" },
+      { status: 500 }
+    );
+  }
+}
+
+
+
 
 // PATCH share a blog (available to all users)
 // export async function PATCH(request) {
 //   try {
-//     await connectToDatabase();
+//     await connectDB();
     
 //     // Get the current user session
 //     const session = await getServerSession(authOptions);
