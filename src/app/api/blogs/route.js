@@ -30,10 +30,12 @@ async function hasPermission(userId) {
   }
 }
 
+
+
 // GET all blogs
 // export async function GET(request) {
 //   try {
-//     await connectToDatabase();
+//     await connectDB();
     
 //     // Get query parameters for pagination
 //     const { searchParams } = new URL(request.url);
@@ -67,6 +69,84 @@ async function hasPermission(userId) {
 //     );
 //   }
 // }
+
+
+
+// // GET /api/blogs
+// export async function GET(request) {
+//   try {
+//     await connectDB();
+//     const session = await auth();
+//     if (!session?.user) {
+//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//     }
+
+//     const blogs = await Blog.find({ authorId: session.user.id })
+//       .sort({ createdAt: -1 })
+//       .populate("authorId", "name username");
+
+//     return NextResponse.json({ blogs });
+//   } catch (error) {
+//     console.error("Error fetching blogs:", error);
+//     return NextResponse.json({ error: "Failed to fetch blogs" }, { status: 500 });
+//   }
+// }
+
+
+
+export async function GET(request) {
+  try {
+    await connectDB();
+
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const skip = (page - 1) * limit;
+    const myBlogsOnly = searchParams.get("my") === "true";
+
+    let filter = {};
+
+    if (myBlogsOnly) {
+      try {
+        const session = await auth();
+        if (!session?.user) {
+          return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        filter.authorId = session.user.id;
+      } catch (err) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
+
+    const blogs = await Blog.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("authorId", "name username");
+
+    const total = await Blog.countDocuments(filter);
+
+    return NextResponse.json({
+      blogs: blogs || [],
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+      message: blogs.length === 0 ? "No blogs found" : null,
+    });
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch blogs" },
+      { status: 500 }
+    );
+  }
+}
+
+
+
 
 // POST create a new blog (admin and paid members only)
 export async function POST(request) {
@@ -148,7 +228,9 @@ export async function PUT(request) {
     }
     
     // Parse request body
-    const { blogId, title, content } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const blogId = searchParams.get("id");
+        const { title, content } = await request.json();
     
     // Validate required fields
     if (!blogId || !title || !content) {
