@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import Link from "next/link";
+
 import Logout from "../Logout";
 import Image from "next/image";
 import logo from "../../assets/logo.png";
@@ -21,6 +23,9 @@ const Nav = ({ setIsOpen }) => {
 
       {/* Right section */}
       <div className="flex items-center gap-3">
+         <Link href="/" className="text-gray-700 hover:text-purple-600">
+            Home
+          </Link>
         <Logout />
 
         {/* Hamburger (mobile only) */}
