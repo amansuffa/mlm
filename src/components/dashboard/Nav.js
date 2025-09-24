@@ -4,7 +4,7 @@ import Logout from "../Logout";
 import Image from "next/image";
 import logo from "../../assets/logo.png";
 
-const Navbar = ({ setIsOpen }) => {
+const Nav = ({ setIsOpen }) => {
   return (
     <div className="bg-gray-50 h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50">
 
@@ -48,4 +48,4 @@ const Navbar = ({ setIsOpen }) => {
   );
 };
 
-export default Navbar;
+export default Nav;

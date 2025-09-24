@@ -26,7 +26,7 @@
 // src/components/layout/Layout.jsx
 "use client";
 import { useState } from "react";
-import Navbar from "../dashboard/Navbar";
+import Nav from "../dashboard/Nav";
 import Sidebar from "../Sidebar";
 
 export default function Layout({ children, role }) {
@@ -34,7 +34,7 @@ export default function Layout({ children, role }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar setIsOpen={setIsOpen} />
+      <Nav setIsOpen={setIsOpen} />
       <div className="flex flex-1">
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role={role} />
         <main className="px-6 w-full bg-gray-100 min-h-screen">{children}</main>
