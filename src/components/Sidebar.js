@@ -21,15 +21,15 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
   console.log("Sidebar Role:", role);
 
   const allLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt />, roles: ["user", "admin", "superadmin"] },
-    { href: "/user/profile", label: "Profile", icon: <FaUser />, roles: ["user", "admin", "superadmin"] },
-    { href: "/user/downline", label: "Downline", icon: <FaUsers />, roles: ["user", "admin", "superadmin"] },
-    { href: "/user/referrals", label: "My Referrals", icon: <FaUserFriends />, roles: ["user", "admin", "superadmin"] },
-    { href: "/user/withdrawal", label: "Withdrawal", icon: <FaWallet />, roles: ["user", "admin", "superadmin"] },
-    { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt />, roles: ["admin", "superadmin"] },
-    { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList />, roles: ["admin", "superadmin"] },
-    { href: "/email-templates", label: "Email Templates", icon: <FaEnvelope />, roles: ["admin","superadmin"] },
-    { href: "/manage-users", label: "Manage Users", icon: <FaUserCog />, roles: ["admin","superadmin"] },
+    { href: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt />, roles: ["user", "admin", ] },
+    { href: "/user/profile", label: "Profile", icon: <FaUser />, roles: ["user", "admin", ] },
+    { href: "/user/downline", label: "Downline", icon: <FaUsers />, roles: ["user", "admin", ] },
+    { href: "/user/referrals", label: "My Referrals", icon: <FaUserFriends />, roles: ["user", "admin", ] },
+    { href: "/user/withdrawal", label: "Withdrawal", icon: <FaWallet />, roles: ["user", "admin", ] },
+    { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt />, roles: ["admin", ] },
+    { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList />, roles: ["admin", ] },
+    { href: "/email-templates", label: "Email Templates", icon: <FaEnvelope />, roles: ["admin",] },
+    { href: "/manage-users", label: "Manage Users", icon: <FaUserCog />, roles: ["admin",] },
   ];
 
   const filteredLinks = allLinks.filter(link => link.roles.includes(role));

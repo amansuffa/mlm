@@ -4,93 +4,9 @@ import { User } from "@/models/User";
 import { auth } from "@/auth";
 import { connectDB } from "@/lib/mongodb";
 
-// Helper function to check if user has permission to create/edit/delete blogs
-async function hasPermission(userId) {
-  try {
-    const user = await User.findById(userId);
-    
-    if (!user) {
-      return false;
-    }
-    
-    // Admin users always have permission
-    if (user.role === "admin") {
-      return true;
-    }
-    
-    // Paid members have permission (membership_paid or fully_active)
-    if (user.status === "membership_paid" || user.status === "fully_active") {
-      return true;
-    }
-    
-    return false;
-  } catch (error) {
-    console.error("Error checking user permissions:", error);
-    return false;
-  }
-}
+import { hasPermission } from "@/app/actions/hasPermission";
 
 
-
-// GET all blogs
-// export async function GET(request) {
-//   try {
-//     await connectDB();
-    
-//     // Get query parameters for pagination
-//     const { searchParams } = new URL(request.url);
-//     const page = parseInt(searchParams.get("page")) || 1;
-//     const limit = parseInt(searchParams.get("limit")) || 10;
-//     const skip = (page - 1) * limit;
-    
-//     // Find blogs with pagination and populate author info
-//     const blogs = await Blog.find({})
-//       .sort({ createdAt: -1 })
-//       .skip(skip)
-//       .limit(limit)
-//       .populate("authorId", "name username");
-    
-//     const total = await Blog.countDocuments({});
-    
-//     return NextResponse.json({
-//       blogs,
-//       pagination: {
-//         total,
-//         page,
-//         limit,
-//         pages: Math.ceil(total / limit)
-//       }
-//     });
-//   } catch (error) {
-//     console.error("Error fetching blogs:", error);
-//     return NextResponse.json(
-//       { error: "Failed to fetch blogs" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-
-
-// // GET /api/blogs
-// export async function GET(request) {
-//   try {
-//     await connectDB();
-//     const session = await auth();
-//     if (!session?.user) {
-//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-//     }
-
-//     const blogs = await Blog.find({ authorId: session.user.id })
-//       .sort({ createdAt: -1 })
-//       .populate("authorId", "name username");
-
-//     return NextResponse.json({ blogs });
-//   } catch (error) {
-//     console.error("Error fetching blogs:", error);
-//     return NextResponse.json({ error: "Failed to fetch blogs" }, { status: 500 });
-//   }
-// }
 
 
 
@@ -167,7 +83,6 @@ export async function POST(request) {
     const userId = session.user.id
 
     
-    // Check if user has permission
     const hasUserPermission = await hasPermission(userId);
     
     if (!hasUserPermission) {
