@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const EmailTemplateSchema = new mongoose.Schema({
-  title: String,
+  name: String,
   subject: String,
   body: String,
   ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },

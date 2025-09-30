@@ -135,7 +135,7 @@ export default function UserDetailsPage() {
               className={`px-4 py-2 rounded text-white ${
                 saving
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-purple-600 hover:bg-purple-700"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
               {saving ? "Saving..." : "Save Changes"}

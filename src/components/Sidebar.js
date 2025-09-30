@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -15,24 +14,75 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen, setIsOpen, role }) {
+export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   const pathname = usePathname();
 
-  console.log("Sidebar Role:", role);
+  console.log("Sidebar Status:", status, "Role:", role);
 
   const allLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt />, roles: ["user", "admin", ] },
-    { href: "/user/profile", label: "Profile", icon: <FaUser />, roles: ["user", "admin", ] },
-    { href: "/user/downline", label: "Downline", icon: <FaUsers />, roles: ["user", "admin", ] },
-    { href: "/user/referrals", label: "My Referrals", icon: <FaUserFriends />, roles: ["user", "admin", ] },
-    { href: "/user/withdrawal", label: "Withdrawal", icon: <FaWallet />, roles: ["user", "admin", ] },
-    { href: "/transactions", label: "Transactions", icon: <FaExchangeAlt />, roles: ["admin", ] },
-    { href: "/blog-editor", label: "Blog Editor", icon: <FaClipboardList />, roles: ["admin", ] },
-    { href: "/email-templates", label: "Email Templates", icon: <FaEnvelope />, roles: ["admin",] },
-    { href: "/manage-users", label: "Manage Users", icon: <FaUserCog />, roles: ["admin",] },
+    { 
+      href: "/dashboard", 
+      label: "Dashboard", 
+      icon: <FaTachometerAlt />, 
+      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
+    },
+    { 
+      href: "/user/profile", 
+      label: "Profile", 
+      icon: <FaUser />, 
+      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
+    },
+    { 
+      href: "/user/downline", 
+      label: "Downline", 
+      icon: <FaUsers />, 
+      statuses: ["membership_paid", "fully_active"] 
+    },
+    { 
+      href: "/user/referrals", 
+      label: "My Referrals", 
+      icon: <FaUserFriends />, 
+      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
+    },
+    { 
+      href: "/user/withdrawal", 
+      label: "Withdrawal", 
+      icon: <FaWallet />, 
+      statuses: ["fully_active"] 
+    },
+    { 
+      href: "/transactions", 
+      label: "Transactions", 
+      icon: <FaExchangeAlt />, 
+      statuses: ["membership_paid", "fully_active"] 
+    },
+    { 
+      href: "/blog-editor", 
+      label: "Blog Editor", 
+      icon: <FaClipboardList />, 
+      statuses: ["admin_fee_paid", "membership_paid", "fully_active"] 
+    },
+    { 
+      href: "/email-templates", 
+      label: "Email Templates", 
+      icon: <FaEnvelope />, 
+      statuses: ["admin_fee_paid", "membership_paid", "fully_active"] 
+    },
+    { 
+      href: "/manage-users", 
+      label: "Manage Users", 
+      icon: <FaUserCog />, 
+      statuses: ["admin_fee_paid", "membership_paid", "fully_active"], 
+      roles: ["admin"] // ✅ only visible to admins
+    },
   ];
 
-  const filteredLinks = allLinks.filter(link => link.roles.includes(role));
+  // ✅ Filter: first check status, then if link has a roles condition, check role too
+  const filteredLinks = allLinks.filter(
+    (link) =>
+      link.statuses.includes(status) &&
+      (!link.roles || link.roles.includes(role))
+  );
 
   return (
     <>
@@ -54,11 +104,7 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
             A
           </div>
           <h1 className="text-xl font-bold text-white">
-            {role === "superadmin"
-              ? "Super Admin Panel"
-              : role === "admin"
-              ? "Admin Panel"
-              : "Client Dashboard"}
+            {role === "admin" ? "Admin Panel" : "Client Dashboard"}
           </h1>
         </div>
 
@@ -91,4 +137,3 @@ export default function Sidebar({ isOpen, setIsOpen, role }) {
     </>
   );
 }
-

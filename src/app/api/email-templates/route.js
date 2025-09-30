@@ -57,31 +57,37 @@ export async function GET(req) {
 
 export async function POST(req) {
   await connectDB();
-    const session = await auth();
-    console.log("session", session.user);
-    
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
-    }
+  const session = await auth();
 
-    const userId = session.user.id
+  if (!session || !session.user) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
+  }
 
-    
-    const hasUserPermission = await hasPermission(userId);
-if (!hasUserPermission) {
-      return NextResponse.json(
-        { error: "Only admin and paid members can create templates" },
-        { status: 403 }
-      );
-    }
+  const userId = session.user.id;
 
+  const hasUserPermission = await hasPermission(userId);
+  if (!hasUserPermission) {
+    return NextResponse.json(
+      { error: "Only admin and paid members can create templates" },
+      { status: 403 }
+    );
+  }
 
   const body = await req.json();
+
+  // Make sure `name` exists
+  if (!body.name || !body.subject || !body.body) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
   const tpl = await EmailTemplate.create({
-    title: body.title,
+    name: body.name,
     subject: body.subject,
     body: body.body,
     ownerId: session.user.role === "admin" ? null : userId
