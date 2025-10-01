@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import MemberKPIs from "@/components/member/MemberKPIs";
+import KPISection from "@/components/dashboard/KPISection";
+
 import EarningsChart from "@/components/member/EarningsChart";
 import ReferralsOverview from "@/components/member/ReferralsOverview";
 import PayoutSettingsCard from "@/components/member/PayoutSettingsCard";
@@ -21,7 +22,7 @@ export default function DashboardMember({ session }) {
 
       {/* KPIs: Earnings, Referrals, Team, Rank */}
       <div className="col-span-1 sm:col-span-2 lg:col-span-3">
-        <MemberKPIs />
+        <KPISection />
       </div>
 
       {/* Left/Main Section */}

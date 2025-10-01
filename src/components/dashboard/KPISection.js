@@ -1,15 +1,20 @@
 "use client";
-import React from "react";
+import { useEffect, useState } from "react";
 import { Users, UserPlus, DollarSign, Award } from "lucide-react";
 
 export default function KPISection() {
-  const kpis = {
-    directReferrals: 8,
-    indirectReferrals: 24,
-    totalDownline: 32,
-    totalEarnings: "$1,250",
-    currentRank: "Silver",
-  };
+  const [kpis, setKpis] = useState(null);
+
+  useEffect(() => {
+    async function fetchKpis() {
+      const res = await fetch("/api/kpis");
+      const data = await res.json();
+      setKpis(data);
+    }
+    fetchKpis();
+  }, []);
+
+  if (!kpis) return <p>Loading KPIs...</p>;
 
   const cards = [
     { label: "Direct Referrals", value: kpis.directReferrals, icon: <UserPlus />, color: "from-blue-500 to-blue-600" },
