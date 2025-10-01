@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { payoutMethodSchema } from "./PayoutMethod.js";
+
 
 const userSchema = new mongoose.Schema({
   name: String,
@@ -19,6 +21,7 @@ const userSchema = new mongoose.Schema({
   
   adminFeePaid: { type: Boolean, default: false },
   membershipFeePaid: { type: Boolean, default: false },
+  payoutMethods: [payoutMethodSchema],
 },
 { timestamps: true } );
 
