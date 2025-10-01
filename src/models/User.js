@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "user"],
     default: "user",
   },
-  
+  isVerified: { type: Boolean, default: false },
+verificationToken: { type: String, default: null },
+
   adminFeePaid: { type: Boolean, default: false },
   membershipFeePaid: { type: Boolean, default: false },
   payoutMethods: [payoutMethodSchema],

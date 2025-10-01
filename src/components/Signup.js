@@ -55,7 +55,7 @@ export default function Signup() {
       });
 
       if (res.status === 201) {
-        router.push("/login");
+        router.push("/check-email");
       }
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong");

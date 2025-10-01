@@ -1,0 +1,47 @@
+"use client";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+
+export default function VerifyPage() {
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
+  const reason = searchParams.get("reason");
+
+  const isSuccess = status === "success";
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center">
+        <h1 className="text-2xl font-bold mb-4">
+          {isSuccess ? "✅ Email Verified" : "❌ Verification Failed"}
+        </h1>
+
+        {isSuccess ? (
+          <>
+            <p className="text-gray-600">Your email has been verified successfully. You can now login.</p>
+            <Link href="/login">
+              <button className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Go to Login
+              </button>
+            </Link>
+          </>
+        ) : (
+          <>
+            <p className="text-gray-600">
+              There was a problem verifying your email.
+              {reason ? ` (${reason.replace("_", " ")})` : ""}
+            </p>
+            <div className="mt-6 flex justify-center space-x-4">
+              <Link href="/">
+                <button className="px-6 py-2 border rounded-lg">Go to Home</button>
+              </Link>
+              <Link href="/resend-verification">
+                <button className="px-6 py-2 border rounded-lg">Resend Verification</button>
+              </Link>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

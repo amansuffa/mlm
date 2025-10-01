@@ -34,6 +34,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new Error("Invalid email or username");
           }
 
+          if (!user.isVerified) {
+      throw new Error("Please verify your email before login.");
+    }
+
           const validPassword = await bcrypt.compare(
             credentials.password,
             user.password
