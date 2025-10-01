@@ -1,24 +1,43 @@
+import { NextResponse } from "next/server";
+import { Transaction } from "@/models/Transaction";
+import { User } from "@/models/User";
+import { auth } from "@/auth";
+import { connectDB } from "@/lib/mongodb";
+
 export async function GET() {
-  return Response.json({
-    transactions: [
-      { id: 1, date: "2025-08-28", name: "Ali", rank: "Silver", amount: 150, status: "Completed" },
-      { id: 2, date: "2025-08-27", name: "Hamza", rank: "Bronze", amount: 30, status: "Pending" }
-    ]
-  });
+  await connectDB();
+  const session = await auth();
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const userId = session.user.id;
+  const role = session.user.role;
+
+  let transactions;
+
+  if (role === "admin") {
+    transactions = await Transaction.find({})
+      .populate("fromUser", "name email username")
+      .populate("toUser", "name email username")
+      .sort({ createdAt: -1 });
+  } else {
+    const downlineUsers = await User.find({ referredBy: userId }).select("_id");
+    const downlineIds = downlineUsers.map(u => u._id);
+
+    transactions = await Transaction.find({
+      $or: [
+        { fromUser: userId },
+        { toUser: userId },
+        { fromUser: { $in: downlineIds } },
+        { toUser: { $in: downlineIds } }
+      ]
+    })
+    .populate("fromUser", "name email username")
+    .populate("toUser", "name email username")
+    .sort({ createdAt: -1 });
+  }
+
+  return NextResponse.json(transactions);
 }
-
-
-
-// import { db } from "./mongodb";
-
-// export async function getTransactionsForUser(user) {
-//   if (user.role === "superadmin") {
-//     return db.transactions.find(); 
-//   }
-//   if (user.role === "admin") {
-//     return db.transactions.find({ createdBy: user.id }); 
-//   }
-//   return db.transactions.find({ userId: user.id }); 
-
-
-// }

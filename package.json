@@ -13,6 +13,7 @@
     "@auth/mongodb-adapter": "^3.10.0",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.3",
     "framer-motion": "^12.23.12",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.542.0",

@@ -1,54 +1,77 @@
+"use client";
+import { useEffect, useState } from "react";
 
 export default function TransactionsPage() {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch("/api/transactions");
+      const data = await res.json();
+      setTransactions(data);
+    }
+    fetchData();
+  }, []);
+
   return (
-    <>
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Transactions</h1>
-      <div className="bg-white shadow rounded-lg p-4">
-        <ul className="space-y-2">
-          <li className="p-2 border-b">#1001 – $200 – ✅ Completed</li>
-          <li className="p-2 border-b">#1002 – $150 – ⏳ Pending</li>
-          <li className="p-2">#1003 – $90 – ❌ Failed</li>
-        </ul>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold text-gray-700 mb-6">💳 Transactions</h2>
+
+      <div className="bg-white p-6 rounded-2xl shadow-lg overflow-x-auto">
+        <div className="min-w-[700px]">
+          <table className="w-full text-sm table-auto border-collapse">
+            <thead>
+              <tr className="bg-gray-100 text-gray-600 text-left">
+                <th className="p-3 font-semibold">Date</th>
+                <th className="p-3 font-semibold">From</th>
+                <th className="p-3 font-semibold">To</th>
+                <th className="p-3 font-semibold">Amount</th>
+                <th className="p-3 font-semibold">Type</th>
+                <th className="p-3 font-semibold">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((tx, i) => (
+                <tr
+                  key={i}
+                  className="border-t hover:bg-gray-50 transition-colors"
+                >
+                  <td className="p-3 text-gray-700">
+                    {new Date(tx.createdAt).toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  <td className="p-3 font-medium text-gray-800">
+                    {tx.fromUser?.username || "N/A"}
+                  </td>
+                  <td className="p-3 font-medium text-gray-800">
+                    {tx.toUser?.username || "N/A"}
+                  </td>
+                  <td className="p-3 text-gray-600">${tx.amount}</td>
+                  <td className="p-3 font-semibold text-gray-900">{tx.type}</td>
+                  <td className="p-3">
+                    <span
+                      className={`px-3 py-1 text-xs font-medium rounded-full ${
+                        tx.status === "Completed"
+                          ? "bg-green-100 text-green-700"
+                          : tx.status === "Pending"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {tx.status || "N/A"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      </>
+    </div>
   );
 }
-
-
-// import { auth } from "@/auth";
-// import { getTransactionsForUser } from "@/app/api/transactions";
-
-// export default async function TransactionsPage() {
-//   const session = await auth();
-//   const user = session?.user;
-
-//   if (!user) {
-//     return <div>Unauthorized</div>; // or redirect
-//   }
-
-//   const transactions = await getTransactionsForUser(user);
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-2xl font-bold mb-4">
-//         {user.role === "superadmin"
-//           ? "All Transactions"
-//           : user.role === "admin"
-//           ? "Team Transactions"
-//           : "My Transactions"}
-//       </h1>
-
-//       {transactions.length === 0 ? (
-//         <p>No transactions found.</p>
-//       ) : (
-//         <ul className="space-y-2">
-//           {transactions.map((tx) => (
-//             <li key={tx.id} className="bg-white shadow p-4 rounded">
-//               {tx.description} - ${tx.amount}
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// }

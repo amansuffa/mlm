@@ -38,14 +38,7 @@ export default function PayoutSettingsCard() {
     );
   }
 
-  if (!session) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
-        <h3 className="text-lg font-bold text-gray-700 mb-3">💰 Payout Settings</h3>
-        <p className="text-red-500">⚠ Please log in to see payout settings.</p>
-      </div>
-    );
-  }
+ 
 
   const primaryMethod = payouts.find((m) => m.isPrimary);
 
