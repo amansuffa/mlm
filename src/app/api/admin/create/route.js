@@ -7,7 +7,6 @@ export async function POST(req) {
     await connectDB();
     const { name, email, password } = await req.json();
 
-    // Check if admin already exists
     const existingAdmin = await User.findOne({ email, role: "admin" });
     if (existingAdmin) {
       return new Response(
@@ -16,21 +15,19 @@ export async function POST(req) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // const referralId = "ADMIN" + Math.floor(100000 + Math.random() * 900000);
-    // const referralId = "ref1";
 
-    // Create admin user
     const admin = await User.create({
       name,
       email,
       password: hashedPassword,
       role: "admin",
-      status: "Admin fee paid",
-      username: "admin",
- 
+      status: "fully_active",
+      username: "admin123",
+       isVerified: true, 
+         adminFeePaid: true,
+  membershipFeePaid: true,
     });
 
     return new Response(
