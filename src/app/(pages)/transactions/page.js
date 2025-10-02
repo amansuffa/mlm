@@ -56,9 +56,9 @@ export default function TransactionsPage() {
                   <td className="p-3">
                     <span
                       className={`px-3 py-1 text-xs font-medium rounded-full ${
-                        tx.status === "Completed"
+                        tx.status === "completed"
                           ? "bg-green-100 text-green-700"
-                          : tx.status === "Pending"
+                          : tx.status === "pending"
                           ? "bg-yellow-100 text-yellow-700"
                           : "bg-red-100 text-red-700"
                       }`}
