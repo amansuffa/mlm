@@ -1,12 +1,64 @@
 "use client";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ReferralsOverview() {
-  // Dummy data — fetch from API in real app
-  const referrals = [
-    { name: "Ali Raza", username: "ali123", joinDate: "2025-09-12", status: "Active" },
-    { name: "Sara Khan", username: "sarak", joinDate: "2025-09-15", status: "Pending" },
-    { name: "John Doe", username: "john77", joinDate: "2025-09-20", status: "Active" },
-  ];
+  const [referrals, setReferrals] = useState([]);
+
+  useEffect(() => {
+    async function fetchReferrals() {
+      try {
+        const res = await fetch("/api/referrals");
+        const data = await res.json();
+
+        if (res.ok) {
+          const recentReferrals = data.referrals
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(0, 3)
+            .map(ref => {
+              let statusText = "";
+              let statusClass = "";
+
+              switch (ref.status) {
+                case "free":
+                  statusText = "Free";
+                  statusClass = "bg-gray-100 text-gray-700";
+                  break;
+                case "admin_fee_paid":
+                  statusText = "Admin Fee Paid";
+                  statusClass = "bg-yellow-100 text-yellow-700";
+                  break;
+                case "membership_paid":
+                  statusText = "Membership Paid";
+                  statusClass = "bg-blue-100 text-blue-700";
+                  break;
+                case "fully_active":
+                  statusText = "Fully Active";
+                  statusClass = "bg-green-100 text-green-700";
+                  break;
+                default:
+                  statusText = "Free";
+                  statusClass = "bg-gray-100 text-gray-700";
+              }
+
+              return {
+                name: ref.name,
+                username: ref.username,
+                joinDate: new Date(ref.createdAt).toLocaleDateString(),
+                statusText,
+                statusClass,
+              };
+            });
+
+          setReferrals(recentReferrals);
+        }
+      } catch (err) {
+        console.error("Failed to fetch referrals", err);
+      }
+    }
+
+    fetchReferrals();
+  }, []);
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6">
@@ -33,14 +85,8 @@ export default function ReferralsOverview() {
                 <td className="px-4 py-2">{ref.username}</td>
                 <td className="px-4 py-2">{ref.joinDate}</td>
                 <td className="px-4 py-2">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      ref.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {ref.status}
+                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${ref.statusClass}`}>
+                    {ref.statusText}
                   </span>
                 </td>
               </tr>
@@ -48,6 +94,18 @@ export default function ReferralsOverview() {
           </tbody>
         </table>
       </div>
+
+      {/* Show More Button */}
+      {referrals.length > 0 && (
+        <div className="mt-4 text-right">
+          <Link
+            href="/user/referrals"
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            Show More →
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
