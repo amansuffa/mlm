@@ -1,8 +1,17 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function VerifyPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyContent />
+    </Suspense>
+  );
+}
+
+function VerifyContent() {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
   const reason = searchParams.get("reason");
