@@ -75,11 +75,11 @@ export default function ProfilePage() {
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-4 mt-6">
+              {/* <div className="flex gap-4 mt-6">
                 <button className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition">
                   Edit Profile
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         ) : (
