@@ -133,7 +133,7 @@ export default function page() {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen pt-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">

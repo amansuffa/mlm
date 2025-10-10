@@ -18,7 +18,7 @@ export default function KPISection() {
 
   const cards = [
     { label: "Direct Referrals", value: kpis.directReferrals, icon: <UserPlus />, color: "from-blue-500 to-blue-600" },
-    { label: "Indirect Referrals", value: kpis.indirectReferrals, icon: <Users />, color: "from-green-500 to-green-600" },
+    { label: "Pass Ups", value: kpis.indirectReferrals, icon: <Users />, color: "from-green-500 to-green-600" },
     { label: "Total Downline", value: kpis.totalDownline, icon: <Users />, color: "from-purple-500 to-purple-600" },
     { label: "Total Earnings", value: kpis.totalEarnings, icon: <DollarSign />, color: "from-orange-500 to-orange-600", extra: `Rank: ${kpis.currentRank}` },
   ];

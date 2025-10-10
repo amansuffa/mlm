@@ -47,12 +47,12 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       icon: <FaUserFriends />, 
       statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
     },
-    { 
-      href: "/user/withdrawal", 
-      label: "Withdrawal", 
-      icon: <FaWallet />, 
-      statuses: ["fully_active"] 
-    },
+    // { 
+    //   href: "/user/withdrawal", 
+    //   label: "Withdrawal", 
+    //   icon: <FaWallet />, 
+    //   statuses: ["fully_active"] 
+    // },
     { 
       href: "/transactions", 
       label: "Transactions", 

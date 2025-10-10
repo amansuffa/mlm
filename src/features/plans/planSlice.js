@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   plans: [],
-  loading: false,
-  error: null
+  loading: true,
+  error: null,
 };
 
 const planSlice = createSlice({
