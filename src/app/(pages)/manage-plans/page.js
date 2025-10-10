@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 
-export default function page() {
+export default function ManagePlansPage() {
   const [editingPlan, setEditingPlan] = useState(null);
   const [deletePlan, setDeletePlan] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

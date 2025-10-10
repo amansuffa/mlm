@@ -83,7 +83,7 @@ function DeleteConfirmation({
                 </h4>
                 <div className="mt-2 text-sm text-red-700">
                   <p>
-                    Plan: <strong className="font-semibold">"{plan?.name}"</strong>
+                    Plan: <strong className="font-semibold">{plan?.name}</strong>
                   </p>
                   <p className="mt-1">
                     Price: <strong className="font-semibold">₹{plan?.price}</strong>
