@@ -94,6 +94,30 @@ export default function PayToSponsorPage() {
     setIsModalOpen(true);
   };
 
+  const uploadImage = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'ml_default'); // if you're using Cloudinary
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Failed to upload image');
+      }
+
+      const data = await res.json();
+      return data.url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw new Error('Image upload failed');
+    }
+  };
+
   const handleSubmitPayment = async () => {
     if (!method || !image) {
       alert("Please upload screenshot and select payment method.");
@@ -102,7 +126,14 @@ export default function PayToSponsorPage() {
 
     setLoading(true);
     try {
-      const imageUrl = await fakeImageUpload(image);
+      let imageUrl;
+      try {
+        imageUrl = await uploadImage(image);
+      } catch (error) {
+        alert("Failed to upload image. Please try again.");
+        setLoading(false);
+        return;
+      }
 
       const res = await fetch("/api/transactions", {
         method: "POST",
@@ -119,8 +150,7 @@ export default function PayToSponsorPage() {
       });
 
       const data = await res.json();
-      setLoading(false);
-
+      
       if (data.success) {
         setPayments((prev) =>
           prev.map((p) =>
@@ -130,18 +160,16 @@ export default function PayToSponsorPage() {
         setIsModalOpen(false);
         alert("✅ Payment submitted successfully!");
       } else {
-        alert("❌ Failed to submit payment.");
+        alert("❌ " + (data.message || "Failed to submit payment."));
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error);
+      alert("Error submitting payment. Please try again.");
+    } finally {
       setLoading(false);
-      alert("Error submitting payment.");
     }
   };
 
-  const fakeImageUpload = async (file) => {
-    return new Promise((resolve) => setTimeout(() => resolve(URL.createObjectURL(file)), 800));
-  };
 
   if (statusLoading) {
     // ✅ Loader while checking status
