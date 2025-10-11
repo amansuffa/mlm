@@ -49,7 +49,7 @@ export default function TransactionDetailsPage() {
   if (!transaction) return <div className="p-6">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => router.push('/transactions')}

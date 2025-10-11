@@ -174,7 +174,7 @@ export default function PayToSponsorPage() {
   if (statusLoading) {
     // ✅ Loader while checking status
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-50">
+      <div className="min-h-screen flex justify-center items-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-purple-500 border-dashed rounded-full animate-spin mb-4"></div>
           <p className="text-gray-700 font-medium">Checking payment status...</p>
@@ -184,80 +184,92 @@ export default function PayToSponsorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
-          Pay to Sponsor / Admin
-        </h1>
-        <p className="text-gray-600 mb-8 text-center">
-          Complete your payments securely to continue your membership.
-        </p>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6">
+            <h1 className="text-3xl font-bold text-white">💳 Pay to Sponsor / Admin</h1>
+            <p className="text-purple-100 mt-2">Complete your payments securely to continue your membership</p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {payments.map((payment) => (
-            <div
-              key={payment.id}
-              className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-all flex flex-col justify-between"
-            >
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">
-                  {payment.title}
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Pay to:{" "}
-                  <span className="font-semibold text-gray-800">{payment.details.name}</span>
-                </p>
+          <div className="p-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {payments.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="bg-gray-50 rounded-xl p-6 border-2 border-gray-100 hover:border-purple-200 transition-all"
+                >
+                  <div className="mb-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-2xl font-bold text-gray-900">
+                        {payment.title}
+                      </h3>
+                      <span className="text-3xl font-bold text-purple-600">${payment.amount}</span>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-4 mb-4">
+                      <h4 className="font-semibold text-gray-800 mb-3">Payment Details</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Pay to:</span>
+                          <span className="font-medium text-gray-900">{payment.details.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Method:</span>
+                          <span className="font-medium text-gray-900">{payment.details.method}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Account:</span>
+                          <span className="font-medium text-gray-900">{payment.details.accountNumber}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Bank:</span>
+                          <span className="font-medium text-gray-900">{payment.details.bankName}</span>
+                        </div>
+                      </div>
+                    </div>
 
-                <div className="text-sm space-y-1 mb-4">
-                  <p>
-                    <span className="font-medium">Payment Method:</span> {payment.details.method}
-                  </p>
-                  <p>
-                    <span className="font-medium">Account Number:</span> {payment.details.accountNumber}
-                  </p>
-                  <p>
-                    <span className="font-medium">Bank / Service:</span> {payment.details.bankName}
-                  </p>
-                </div>
+                    <div className="flex justify-between items-center mb-6">
+                      <span className="text-sm font-medium text-gray-600">Status:</span>
+                      <span
+                        className={`px-4 py-2 rounded-full text-sm font-bold ${
+                          payment.status === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : payment.status === "Paid"
+                            ? "bg-green-100 text-green-800"
+                            : payment.status === "Rejected"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {payment.status.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="flex justify-between items-center mb-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      payment.status === "Pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : payment.status === "Paid"
-                        ? "bg-green-100 text-green-800"
-                        : payment.status === "Rejected"
-                        ? "bg-red-200 text-red-900"
-                        : "bg-red-100 text-red-800"
+                  <button
+                    disabled={payment.status === "Pending" || payment.status === "Paid"}
+                    onClick={() => handlePayNow(payment)}
+                    className={`w-full py-3 rounded-lg font-semibold transition-all ${
+                      payment.status === "Pending" || payment.status === "Paid"
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl"
                     }`}
                   >
-                    {payment.status}
-                  </span>
-                  <span className="text-2xl font-bold text-[#6E11B0]">${payment.amount}</span>
+                    {payment.status === "Pending"
+                      ? "⏳ Payment Pending"
+                      : payment.status === "Paid"
+                      ? "✅ Already Paid"
+                      : "💰 Pay Now"}
+                  </button>
                 </div>
-              </div>
-
-              <button
-                disabled={payment.status === "Pending" || payment.status === "Paid"}
-                onClick={() => handlePayNow(payment)}
-                className={`w-full py-2 rounded-lg text-white font-medium transition-colors duration-200 ${
-                  payment.status === "Pending" || payment.status === "Paid"
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-[#8200DB] hover:bg-[#6E11B0]"
-                }`}
-              >
-                {payment.status === "Pending"
-                  ? "Payment Pending"
-                  : payment.status === "Paid"
-                  ? "Already Paid"
-                  : "Pay Now"}
-              </button>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
+      </div>
 
-        {isModalOpen && selectedPayment && (
+      {isModalOpen && selectedPayment && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
               <button
@@ -329,7 +341,6 @@ export default function PayToSponsorPage() {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 }
