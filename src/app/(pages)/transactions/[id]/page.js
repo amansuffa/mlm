@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function TransactionDetailsPage() {
@@ -9,7 +9,10 @@ export default function TransactionDetailsPage() {
   const [imageOpen, setImageOpen] = useState(false);
   const { id } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
+  
+  const from = searchParams.get('from');
 
   useEffect(() => {
     fetchTransaction();
@@ -52,10 +55,16 @@ export default function TransactionDetailsPage() {
     <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         <button
-          onClick={() => router.push('/transactions')}
+          onClick={() => {
+            if (from === 'confirm-payments') {
+              router.push('/confirm-payments');
+            } else {
+              router.push('/transactions');
+            }
+          }}
           className="mb-6 flex items-center text-blue-600 hover:text-blue-800 font-medium"
         >
-          ← Back to Transactions
+          ← Back to {from === 'confirm-payments' ? 'Confirm Payments' : 'Transactions'}
         </button>
 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
