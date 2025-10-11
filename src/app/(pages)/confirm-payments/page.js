@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function ConfirmPaymentsPage() {
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -18,9 +18,23 @@ export default function ConfirmPaymentsPage() {
   const fetchPendingTransactions = async () => {
     if (!session?.user?.id) return;
     
-    const res = await fetch(`/api/transactions/pending?userId=${session.user.id}`);
-    const data = await res.json();
-    setTransactions(data);
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/transactions/pending?userId=${session.user.id}`);
+      const data = await res.json();
+      
+      if (data.error) {
+        console.error('API Error:', data.error);
+        setTransactions([]);
+      } else {
+        setTransactions(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setTransactions([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -35,7 +49,13 @@ export default function ConfirmPaymentsPage() {
           </div>
 
           <div className="p-8">
-            {transactions.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Loading Transactions...</h3>
+                <p className="text-gray-500">Please wait while we fetch pending transactions</p>
+              </div>
+            ) : !transactions || transactions.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🎉</div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">No Pending Transactions</h3>
@@ -56,7 +76,7 @@ export default function ConfirmPaymentsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map((tx) => (
+                    {transactions?.map((tx) => (
                       <tr key={tx._id} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
                         <td className="p-4">
                           <div className="text-gray-900 font-medium">
