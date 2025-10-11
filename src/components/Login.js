@@ -25,10 +25,10 @@ export default function Login() {
       } else {
         const session = await getSession();
         console.log("Session after login:", session?.user);
-          router.refresh()
 
-        // if (session?.user) {
-        // }
+        if (session?.user) {
+          router.push("/dashboard");
+        }
       }
     } catch (err) {
       setError("Check Credentials");
