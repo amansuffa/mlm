@@ -1,17 +1,33 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
-import { Transaction } from "@/models/Transaction";
-import { User } from "@/models/User";
-import { auth } from "@/auth";
+import {Transaction} from "@/models/Transaction";
+import {User} from "@/models/User";
 
-export async function PATCH(req, { params }) {
-  await connectDB();
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function GET(request,context) {
+  try {
+    await connectDB();
+        const { id } = await context.params;
 
-  const { id } = params;
-  const { action } = await req.json(); // "approve" or "reject"
-  const newStatus = action === "approve" ? "completed" : "rejected";
+    const transaction = await Transaction.findById(id)
+      .populate('fromUser', 'username')
+      .populate('toUser', 'username');
+    
+    if (!transaction) {
+      return NextResponse.json({ error: "Transaction not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(transaction);
+  } catch (error) {
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req, context) {
+  try {
+    await connectDB();
+        const { id } = await context.params;
+    const { action } = await req.json();
+    const newStatus = action === "approve" ? "completed" : "rejected";
 
   // Update transaction status
   const tx = await Transaction.findByIdAndUpdate(
@@ -46,5 +62,8 @@ export async function PATCH(req, { params }) {
 
   await user.save();
 
-  return NextResponse.json({ success: true, data: tx });
+    return NextResponse.json({ success: true, data: tx });
+  } catch (error) {
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
 }

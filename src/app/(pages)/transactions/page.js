@@ -1,13 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const currentUserId = session?.user?.id;
-  const currentUserRole = session?.user?.role; // assume 'admin' or 'member'
+  const currentUserRole = session?.user?.role;
+  const router = useRouter();
 
   async function fetchData() {
     const res = await fetch("/api/transactions");
@@ -38,6 +40,12 @@ export default function TransactionsPage() {
   };
 
   const canAct = (tx) => {
+    if (tx.type === "admin" && currentUserRole === "admin") return true;
+    if (tx.type === "membership" && currentUserId === tx.toUser?._id) return true;
+    return false;
+  };
+
+  const canViewDetails = (tx) => {
     if (tx.type === "admin" && currentUserRole === "admin") return true;
     if (tx.type === "membership" && currentUserId === tx.toUser?._id) return true;
     return false;
@@ -89,24 +97,14 @@ export default function TransactionsPage() {
                     {tx.status}
                   </span>
                 </td>
-                <td className="p-3 flex gap-2">
-                  {tx.status === "pending" && canAct(tx) && (
-                    <>
-                      <button
-                        onClick={() => handleAction(tx._id, "approve")}
-                        disabled={loading}
-                        className="px-3 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleAction(tx._id, "reject")}
-                        disabled={loading}
-                        className="px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600"
-                      >
-                        Reject
-                      </button>
-                    </>
+                <td className="p-3">
+                  {tx.status === "pending" && canViewDetails(tx) && (
+                    <button
+                      onClick={() => router.push(`/transactions/${tx._id}`)}
+                      className="px-3 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600"
+                    >
+                      View Details
+                    </button>
                   )}
                 </td>
               </tr>
