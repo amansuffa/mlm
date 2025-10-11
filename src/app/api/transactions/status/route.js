@@ -18,10 +18,9 @@ const { userId } = await req.json();
     return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
   }
 
-  const transactions = await Transaction.find({ fromUser: userId });
-console.log("Transactions found:", transactions);
-  const adminTx = transactions.find(tx => tx.type === "admin");
-  const membershipTx = transactions.find(tx => tx.type === "membership");
+  // Get latest transaction for each type
+  const adminTx = await Transaction.findOne({ fromUser: userId, type: "admin" }).sort({ createdAt: -1 });
+  const membershipTx = await Transaction.findOne({ fromUser: userId, type: "membership" }).sort({ createdAt: -1 });
 
   return NextResponse.json({
     adminStatus: adminTx ? adminTx.status : "none",

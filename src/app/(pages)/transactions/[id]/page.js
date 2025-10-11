@@ -33,7 +33,7 @@ export default function TransactionDetailsPage() {
 
     if (data.success) {
       alert(`Transaction ${action}ed successfully`);
-      router.push("/transactions");
+      await fetchTransaction(); // Refresh transaction data
     } else {
       alert("Failed to update transaction");
     }

@@ -42,14 +42,23 @@ export async function PATCH(req, context) {
   const user = await User.findById(tx.fromUser);
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  // Update user payment flags
-  if (tx.type === "admin") {
-    user.adminFeePaid = action === "approve";
-  } else if (tx.type === "membership") {
-    user.membershipFeePaid = action === "approve";
+  // Update user payment flags only if approved
+  if (action === "approve") {
+    if (tx.type === "admin") {
+      user.adminFeePaid = true;
+    } else if (tx.type === "membership") {
+      user.membershipFeePaid = true;
+    }
+  } else {
+    // If rejected, set payment flag to false
+    if (tx.type === "admin") {
+      user.adminFeePaid = false;
+    } else if (tx.type === "membership") {
+      user.membershipFeePaid = false;
+    }
   }
 
-  // Update user status based on both payments
+  // Update user status based on current payment status
   if (user.adminFeePaid && user.membershipFeePaid) {
     user.status = "fully_active";
   } else if (user.adminFeePaid) {
@@ -62,7 +71,10 @@ export async function PATCH(req, context) {
 
   await user.save();
 
-    return NextResponse.json({ success: true, data: tx });
+  // Update tx status for return
+  tx.status = newStatus;
+
+  return NextResponse.json({ success: true, data: tx });
   } catch (error) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
