@@ -3,36 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 export default function PayToSponsorPage() {
-  const [payments, setPayments] = useState([
-    {
-      id: 1,
-      title: "Admin Payment",
-      amount: 50,
-      type: "admin",
-      status: "Unpaid",
-      details: {
-        name: "Admin: Muhammad Ali",
-        receiverId: "68dfa192ad8eb3e6451b9274", // Admin _id
-        method: "Bank Transfer",
-        accountNumber: "1234-5678-91011",
-        bankName: "Habib Bank Limited (HBL)",
-      },
-    },
-    {
-      id: 2,
-      title: "Membership Payment",
-      amount: 500,
-      type: "membership",
-      status: "Unpaid",
-      details: {
-        name: "Sponsor: Sara Ahmed",
-        receiverId: "68dfa192ad8eb3e6451b9276", // Sponsor _id
-        method: "JazzCash / EasyPaisa",
-        accountNumber: "0300-1234567",
-        bankName: "Mobile Account",
-      },
-    },
-  ]);
+  const [payments, setPayments] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -48,37 +19,70 @@ export default function PayToSponsorPage() {
   useEffect(() => {
     if (!currentUserId) return;
 
-    async function fetchStatus() {
+    async function fetchData() {
       setStatusLoading(true);
       try {
-        const res = await fetch("/api/transactions/status", {
+        // Fetch payment details
+        const detailsRes = await fetch("/api/payment-details", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: currentUserId }),
+        });
+        
+        if (!detailsRes.ok) throw new Error("Failed to fetch payment details");
+        const detailsData = await detailsRes.json();
+
+        // Fetch payment status
+        const statusRes = await fetch("/api/transactions/status", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId: currentUserId }),
         });
 
-        if (!res.ok) throw new Error("Failed to fetch payment status");
+        if (!statusRes.ok) throw new Error("Failed to fetch payment status");
+        const statusData = await statusRes.json();
 
-        const data = await res.json();
-        console.log("✅ Status response:", data);
+        // Create payments array with fetched data
+        const paymentsData = [
+          {
+            id: 1,
+            title: "Admin Payment",
+            amount: detailsData.admin.amount,
+            type: "admin",
+            status: mapStatus(statusData.adminStatus),
+            details: {
+              name: detailsData.admin.name,
+              receiverId: detailsData.admin.id,
+              method: detailsData.admin.method,
+              accountNumber: detailsData.admin.accountNumber,
+              bankName: detailsData.admin.bankName,
+            },
+          },
+          {
+            id: 2,
+            title: "Membership Payment",
+            amount: detailsData.sponsor.amount,
+            type: "membership",
+            status: mapStatus(statusData.membershipStatus),
+            details: {
+              name: detailsData.sponsor.name,
+              receiverId: detailsData.sponsor.id,
+              method: detailsData.sponsor.method,
+              accountNumber: detailsData.sponsor.accountNumber,
+              bankName: detailsData.sponsor.bankName,
+            },
+          },
+        ];
 
-        if (data) {
-          setPayments((prev) =>
-            prev.map((p) => {
-              if (p.type === "admin") return { ...p, status: mapStatus(data.adminStatus) };
-              if (p.type === "membership") return { ...p, status: mapStatus(data.membershipStatus) };
-              return p;
-            })
-          );
-        }
+        setPayments(paymentsData);
       } catch (err) {
-        console.error("❌ Error fetching status:", err);
+        console.error("❌ Error fetching data:", err);
       } finally {
         setStatusLoading(false);
       }
     }
 
-    fetchStatus();
+    fetchData();
   }, [currentUserId]);
 
   const mapStatus = (status) => {
