@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function PayToSponsorPage() {
   const [payments, setPayments] = useState([
@@ -7,11 +8,11 @@ export default function PayToSponsorPage() {
       id: 1,
       title: "Admin Payment",
       amount: 50,
-      type: "Admin",
+      type: "admin",
       status: "Unpaid",
       details: {
         name: "Admin: Muhammad Ali",
-        receiverId: "6708a6f4c8b2b7d88c9c1111", // your admin _id here
+        receiverId: "68dfa192ad8eb3e6451b9274", // Admin _id
         method: "Bank Transfer",
         accountNumber: "1234-5678-91011",
         bankName: "Habib Bank Limited (HBL)",
@@ -21,11 +22,11 @@ export default function PayToSponsorPage() {
       id: 2,
       title: "Membership Payment",
       amount: 500,
-      type: "Sponsor",
+      type: "membership",
       status: "Unpaid",
       details: {
         name: "Sponsor: Sara Ahmed",
-        receiverId: "6708a6f4c8b2b7d88c9c2222", // sponsor _id here
+        receiverId: "68dfa192ad8eb3e6451b9276", // Sponsor _id
         method: "JazzCash / EasyPaisa",
         accountNumber: "0300-1234567",
         bankName: "Mobile Account",
@@ -39,9 +40,54 @@ export default function PayToSponsorPage() {
   const [note, setNote] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(true); // ✅ loader for status check
 
-  // Logged-in user ID (from session or context)
-  const currentUserId = "6708a6f4c8b2b7d88c9c9999"; // example, replace with real user
+  const { data: session } = useSession();
+  const currentUserId = session?.user?.id;
+
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    async function fetchStatus() {
+      setStatusLoading(true);
+      try {
+        const res = await fetch("/api/transactions/status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: currentUserId }),
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch payment status");
+
+        const data = await res.json();
+        console.log("✅ Status response:", data);
+
+        if (data) {
+          setPayments((prev) =>
+            prev.map((p) => {
+              if (p.type === "admin") return { ...p, status: mapStatus(data.adminStatus) };
+              if (p.type === "membership") return { ...p, status: mapStatus(data.membershipStatus) };
+              return p;
+            })
+          );
+        }
+      } catch (err) {
+        console.error("❌ Error fetching status:", err);
+      } finally {
+        setStatusLoading(false);
+      }
+    }
+
+    fetchStatus();
+  }, [currentUserId]);
+
+  const mapStatus = (status) => {
+    if (!status || status === "none") return "Unpaid";
+    if (status === "pending") return "Pending";
+    if (status === "completed") return "Paid";
+    if (status === "rejected") return "Rejected";
+    return "Unpaid";
+  };
 
   const handlePayNow = (payment) => {
     setSelectedPayment(payment);
@@ -55,46 +101,59 @@ export default function PayToSponsorPage() {
     }
 
     setLoading(true);
+    try {
+      const imageUrl = await fakeImageUpload(image);
 
-    // Image upload (mocked)
-    const imageUrl = await fakeImageUpload(image);
+      const res = await fetch("/api/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender: currentUserId,
+          receiver: selectedPayment.details.receiverId,
+          amount: selectedPayment.amount,
+          type: selectedPayment.type,
+          method,
+          note,
+          image: imageUrl,
+        }),
+      });
 
-    const res = await fetch("/api/transactions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sender: currentUserId,
-        receiver: selectedPayment.details.receiverId,
-        amount: selectedPayment.amount,
-        type: selectedPayment.type,
-        method,
-        note,
-        image: imageUrl,
-      }),
-    });
+      const data = await res.json();
+      setLoading(false);
 
-    const data = await res.json();
-    setLoading(false);
-
-    if (data.success) {
-      setPayments((prev) =>
-        prev.map((p) =>
-          p.id === selectedPayment.id ? { ...p, status: "Pending" } : p
-        )
-      );
-      setIsModalOpen(false);
-      alert("Payment submitted successfully!");
-    } else {
-      alert("Failed to submit payment.");
+      if (data.success) {
+        setPayments((prev) =>
+          prev.map((p) =>
+            p.id === selectedPayment.id ? { ...p, status: "Pending" } : p
+          )
+        );
+        setIsModalOpen(false);
+        alert("✅ Payment submitted successfully!");
+      } else {
+        alert("❌ Failed to submit payment.");
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      alert("Error submitting payment.");
     }
   };
 
-  // Mock image upload (replace with Cloudinary or API upload later)
   const fakeImageUpload = async (file) => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(URL.createObjectURL(file)), 1000);
-    });
+    return new Promise((resolve) => setTimeout(() => resolve(URL.createObjectURL(file)), 800));
   };
+
+  if (statusLoading) {
+    // ✅ Loader while checking status
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-50">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-purple-500 border-dashed rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-700 font-medium">Checking payment status...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-6">
@@ -118,23 +177,18 @@ export default function PayToSponsorPage() {
                 </h3>
                 <p className="text-gray-600 mb-4">
                   Pay to:{" "}
-                  <span className="font-semibold text-gray-800">
-                    {payment.details.name}
-                  </span>
+                  <span className="font-semibold text-gray-800">{payment.details.name}</span>
                 </p>
 
                 <div className="text-sm space-y-1 mb-4">
                   <p>
-                    <span className="font-medium">Payment Method:</span>{" "}
-                    {payment.details.method}
+                    <span className="font-medium">Payment Method:</span> {payment.details.method}
                   </p>
                   <p>
-                    <span className="font-medium">Account Number:</span>{" "}
-                    {payment.details.accountNumber}
+                    <span className="font-medium">Account Number:</span> {payment.details.accountNumber}
                   </p>
                   <p>
-                    <span className="font-medium">Bank / Service:</span>{" "}
-                    {payment.details.bankName}
+                    <span className="font-medium">Bank / Service:</span> {payment.details.bankName}
                   </p>
                 </div>
 
@@ -145,33 +199,36 @@ export default function PayToSponsorPage() {
                         ? "bg-yellow-100 text-yellow-800"
                         : payment.status === "Paid"
                         ? "bg-green-100 text-green-800"
+                        : payment.status === "Rejected"
+                        ? "bg-red-200 text-red-900"
                         : "bg-red-100 text-red-800"
                     }`}
                   >
                     {payment.status}
                   </span>
-                  <span className="text-2xl font-bold text-[#6E11B0]">
-                    ${payment.amount}
-                  </span>
+                  <span className="text-2xl font-bold text-[#6E11B0]">${payment.amount}</span>
                 </div>
               </div>
 
               <button
-                disabled={payment.status === "Pending"}
+                disabled={payment.status === "Pending" || payment.status === "Paid"}
                 onClick={() => handlePayNow(payment)}
                 className={`w-full py-2 rounded-lg text-white font-medium transition-colors duration-200 ${
-                  payment.status === "Pending"
+                  payment.status === "Pending" || payment.status === "Paid"
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#8200DB] hover:bg-[#6E11B0]"
                 }`}
               >
-                {payment.status === "Pending" ? "Payment Pending" : "Pay Now"}
+                {payment.status === "Pending"
+                  ? "Payment Pending"
+                  : payment.status === "Paid"
+                  ? "Already Paid"
+                  : "Pay Now"}
               </button>
             </div>
           ))}
         </div>
 
-        {/* Payment Modal */}
         {isModalOpen && selectedPayment && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
