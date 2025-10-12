@@ -11,7 +11,7 @@ export default function PayToSponsorPage() {
   const [note, setNote] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [statusLoading, setStatusLoading] = useState(true); // ✅ loader for status check
+  const [statusLoading, setStatusLoading] = useState(true); 
 
   const { data: session } = useSession();
   const currentUserId = session?.user?.id;
@@ -42,24 +42,10 @@ export default function PayToSponsorPage() {
         if (!statusRes.ok) throw new Error("Failed to fetch payment status");
         const statusData = await statusRes.json();
 
-        // Create payments array with fetched data
+        // Create payments array with only membership payment
         const paymentsData = [
           {
             id: 1,
-            title: "Admin Payment",
-            amount: detailsData.admin.amount,
-            type: "admin",
-            status: mapStatus(statusData.adminStatus),
-            details: {
-              name: detailsData.admin.name,
-              receiverId: detailsData.admin.id,
-              method: detailsData.admin.method,
-              accountNumber: detailsData.admin.accountNumber,
-              bankName: detailsData.admin.bankName,
-            },
-          },
-          {
-            id: 2,
             title: "Membership Payment",
             amount: detailsData.sponsor.amount,
             type: "membership",
@@ -176,11 +162,10 @@ export default function PayToSponsorPage() {
 
 
   if (statusLoading) {
-    // ✅ Loader while checking status
     return (
       <div className="min-h-screen flex justify-center items-center">
         <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-purple-500 border-dashed rounded-full animate-spin mb-4"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-700 font-medium">Checking payment status...</p>
         </div>
       </div>
@@ -192,12 +177,13 @@ export default function PayToSponsorPage() {
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6">
-            <h1 className="text-3xl font-bold text-white">💳 Pay to Sponsor / Admin</h1>
-            <p className="text-purple-100 mt-2">Complete your payments securely to continue your membership</p>
+            <h1 className="text-3xl font-bold text-white">💳 Pay to Sponsor</h1>
+            <p className="text-purple-100 mt-2">Complete your membership payment to your sponsor</p>
           </div>
 
           <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="flex justify-center">
+              <div className="w-full max-w-lg">
               {payments.map((payment) => (
                 <div
                   key={payment.id}
@@ -268,6 +254,7 @@ export default function PayToSponsorPage() {
                   </button>
                 </div>
               ))}
+              </div>
             </div>
           </div>
         </div>
