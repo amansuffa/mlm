@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
@@ -206,9 +207,11 @@ export default function CreateBlogPage() {
                 <label htmlFor="thumbnail-upload" className="cursor-pointer">
                   {thumbnailPreview ? (
                     <div className="space-y-3">
-                      <img
+                      <Image
                         src={thumbnailPreview}
                         alt="Thumbnail preview"
+                        width={400}
+                        height={128}
                         className="mx-auto h-32 w-full object-cover rounded-lg shadow-md"
                       />
                       <p className="text-sm text-green-600 font-medium">✓ Thumbnail Selected</p>
@@ -264,9 +267,11 @@ export default function CreateBlogPage() {
                     <div className="grid grid-cols-3 gap-3">
                       {uploadedImages.map((image, index) => (
                         <div key={index} className="relative group">
-                          <img
+                          <Image
                             src={image.preview}
                             alt={image.name}
+                            width={80}
+                            height={80}
                             className="w-full h-20 object-cover rounded-lg shadow-sm"
                           />
                           <button
