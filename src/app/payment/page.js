@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import axios from "axios";
 
 export default function AdminFeePage() {
@@ -225,7 +226,7 @@ export default function AdminFeePage() {
                   </h4>
                   <ol className="text-sm text-gray-600 space-y-1">
                     <li>1. Select your preferred cryptocurrency</li>
-                    <li>2. Click "Pay with Crypto" button</li>
+                    <li>2. Click &quot;Pay with Crypto&quot; button</li>
                     <li>3. Complete payment through NowPayments</li>
                     <li>4. Instant confirmation and activation</li>
                   </ol>
@@ -345,9 +346,11 @@ export default function AdminFeePage() {
                     >
                       {proofPreview ? (
                         <div className="space-y-3">
-                          <img
+                          <Image
                             src={proofPreview}
                             alt="Payment proof preview"
+                            width={96}
+                            height={96}
                             className="mx-auto h-24 object-cover rounded-lg shadow-sm"
                           />
                           <p className="text-sm text-green-600 font-medium">

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -9,13 +9,7 @@ export default function ConfirmPaymentsPage() {
   const { data: session } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchPendingTransactions();
-    }
-  }, [session]);
-
-  const fetchPendingTransactions = async () => {
+  const fetchPendingTransactions = useCallback(async () => {
     if (!session?.user?.id) return;
     
     setLoading(true);
@@ -35,7 +29,13 @@ export default function ConfirmPaymentsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session?.user?.id]);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchPendingTransactions();
+    }
+  }, [session?.user?.id, fetchPendingTransactions]);
 
 
 

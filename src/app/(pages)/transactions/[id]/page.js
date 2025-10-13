@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -14,15 +15,15 @@ export default function TransactionDetailsPage() {
   
   const from = searchParams.get('from');
 
-  useEffect(() => {
-    fetchTransaction();
-  }, [id]);
-
-  const fetchTransaction = async () => {
+  const fetchTransaction = useCallback(async () => {
     const res = await fetch(`/api/transactions/${id}`);
     const data = await res.json();
     setTransaction(data);
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchTransaction();
+  }, [fetchTransaction]);
 
   const handleAction = async (action) => {
     setLoading(true);
@@ -145,9 +146,11 @@ export default function TransactionDetailsPage() {
                 {transaction.image ? (
                   <div className="bg-gray-50 p-4 rounded-xl">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">Payment Proof</h3>
-                    <img
+                    <Image
                       src={transaction.image}
                       alt="Payment proof"
+                      width={400}
+                      height={256}
                       className="w-full h-64 object-cover rounded-lg border cursor-pointer hover:opacity-80"
                       onClick={() => setImageOpen(true)}
                     />
@@ -193,9 +196,11 @@ export default function TransactionDetailsPage() {
           onClick={() => setImageOpen(false)}
         >
           <div className="relative max-w-full max-h-full">
-            <img
+            <Image
               src={transaction.image}
               alt="Payment proof"
+              width={800}
+              height={600}
               className="max-w-full max-h-full object-contain rounded-lg"
             />
             <button

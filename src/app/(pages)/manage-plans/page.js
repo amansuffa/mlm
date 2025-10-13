@@ -4,7 +4,7 @@ import DeleteConfirmation from "@/components/DeleteConfirmation";
 import PlanModal from "@/components/PlanModal";
 import { setError, setLoading, setPlans } from "@/features/plans/planSlice";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 
@@ -20,7 +20,7 @@ export default function ManagePlansPage() {
 
 
   // Fetch plans from API
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     dispatch(setLoading()); 
 
     try {
@@ -30,11 +30,11 @@ export default function ManagePlansPage() {
     } catch (error) {
       dispatch(setError(error.message)); 
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchPlans();
-  }, []);
+  }, [fetchPlans]);
   console.log(plans);
 
   // Add New Plan

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { setError, setLoading, setPlans } from "@/features/plans/planSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,7 @@ export default function PackagesPage() {
   const dispatch = useDispatch();
 
   // Fetch plans from API
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     dispatch(setLoading());
 
     try {
@@ -21,11 +21,11 @@ export default function PackagesPage() {
     } catch (error) {
       dispatch(setError(error.message));
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchPlans();
-  }, []);
+  }, [fetchPlans]);
 
   const handlePlanSelect = async (plan) => {
     try {
