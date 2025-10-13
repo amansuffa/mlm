@@ -8,11 +8,11 @@ import { getSession } from "next-auth/react";
 
 export default function Login() {
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
     setError("");
 
     try {
@@ -21,17 +21,14 @@ export default function Login() {
 
       if (res?.error) {
         setError(res.error);
-        setLoading(false); 
+        setLoading(false);
       } else {
-   
-
-const session = await getSession();
-console.log("Session after login:", session?.user);
+        const session = await getSession();
+        console.log("Session after login:", session?.user);
 
         if (session?.user) {
           router.push("/dashboard");
-        }  
-
+        }
       }
     } catch (err) {
       setError("Check Credentials");

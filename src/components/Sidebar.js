@@ -3,16 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  FaClipboardList,
+  FaEnvelope,
+  FaExchangeAlt,
   FaTachometerAlt,
   FaUser,
-  FaUsers,
-  FaUserFriends,
-  FaWallet,
-  FaClipboardList,
-  FaExchangeAlt,
   FaUserCog,
-  FaEnvelope,
+  FaUserFriends,
+  FaUsers,
+  FaWallet,
 } from "react-icons/fa";
+import { FaHospitalUser } from "react-icons/fa";
+
+
 
 export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   const pathname = usePathname();
@@ -44,12 +47,12 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       icon: <FaUserFriends />, 
       statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
     },
-    { 
-      href: "/user/withdrawal", 
-      label: "Withdrawal", 
-      icon: <FaWallet />, 
-      statuses: ["fully_active"] 
-    },
+    // { 
+    //   href: "/user/withdrawal", 
+    //   label: "Withdrawal", 
+    //   icon: <FaWallet />, 
+    //   statuses: ["fully_active"] 
+    // },
     { 
       href: "/transactions", 
       label: "Transactions", 
@@ -75,6 +78,13 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       statuses: ["admin_fee_paid", "membership_paid", "fully_active"], 
       roles: ["admin"] // ✅ only visible to admins
     },
+    { 
+      href: "/manage-plans", 
+      label: "Manage Plans", 
+      icon: <FaHospitalUser />, 
+      statuses: ["admin_fee_paid", "membership_paid", "fully_active"], 
+      roles: ["admin"] // ✅ only visible to admins
+    }
   ];
 
   // ✅ Filter: first check status, then if link has a roles condition, check role too
