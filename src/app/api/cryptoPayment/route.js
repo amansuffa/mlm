@@ -13,8 +13,11 @@ export async function POST(req) {
         pay_currency: pay_currency,
         order_id: `admin-fee-${Date.now()}`,
         order_description: "Admin Fee Payment",
-        success_url: "https://yourwebsite.com/payment-success",
-        cancel_url: "https://yourwebsite.com/payment-failed",
+        ipn_callback_url:
+          "https://d37e97489ea0.ngrok-free.app/api/payment-callback",
+
+        success_url: "https://website.com/payment-success",
+        cancel_url: "https://website.com/payment-failed",
       },
       {
         headers: {
