@@ -12,14 +12,14 @@ export default function AdminFeePage() {
   const [paymentProof, setPaymentProof] = useState(null);
   const [proofPreview, setProofPreview] = useState("");
 
-  const adminFeeAmount = 50; // USD
+  const adminFeeAmount = 50;
 
   const cryptoOptions = [
-    { value: "btc", label: "Bitcoin (BTC)", icon: "₿" },
-    { value: "eth", label: "Ethereum (ETH)", icon: "Ξ" },
-    { value: "ltc", label: "Litecoin (LTC)", icon: "Ł" },
-    { value: "bch", label: "Bitcoin Cash (BCH)", icon: "Ƀ" },
-    { value: "xrp", label: "Ripple (XRP)", icon: "✕" },
+    {
+      value: "usdtbsc",
+      label: "USDT (BSC)",
+      icon: "💲",
+    },
   ];
 
   const handlePaymentProof = (e) => {
@@ -48,7 +48,7 @@ export default function AdminFeePage() {
 
       console.log(data);
       if (data.invoice_url) {
-        // window.location.href = data.invoice_url;
+        window.location.href = data.invoice_url;
       } else {
         alert("Error creating payment");
         console.log(data);
@@ -199,7 +199,7 @@ export default function AdminFeePage() {
                   <label className="block text-sm font-semibold text-gray-700">
                     Select Cryptocurrency
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3">
                     {cryptoOptions.map((crypto) => (
                       <button
                         key={crypto.value}
