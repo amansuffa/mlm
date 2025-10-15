@@ -1,18 +1,20 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import axios from "axios";
 
 export default function AdminFeePage() {
   const router = useRouter();
   const [selectedMethod, setSelectedMethod] = useState("crypto");
-  const [selectedCrypto, setSelectedCrypto] = useState("btc");
+  const [selectedCrypto, setSelectedCrypto] = useState(""); // Empty initially
   const [loading, setLoading] = useState(false);
   const [paymentProof, setPaymentProof] = useState(null);
   const [proofPreview, setProofPreview] = useState("");
 
   const adminFeeAmount = 50;
+  const { data: session } = useSession();
 
   const cryptoOptions = [
     {
@@ -21,6 +23,16 @@ export default function AdminFeePage() {
       icon: "💲",
     },
   ];
+
+  // Check if payment method is properly selected
+  const isPaymentReady = () => {
+    if (selectedMethod === "crypto") {
+      return selectedCrypto !== ""; // Crypto selected hona chahiye
+    } else if (selectedMethod === "manual") {
+      return paymentProof !== null; // Payment proof upload hona chahiye
+    }
+    return false;
+  };
 
   const handlePaymentProof = (e) => {
     const file = e.target.files[0];
@@ -33,12 +45,23 @@ export default function AdminFeePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!isPaymentReady()) {
+      alert("Please complete the payment setup before proceeding");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const paymentData = {
         amount: adminFeeAmount,
         pay_currency: selectedCrypto,
+        user: {
+          id: session?.user?.id,
+          name: session?.user?.name,
+          email: session?.user?.email,
+        },
       };
 
       console.log("Sending to backend:", paymentData);
@@ -50,7 +73,6 @@ export default function AdminFeePage() {
       if (data.invoice_url) {
         window.location.href = data.invoice_url;
       } else {
-        alert("Error creating payment");
         console.log(data);
       }
     } catch (error) {
@@ -197,7 +219,7 @@ export default function AdminFeePage() {
                 {/* Crypto Selection */}
                 <div className="space-y-3">
                   <label className="block text-sm font-semibold text-gray-700">
-                    Select Cryptocurrency
+                    Select Cryptocurrency *
                   </label>
                   <div className="grid grid-cols-1 gap-3">
                     {cryptoOptions.map((crypto) => (
@@ -218,6 +240,11 @@ export default function AdminFeePage() {
                       </button>
                     ))}
                   </div>
+                  {selectedMethod === "crypto" && !selectedCrypto && (
+                    <p className="text-red-500 text-xs mt-1">
+                      * Please select a cryptocurrency to continue
+                    </p>
+                  )}
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-4">
@@ -233,21 +260,23 @@ export default function AdminFeePage() {
                 </div>
 
                 {/* Selected Crypto Info */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Selected:</span>
-                    <span className="font-semibold text-[#8200DB]">
-                      {
-                        cryptoOptions.find((c) => c.value === selectedCrypto)
-                          ?.label
-                      }
-                    </span>
+                {selectedCrypto && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Selected:</span>
+                      <span className="font-semibold text-[#8200DB]">
+                        {
+                          cryptoOptions.find((c) => c.value === selectedCrypto)
+                            ?.label
+                        }
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-sm text-gray-600">Amount:</span>
+                      <span className="font-semibold">${adminFeeAmount} USD</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-sm text-gray-600">Amount:</span>
-                    <span className="font-semibold">${adminFeeAmount} USD</span>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -382,7 +411,7 @@ export default function AdminFeePage() {
                             </svg>
                           </div>
                           <p className="text-gray-600 font-medium">
-                            Upload Payment Proof
+                            Upload Payment Proof *
                           </p>
                           <p className="text-xs text-gray-500">
                             Bank receipt or transaction screenshot
@@ -391,6 +420,11 @@ export default function AdminFeePage() {
                       )}
                     </label>
                   </div>
+                  {selectedMethod === "manual" && !paymentProof && (
+                    <p className="text-red-500 text-xs text-center">
+                      * Please upload payment proof to continue
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -412,9 +446,7 @@ export default function AdminFeePage() {
 
                 <button
                   onClick={handleSubmit}
-                  disabled={
-                    loading || (selectedMethod === "manual" && !paymentProof)
-                  }
+                  disabled={loading || !isPaymentReady()}
                   className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
                   {loading ? (
@@ -441,12 +473,16 @@ export default function AdminFeePage() {
                       Processing...
                     </>
                   ) : selectedMethod === "crypto" ? (
-                    `Pay with ${
-                      cryptoOptions.find((c) => c.value === selectedCrypto)
-                        ?.label
-                    }`
+                    selectedCrypto ? (
+                      `Pay with ${
+                        cryptoOptions.find((c) => c.value === selectedCrypto)
+                          ?.label
+                      }`
+                    ) : (
+                      "Select Cryptocurrency"
+                    )
                   ) : (
-                    "Submit Payment Proof"
+                    paymentProof ? "Submit Payment Proof" : "Upload Payment Proof"
                   )}
                 </button>
               </div>
@@ -454,6 +490,12 @@ export default function AdminFeePage() {
               <p className="text-sm text-gray-500">
                 Secure payment • One-time fee • Instant activation
               </p>
+              
+              {!isPaymentReady() && (
+                <p className="text-red-500 text-sm font-medium">
+                  ⚠️ Please complete the payment setup above to continue
+                </p>
+              )}
             </div>
           </div>
         </div>
