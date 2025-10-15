@@ -555,13 +555,12 @@ export default function AdminFeePage() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <label className="block text-sm font-semibold text-gray-700">WISE Account Email *</label>
+                            <label className="block text-sm font-semibold text-gray-700">WISE Account Email</label>
                             <input
                               type="email"
                               name="wiseAccountEmail"
                               value={formData.wiseAccountEmail}
                               onChange={handleChange}
-                              required
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8200DB] focus:border-transparent text-sm"
                               placeholder="wise@account.com"
                             />
@@ -580,13 +579,12 @@ export default function AdminFeePage() {
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="block text-sm font-semibold text-gray-700">Transaction ID / Reference *</label>
+                          <label className="block text-sm font-semibold text-gray-700">Transaction ID / Reference</label>
                           <input
                             type="text"
                             name="transactionId"
                             value={formData.transactionId}
                             onChange={handleChange}
-                            required
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8200DB] focus:border-transparent text-sm"
                             placeholder="WISE/Interac transaction reference"
                           />
