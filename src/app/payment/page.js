@@ -8,7 +8,7 @@ import axios from "axios";
 export default function AdminFeePage() {
   const router = useRouter();
   const [selectedMethod, setSelectedMethod] = useState("crypto");
-  const [selectedCrypto, setSelectedCrypto] = useState(""); // Empty initially
+  const [selectedCrypto, setSelectedCrypto] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [paymentProof, setPaymentProof] = useState(null);
   const [proofPreview, setProofPreview] = useState("");
@@ -36,9 +36,9 @@ export default function AdminFeePage() {
   // Check if payment method is properly selected
   const isPaymentReady = () => {
     if (selectedMethod === "crypto") {
-      return selectedCrypto !== ""; // Crypto selected hona chahiye
+      return selectedCrypto !== ""; 
     } else if (selectedMethod === "manual") {
-      return paymentProof !== null; // Payment proof upload hona chahiye
+      return paymentProof !== null; 
     }
     return false;
   };
@@ -102,7 +102,7 @@ export default function AdminFeePage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <div className="text-center mb-8">
+        {/* <div className="text-center mb-8">
           <div className="bg-white rounded-2xl shadow-lg p-8 mx-4">
             <div className="w-20 h-20 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -142,7 +142,100 @@ export default function AdminFeePage() {
               Amount: ${adminFeeAmount} USD
             </div>
           </div>
+        </div> */}
+        <div className="text-center mb-12">
+      <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-xl p-8 mx-4 border border-gray-100 overflow-hidden">
+      
+        <div className="absolute top-0 left-0 w-32 h-32 bg-[#8200DB] opacity-5 rounded-full -translate-x-16 -translate-y-16"></div>
+        <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#6E11B0] opacity-5 rounded-full translate-x-20 translate-y-20"></div>
+        
+     
+        <div className="relative z-10">
+     
+          <div className="relative mb-6">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#8200DB] to-[#6E11B0] rounded-2xl flex items-center justify-center mx-auto shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-white to-transparent opacity-20 rounded-2xl"></div>
+              <svg 
+                className="w-12 h-12 text-white filter drop-shadow-lg" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth="1.5" 
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                ></path>
+              </svg>
+            </div>
+            
+            <div className="absolute top-2 right-1/4 w-3 h-3 bg-green-400 rounded-full animate-ping opacity-75"></div>
+            <div className="absolute bottom-4 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+          </div>
+
+          <div className="mb-6">
+            <h1 className="text-4xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+              First Step
+            </h1>
+            <p className="text-xl text-gray-600 mb-2 max-w-2xl mx-auto leading-relaxed">
+              Final step to activate your account and access all features
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-full mx-auto mt-4"></div>
+          </div>
+
+          <div className="inline-flex items-center justify-center space-x-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-300 group hover:border-[#8200DB]/20">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-md">
+                <svg 
+                  className="w-5 h-5 text-white" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth="2" 
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                  ></path>
+                </svg>
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Admin Fee</p>
+                <p className="text-2xl font-bold text-gray-900 group-hover:text-[#8200DB] transition-colors duration-300">
+                  {adminFeeAmount} USD
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-1 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+              <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
+              </svg>
+              <span className="text-xs font-semibold text-green-700">Secure</span>
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-center items-center space-x-2 text-sm text-gray-500">
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-[#8200DB] rounded-full"></div>
+              <span>Select Method</span>
+            </div>
+            <div className="w-8 h-0.5 bg-gray-300"></div>
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+              <span>Make Payment</span>
+            </div>
+            <div className="w-8 h-0.5 bg-gray-300"></div>
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+              <span>Get Access</span>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
 
         {/* Progress Steps */}
         <div className="flex justify-center mb-12">
