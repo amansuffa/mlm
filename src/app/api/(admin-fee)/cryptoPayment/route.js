@@ -34,7 +34,7 @@ export async function POST(req) {
     console.log("Invoice Data:", invoiceData);
 
     const existingPayment = await Payment.findOne({
-      user_id: user.id,
+      user_id: user.id.toString(),
       status: "pending",
     });
 
