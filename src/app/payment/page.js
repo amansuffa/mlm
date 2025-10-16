@@ -81,6 +81,7 @@ export default function AdminFeePage() {
       };
 
       console.log("Sending to backend:", paymentData);
+      console.log("Sending to backend:", paymentData);
 
       const res = await axios.post("/api/cryptoPayment", paymentData);
       const data = res.data;
