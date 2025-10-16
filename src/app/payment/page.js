@@ -397,7 +397,7 @@ export default function AdminFeePage() {
                     <h4 className="font-semibold text-gray-900 mb-2">How it works:</h4>
                     <ol className="text-sm text-gray-600 space-y-1">
                       <li>1. Select your preferred cryptocurrency</li>
-                      <li>2. Click "Pay with Crypto" button</li>
+                      <li>2. Click &quot;Pay with Crypto&quot; button</li>
                       <li>3. Complete payment through NowPayments</li>
                       <li>4. Instant confirmation and activation</li>
                     </ol>
