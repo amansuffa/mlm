@@ -87,7 +87,7 @@ export default function AdminFeePage() {
 
       console.log(data);
       if (data.invoice_url) {
-        // window.location.href = data.invoice_url;
+        window.location.href = data.invoice_url;
       } else {
         console.log(data);
       }
