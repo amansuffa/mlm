@@ -18,10 +18,10 @@ export default function CreateBlogPage() {
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
   const [uploadedVideos, setUploadedVideos] = useState([]);
+  const [videoLinks, setVideoLinks] = useState([""]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Handle Thumbnail Upload
   const handleThumbnailUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -31,7 +31,6 @@ export default function CreateBlogPage() {
     }
   };
 
-  // Handle Multiple Images Upload
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map(file => ({
@@ -51,6 +50,21 @@ export default function CreateBlogPage() {
       type: file.type
     }));
     setUploadedVideos(prev => [...prev, ...newVideos]);
+  };
+
+  // Handle Video Links
+  const addVideoLink = () => {
+    setVideoLinks(prev => [...prev, ""]);
+  };
+
+  const updateVideoLink = (index, value) => {
+    const newLinks = [...videoLinks];
+    newLinks[index] = value;
+    setVideoLinks(newLinks);
+  };
+
+  const removeVideoLink = (index) => {
+    setVideoLinks(prev => prev.filter((_, i) => i !== index));
   };
 
   // Remove Image
@@ -75,6 +89,24 @@ export default function CreateBlogPage() {
     setContent(prev => prev + `\n${markdownVideo}\n`);
   };
 
+  // Insert Video Link into Editor
+  const insertVideoLinkToEditor = (videoUrl) => {
+    if (videoUrl.includes("youtube") || videoUrl.includes("youtu.be")) {
+      const videoId = videoUrl.includes("youtube.com") 
+        ? videoUrl.split('v=')[1]?.split('&')[0]
+        : videoUrl.split('youtu.be/')[1];
+      const embedCode = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+      setContent(prev => prev + `\n${embedCode}\n`);
+    } else if (videoUrl.includes("vimeo")) {
+      const videoId = videoUrl.split('vimeo.com/')[1];
+      const embedCode = `<iframe src="https://player.vimeo.com/video/${videoId}" width="560" height="315" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+      setContent(prev => prev + `\n${embedCode}\n`);
+    } else {
+      const markdownLink = `[Video Link](${videoUrl})`;
+      setContent(prev => prev + `\n${markdownLink}\n`);
+    }
+  };
+
   async function handleCreate(e) {
     e.preventDefault();
     setLoading(true);
@@ -89,6 +121,13 @@ export default function CreateBlogPage() {
       formData.append("tags", tags);
       formData.append("keywords", keywords);
       formData.append("category", category);
+      
+      // Add video links to form data
+      videoLinks.forEach((link, index) => {
+        if (link.trim()) {
+          formData.append(`videoLinks[${index}]`, link);
+        }
+      });
       
       if (thumbnail) {
         formData.append("thumbnail", thumbnail);
@@ -106,7 +145,7 @@ export default function CreateBlogPage() {
 
       const res = await fetch("/api/blogs", {
         method: "POST",
-        body: formData, // Use FormData instead of JSON
+        body: formData,
       });
 
       const data = await res.json();
@@ -233,13 +272,13 @@ export default function CreateBlogPage() {
           </div>
 
           {/* Media Upload Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             {/* Multiple Images Upload */}
             <div className="space-y-3">
               <label className="block text-lg font-semibold text-gray-800">
-                Upload Images for Content
+                Upload Images
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-[#8200DB] transition-all duration-300">
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-[#8200DB] transition-all duration-300 h-full">
                 <input
                   type="file"
                   accept="image/*"
@@ -255,8 +294,8 @@ export default function CreateBlogPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                       </svg>
                     </div>
-                    <p className="text-gray-600">Upload multiple images</p>
-                    <p className="text-xs text-gray-500">PNG, JPG, WEBP up to 5MB</p>
+                    <p className="text-gray-600">Upload Images</p>
+                    <p className="text-xs text-gray-500">PNG, JPG, WEBP</p>
                   </div>
                 </label>
                 
@@ -264,7 +303,7 @@ export default function CreateBlogPage() {
                 {uploadedImages.length > 0 && (
                   <div className="mt-4 space-y-3">
                     <p className="text-sm font-medium text-gray-700">Uploaded Images:</p>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                       {uploadedImages.map((image, index) => (
                         <div key={index} className="relative group">
                           <Image
@@ -272,7 +311,7 @@ export default function CreateBlogPage() {
                             alt={image.name}
                             width={80}
                             height={80}
-                            className="w-full h-20 object-cover rounded-lg shadow-sm"
+                            className="w-full h-16 object-cover rounded-lg shadow-sm"
                           />
                           <button
                             type="button"
@@ -299,9 +338,9 @@ export default function CreateBlogPage() {
             {/* Video Upload */}
             <div className="space-y-3">
               <label className="block text-lg font-semibold text-gray-800">
-                Upload Videos for Content
+                Upload Videos
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-[#8200DB] transition-all duration-300">
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-[#8200DB] transition-all duration-300 h-full">
                 <input
                   type="file"
                   accept="video/*"
@@ -317,8 +356,8 @@ export default function CreateBlogPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                       </svg>
                     </div>
-                    <p className="text-gray-600">Upload video files</p>
-                    <p className="text-xs text-gray-500">MP4, MOV up to 50MB</p>
+                    <p className="text-gray-600">Upload Videos</p>
+                    <p className="text-xs text-gray-500">MP4, MOV files</p>
                   </div>
                 </label>
                 
@@ -351,10 +390,59 @@ export default function CreateBlogPage() {
                 )}
               </div>
             </div>
+
+            {/* Video Links */}
+            <div className="space-y-3">
+              <label className="block text-lg font-semibold text-gray-800">
+                Video Links
+              </label>
+              <div className="border-2 border-gray-200 rounded-xl p-6 h-full">
+                <div className="space-y-3">
+                  {videoLinks.map((link, index) => (
+                    <div key={index} className="flex space-x-2">
+                      <input
+                        type="url"
+                        value={link}
+                        onChange={(e) => updateVideoLink(index, e.target.value)}
+                        placeholder="https://youtube.com/watch?v=..."
+                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8200DB]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => insertVideoLinkToEditor(link)}
+                        disabled={!link.trim()}
+                        className="bg-[#8200DB] text-white px-3 py-2 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Insert
+                      </button>
+                      {videoLinks.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeVideoLink(index)}
+                          className="bg-red-500 text-white px-3 py-2 rounded-lg text-sm"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addVideoLink}
+                    className="w-full border-2 border-dashed border-gray-300 rounded-lg py-2 text-gray-600 hover:border-[#8200DB] hover:text-[#8200DB] transition-all duration-300"
+                  >
+                    + Add Another Video Link
+                  </button>
+                </div>
+                <div className="mt-3 text-xs text-gray-500">
+                  <p>Supported: YouTube, Vimeo, and direct video links</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* SEO & Organization Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Tags */}
             <div className="space-y-3">
               <label className="block text-lg font-semibold text-gray-800">
