@@ -3,6 +3,7 @@ import { Blog } from "@/models/Blog";
 import { User } from "@/models/User";
 import { auth } from "@/auth";
 import { connectDB } from "@/lib/mongodb";
+import { uploadToCloudinary } from "@/lib/uploadCloudinary";
 
 import { hasPermission } from "@/app/actions/hasPermission";
 
@@ -82,8 +83,14 @@ export async function POST(request) {
       );
     }
 
-    // Get FormData
-    const formData = await request.formData();
+    // Get FormData — wrap in try/catch because body may be locked/consumed
+    let formData;
+    try {
+      formData = await request.formData();
+    } catch (err) {
+      console.error('Error parsing formData (maybe body was consumed or locked):', err);
+      return NextResponse.json({ error: 'Invalid request body or body already consumed' }, { status: 400 });
+    }
 
     const title = formData.get("title");
     const content = formData.get("content");
@@ -92,27 +99,74 @@ export async function POST(request) {
     const keywords = formData.get("keywords");
     const category = formData.get("category");
 
-    // Handle thumbnail upload
+    // File size limits (bytes)
+    const MAX_THUMBNAIL_SIZE = 2 * 1024 * 1024; // 2 MB
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB per image
+    const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 25 MB per video
+
+    // Handle thumbnail upload with size check
     let thumbnailUrl = null;
     const thumbnail = formData.get("thumbnail");
     if (thumbnail && typeof thumbnail === "object") {
-      thumbnailUrl = await uploadToCloudinary(thumbnail, "blog-thumbnails");
+      if (typeof thumbnail.size === "number" && thumbnail.size > MAX_THUMBNAIL_SIZE) {
+        return NextResponse.json({ error: `Thumbnail too large. Maximum ${Math.round(MAX_THUMBNAIL_SIZE / (1024*1024))} MB allowed.` }, { status: 413 });
+      }
+      try {
+        thumbnailUrl = await uploadToCloudinary(thumbnail, "blog-thumbnails");
+        console.log("Cloudinary thumbnail URL:", thumbnailUrl);
+      } catch (err) {
+        console.error("Cloudinary upload error (thumbnail):", err);
+        if (err?.http_code === 499 || err?.name === "TimeoutError") {
+          return NextResponse.json({ error: "Thumbnail upload timed out. Please try again with a smaller file or a faster connection." }, { status: 504 });
+        }
+        return NextResponse.json({ error: "Failed to upload thumbnail" }, { status: 500 });
+      }
     }
 
     // Handle multiple images
     const images = [];
     const imagesFiles = formData.getAll("images");
+    // Check image sizes first
     for (const img of imagesFiles) {
-      const url = await uploadToCloudinary(img, "blog-images");
-      images.push(url);
+      if (img && typeof img === "object" && typeof img.size === "number" && img.size > MAX_IMAGE_SIZE) {
+        return NextResponse.json({ error: `One of the images is too large. Maximum ${Math.round(MAX_IMAGE_SIZE / (1024*1024))} MB per image.` }, { status: 413 });
+      }
+    }
+    for (const img of imagesFiles) {
+      try {
+        const url = await uploadToCloudinary(img, "blog-images");
+        console.log("Cloudinary image URL:", url);
+        images.push(url);
+      } catch (err) {
+        console.error("Cloudinary upload error (image):", err);
+        if (err?.http_code === 499 || err?.name === "TimeoutError") {
+          return NextResponse.json({ error: "Image upload timed out. Please try smaller images or a faster connection." }, { status: 504 });
+        }
+        return NextResponse.json({ error: "Failed to upload one of the images" }, { status: 500 });
+      }
     }
 
     // Handle multiple videos
     const videos = [];
     const videosFiles = formData.getAll("videos");
+    // Check video sizes first
     for (const vid of videosFiles) {
-      const url = await uploadToCloudinary(vid, "blog-videos");
-      videos.push(url);
+      if (vid && typeof vid === "object" && typeof vid.size === "number" && vid.size > MAX_VIDEO_SIZE) {
+        return NextResponse.json({ error: `One of the videos is too large. Maximum ${Math.round(MAX_VIDEO_SIZE / (1024*1024))} MB per video.` }, { status: 413 });
+      }
+    }
+    for (const vid of videosFiles) {
+      try {
+        const url = await uploadToCloudinary(vid, "blog-videos");
+        console.log("Cloudinary video URL:", url);
+        videos.push(url);
+      } catch (err) {
+        console.error("Cloudinary upload error (video):", err);
+        if (err?.http_code === 499 || err?.name === "TimeoutError") {
+          return NextResponse.json({ error: "Video upload timed out. Please try a smaller video or a faster connection." }, { status: 504 });
+        }
+        return NextResponse.json({ error: "Failed to upload one of the videos" }, { status: 500 });
+      }
     }
 
     // Handle video links

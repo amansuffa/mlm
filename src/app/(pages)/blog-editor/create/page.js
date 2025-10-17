@@ -3,6 +3,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import axios from "axios";
+import ToastProvider from "@/components/ToastProvider";
+import { toast } from 'react-toastify';
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
@@ -21,6 +24,11 @@ export default function CreateBlogPage() {
   const [videoLinks, setVideoLinks] = useState([""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Client-side file size limits (match server-side limits)
+  const MAX_THUMBNAIL_SIZE = 2 * 1024 * 1024; // 2MB
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+  const MAX_VIDEO_SIZE = 15 * 1024 * 1024; // 15MB
 
   const handleThumbnailUpload = (e) => {
     const file = e.target.files[0];
@@ -129,43 +137,87 @@ export default function CreateBlogPage() {
         }
       });
 
+      // Client-side size checks to avoid large uploads
       if (thumbnail) {
+        if (thumbnail.size > MAX_THUMBNAIL_SIZE) {
+          const msg = "Thumbnail exceeds maximum size of 2MB.";
+          console.warn(msg);
+          setError(msg);
+          toast.error(msg);
+          setLoading(false);
+          return;
+        }
         formData.append("thumbnail", thumbnail);
       }
 
-      // Append multiple images
-      uploadedImages.forEach((image, index) => {
-        formData.append(`images`, image.file);
-      });
-
-      // Append multiple videos
-      uploadedVideos.forEach((video, index) => {
-        formData.append(`videos`, video.file);
-      });
-
-      console.log("🧾 Form Data Preview:");
-      for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(
-            `${key}: [File] name=${value.name}, size=${value.size} bytes, type=${value.type}`
-          );
-        } else {
-          console.log(`${key}:`, value);
+      // Append multiple images with size checks
+      for (const image of uploadedImages) {
+        if (image.file && image.file.size > MAX_IMAGE_SIZE) {
+          const msg = `Image "${image.name}" exceeds maximum size of 5MB.`;
+          console.warn(msg);
+          setError(msg);
+          toast.error(msg);
+          setLoading(false);
+          return;
         }
+        formData.append(`images`, image.file);
       }
 
-      // const res = await fetch("/api/blogs", {
-      //   method: "POST",
-      //   body: formData,
-      // });
+      // Append multiple videos with size checks
+      for (const video of uploadedVideos) {
+        if (video.file && video.file.size > MAX_VIDEO_SIZE) {
+          const msg = `Video "${video.name}" exceeds maximum size of 15MB.`;
+          console.warn(msg);
+          setError(msg);
+          toast.error(msg);
+          setLoading(false);
+          return;
+        }
+        formData.append(`videos`, video.file);
+      }
 
-      // const data = await res.json();
-
-      // if (!res.ok) {
-      //   setError(data.error || "Failed to create blog");
-      //   setLoading(false);
-      //   return;
-      // }
+      try {
+        const response = await axios.post("/api/blogs", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 120000, // 2 minutes for large uploads
+        });
+        console.log("API Response:", response.data);
+        // Show success toast and redirect shortly after
+        toast.success(response.data?.message || "Blog created successfully");
+        setLoading(false);
+        setTimeout(() => router.push("/blog-editor"), 1500);
+        return;
+      } catch (axiosError) {
+        // Axios error handling
+        console.error("Error creating blog:", axiosError);
+        if (axiosError.response) {
+          // Server responded with a status outside 2xx
+          const respData = axiosError.response.data;
+          // If server returned HTML (Next.js error page), respData will be string starting with '<'
+          if (typeof respData === "string" && respData.trim().startsWith("<")) {
+            console.error("Server returned HTML error page:", respData.slice(0, 500));
+            setError("Server error occurred. Please try again later.");
+            toast.error("Server error occurred. Please try again later.");
+          } else if (respData && respData.error) {
+            setError(respData.error);
+            toast.error(respData.error);
+          } else {
+            setError("Failed to create blog. Server returned an error.");
+            toast.error("Failed to create blog. Server returned an error.");
+          }
+        } else if (axiosError.request) {
+          // Request made but no response
+          console.error("No response received:", axiosError.request);
+          setError("No response from server. Check your connection and try again.");
+          toast.error("No response from server. Check your connection and try again.");
+        } else {
+          // Something else happened
+          setError(axiosError.message || "Something went wrong. Please try again.");
+          toast.error(axiosError.message || "Something went wrong. Please try again.");
+        }
+        setLoading(false);
+        return;
+      }
 
       // router.push("/blog-editor");
     } catch (err) {
@@ -178,6 +230,7 @@ export default function CreateBlogPage() {
 
   return (
     <div className="min-h-screen py-8">
+      <ToastProvider />
       <div className="max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden">
         {/* Professional Header */}
         <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">

@@ -1,0 +1,87 @@
+// Styling/style.scss
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+.Toastify__toast {
+  width: 320px !important;
+  border-radius: 12px !important;
+  font-family: 'Montserrat', sans-serif !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.my-custom-toast {
+  background-color: #5E50BF !important;
+  color: white !important;
+  font-family: 'Montserrat', sans-serif;
+  border-left: 4px solid #ffffff !important;
+  
+  &.Toastify__toast--success {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  }
+  
+  &.Toastify__toast--error {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+  }
+  
+  &.Toastify__toast--warning {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  }
+  
+  &.Toastify__toast--info {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%) !important;
+  }
+}
+
+// Success icon customization
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #fff !important;
+}
+
+// Close button styling
+.Toastify__close-button {
+  margin-top: 12px !important;
+  
+  svg {
+    width: 16px !important;
+    height: 16px !important;
+    fill: #FAFAFA !important;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// Progress bar customization
+.my-custom-progress {
+  background: rgba(255, 255, 255, 0.3) !important;
+  
+  &.Toastify__progress-bar--success {
+    background: linear-gradient(90deg, #ffffff, #A7F3D0) !important;
+  }
+  
+  &.Toastify__progress-bar--error {
+    background: linear-gradient(90deg, #ffffff, #FECACA) !important;
+  }
+  
+  &.Toastify__progress-bar--warning {
+    background: linear-gradient(90deg, #ffffff, #FDE68A) !important;
+  }
+  
+  &.Toastify__progress-bar--info {
+    background: linear-gradient(90deg, #ffffff, #93C5FD) !important;
+  }
+}
+
+// Toast body text
+.Toastify__toast-body {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+// Animation customization
+.Toastify__toast-container {
+  z-index: 9999 !important;
+}
