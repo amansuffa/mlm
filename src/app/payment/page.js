@@ -59,6 +59,31 @@ export default function AdminFeePage() {
     });
   };
 
+  const uploadImage = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "ml_default");
+      // formData.append("type", "payment");
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to upload image");
+      }
+
+      const data = await res.json();
+      return data.url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw new Error("Image upload failed");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -70,7 +95,40 @@ export default function AdminFeePage() {
     setLoading(true);
 
     try {
-      const paymentData = {
+      if (selectedMethod === "manual" && paymentProof) {
+             let imageUrl;
+      try {
+        imageUrl = await uploadImage(paymentProof);
+      } catch (error) {
+        alert("Failed to upload image. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/manual-transaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender: session?.user?.id,
+          amount: adminFeeAmount,
+          type: "admin",
+          image: imageUrl,
+          method: "wise",
+note:formData.additionalDetails
+        }),
+      });
+
+      const res = await response.json();
+
+      console.log(res);
+      if (res.success) {
+        window.location.href = `${window.location.origin}/success`;
+      } else {
+        console.log(res);
+      }
+      }
+      if( selectedMethod === "crypto" ){
+          const paymentData = {
         amount: adminFeeAmount,
         pay_currency: selectedCrypto,
         user: {
@@ -80,7 +138,6 @@ export default function AdminFeePage() {
         },
       };
 
-      console.log("Sending to backend:", paymentData);
       console.log("Sending to backend:", paymentData);
 
       const res = await axios.post("/api/cryptoPayment", paymentData);
@@ -92,6 +149,8 @@ export default function AdminFeePage() {
       } else {
         console.log(data);
       }
+      }
+    
     } catch (error) {
       console.error("Payment error:", error.response?.data || error.message);
     } finally {
