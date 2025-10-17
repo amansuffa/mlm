@@ -605,7 +605,7 @@ export default function CreateBlogPage() {
                 value={content}
                 onChange={setContent}
                 height={500}
-                preview="edit"
+                preview="live"
               />
             </div>
             <div className="flex items-center space-x-4 text-sm text-gray-500">
