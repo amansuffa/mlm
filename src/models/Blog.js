@@ -39,7 +39,7 @@ const blogSchema = new mongoose.Schema(
       default: [],
     },
 
-    // 🖼️ Media
+    // Media
     thumbnail: {
       type: String, 
       default: "",
