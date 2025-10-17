@@ -18,7 +18,7 @@ export default function CreateBlogPage() {
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
   const [uploadedVideos, setUploadedVideos] = useState([]);
-  const [videoLinks, setVideoLinks] = useState([""]); 
+  const [videoLinks, setVideoLinks] = useState([""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -33,28 +33,28 @@ export default function CreateBlogPage() {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    const newImages = files.map(file => ({
+    const newImages = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
-      name: file.name
+      name: file.name,
     }));
-    setUploadedImages(prev => [...prev, ...newImages]);
+    setUploadedImages((prev) => [...prev, ...newImages]);
   };
 
   // Handle Video Upload
   const handleVideoUpload = (e) => {
     const files = Array.from(e.target.files);
-    const newVideos = files.map(file => ({
+    const newVideos = files.map((file) => ({
       file,
       name: file.name,
-      type: file.type
+      type: file.type,
     }));
-    setUploadedVideos(prev => [...prev, ...newVideos]);
+    setUploadedVideos((prev) => [...prev, ...newVideos]);
   };
 
   // Handle Video Links
   const addVideoLink = () => {
-    setVideoLinks(prev => [...prev, ""]);
+    setVideoLinks((prev) => [...prev, ""]);
   };
 
   const updateVideoLink = (index, value) => {
@@ -64,46 +64,46 @@ export default function CreateBlogPage() {
   };
 
   const removeVideoLink = (index) => {
-    setVideoLinks(prev => prev.filter((_, i) => i !== index));
+    setVideoLinks((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Remove Image
   const removeImage = (index) => {
-    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Remove Video
   const removeVideo = (index) => {
-    setUploadedVideos(prev => prev.filter((_, i) => i !== index));
+    setUploadedVideos((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Insert Image into Editor
   const insertImageToEditor = (imageUrl) => {
     const markdownImage = `![Image](${imageUrl})`;
-    setContent(prev => prev + `\n${markdownImage}\n`);
+    setContent((prev) => prev + `\n${markdownImage}\n`);
   };
 
   // Insert Video into Editor
   const insertVideoToEditor = (videoUrl) => {
     const markdownVideo = `[Video](${videoUrl})`;
-    setContent(prev => prev + `\n${markdownVideo}\n`);
+    setContent((prev) => prev + `\n${markdownVideo}\n`);
   };
 
   // Insert Video Link into Editor
   const insertVideoLinkToEditor = (videoUrl) => {
     if (videoUrl.includes("youtube") || videoUrl.includes("youtu.be")) {
-      const videoId = videoUrl.includes("youtube.com") 
-        ? videoUrl.split('v=')[1]?.split('&')[0]
-        : videoUrl.split('youtu.be/')[1];
+      const videoId = videoUrl.includes("youtube.com")
+        ? videoUrl.split("v=")[1]?.split("&")[0]
+        : videoUrl.split("youtu.be/")[1];
       const embedCode = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
-      setContent(prev => prev + `\n${embedCode}\n`);
+      setContent((prev) => prev + `\n${embedCode}\n`);
     } else if (videoUrl.includes("vimeo")) {
-      const videoId = videoUrl.split('vimeo.com/')[1];
+      const videoId = videoUrl.split("vimeo.com/")[1];
       const embedCode = `<iframe src="https://player.vimeo.com/video/${videoId}" width="560" height="315" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-      setContent(prev => prev + `\n${embedCode}\n`);
+      setContent((prev) => prev + `\n${embedCode}\n`);
     } else {
       const markdownLink = `[Video Link](${videoUrl})`;
-      setContent(prev => prev + `\n${markdownLink}\n`);
+      setContent((prev) => prev + `\n${markdownLink}\n`);
     }
   };
 
@@ -121,14 +121,14 @@ export default function CreateBlogPage() {
       formData.append("tags", tags);
       formData.append("keywords", keywords);
       formData.append("category", category);
-      
+
       // Add video links to form data
       videoLinks.forEach((link, index) => {
         if (link.trim()) {
           formData.append(`videoLinks[${index}]`, link);
         }
       });
-      
+
       if (thumbnail) {
         formData.append("thumbnail", thumbnail);
       }
@@ -143,20 +143,31 @@ export default function CreateBlogPage() {
         formData.append(`videos`, video.file);
       });
 
-      const res = await fetch("/api/blogs", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Failed to create blog");
-        setLoading(false);
-        return;
+      console.log("🧾 Form Data Preview:");
+      for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(
+            `${key}: [File] name=${value.name}, size=${value.size} bytes, type=${value.type}`
+          );
+        } else {
+          console.log(`${key}:`, value);
+        }
       }
 
-      router.push("/blog-editor");
+      // const res = await fetch("/api/blogs", {
+      //   method: "POST",
+      //   body: formData,
+      // });
+
+      // const data = await res.json();
+
+      // if (!res.ok) {
+      //   setError(data.error || "Failed to create blog");
+      //   setLoading(false);
+      //   return;
+      // }
+
+      // router.push("/blog-editor");
     } catch (err) {
       console.error("Error creating blog:", err);
       setError("Something went wrong. Please try again.");
@@ -172,11 +183,17 @@ export default function CreateBlogPage() {
         <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">Create Blog Post</h1>
-              <p className="text-blue-100 mt-2">Craft amazing content for your audience</p>
+              <h1 className="text-3xl font-bold text-white">
+                Create Blog Post
+              </h1>
+              <p className="text-blue-100 mt-2">
+                Craft amazing content for your audience
+              </p>
             </div>
             <div className="bg-white/20 rounded-lg px-4 py-2">
-              <span className="text-white text-sm font-medium">Professional Editor</span>
+              <span className="text-white text-sm font-medium">
+                Professional Editor
+              </span>
             </div>
           </div>
         </div>
@@ -184,8 +201,18 @@ export default function CreateBlogPage() {
         {error && (
           <div className="mx-8 mt-6 bg-red-50 border border-red-200 rounded-xl p-4">
             <p className="text-red-700 flex items-center">
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
               </svg>
               {error}
             </p>
@@ -253,17 +280,31 @@ export default function CreateBlogPage() {
                         height={128}
                         className="mx-auto h-32 w-full object-cover rounded-lg shadow-md"
                       />
-                      <p className="text-sm text-green-600 font-medium">✓ Thumbnail Selected</p>
+                      <p className="text-sm text-green-600 font-medium">
+                        ✓ Thumbnail Selected
+                      </p>
                     </div>
                   ) : (
                     <div className="space-y-2">
                       <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        <svg
+                          className="w-6 h-6 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          ></path>
                         </svg>
                       </div>
                       <p className="text-gray-600">Click to upload thumbnail</p>
-                      <p className="text-xs text-gray-500">Recommended: 1200x630px</p>
+                      <p className="text-xs text-gray-500">
+                        Recommended: 1200x630px
+                      </p>
                     </div>
                   )}
                 </label>
@@ -287,22 +328,37 @@ export default function CreateBlogPage() {
                   className="hidden"
                   id="image-upload"
                 />
-                <label htmlFor="image-upload" className="cursor-pointer block text-center">
+                <label
+                  htmlFor="image-upload"
+                  className="cursor-pointer block text-center"
+                >
                   <div className="space-y-2">
                     <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      <svg
+                        className="w-6 h-6 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        ></path>
                       </svg>
                     </div>
                     <p className="text-gray-600">Upload Images</p>
                     <p className="text-xs text-gray-500">PNG, JPG, WEBP</p>
                   </div>
                 </label>
-                
+
                 {/* Uploaded Images Preview */}
                 {uploadedImages.length > 0 && (
                   <div className="mt-4 space-y-3">
-                    <p className="text-sm font-medium text-gray-700">Uploaded Images:</p>
+                    <p className="text-sm font-medium text-gray-700">
+                      Uploaded Images:
+                    </p>
                     <div className="grid grid-cols-2 gap-2">
                       {uploadedImages.map((image, index) => (
                         <div key={index} className="relative group">
@@ -349,29 +405,53 @@ export default function CreateBlogPage() {
                   className="hidden"
                   id="video-upload"
                 />
-                <label htmlFor="video-upload" className="cursor-pointer block text-center">
+                <label
+                  htmlFor="video-upload"
+                  className="cursor-pointer block text-center"
+                >
                   <div className="space-y-2">
                     <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                      <svg
+                        className="w-6 h-6 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        ></path>
                       </svg>
                     </div>
                     <p className="text-gray-600">Upload Videos</p>
                     <p className="text-xs text-gray-500">MP4, MOV files</p>
                   </div>
                 </label>
-                
+
                 {/* Uploaded Videos List */}
                 {uploadedVideos.length > 0 && (
                   <div className="mt-4 space-y-2">
-                    <p className="text-sm font-medium text-gray-700">Uploaded Videos:</p>
+                    <p className="text-sm font-medium text-gray-700">
+                      Uploaded Videos:
+                    </p>
                     {uploadedVideos.map((video, index) => (
-                      <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-                        <span className="text-sm text-gray-600 truncate">{video.name}</span>
+                      <div
+                        key={index}
+                        className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2"
+                      >
+                        <span className="text-sm text-gray-600 truncate">
+                          {video.name}
+                        </span>
                         <div className="flex space-x-2">
                           <button
                             type="button"
-                            onClick={() => insertVideoToEditor(URL.createObjectURL(video.file))}
+                            onClick={() =>
+                              insertVideoToEditor(
+                                URL.createObjectURL(video.file)
+                              )
+                            }
                             className="text-xs bg-[#8200DB] text-white px-2 py-1 rounded"
                           >
                             Insert
@@ -442,35 +522,41 @@ export default function CreateBlogPage() {
           </div>
 
           {/* SEO & Organization Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Tags */}
-            <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
-                Tags
-              </label>
-              <input
-                type="text"
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
-                placeholder="mlm, business, success, marketing"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-              />
-              <p className="text-sm text-gray-500">Separate with commas for better categorization</p>
-            </div>
+          <div className="py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Tags */}
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold text-gray-800">
+                  Tags
+                </label>
+                <input
+                  type="text"
+                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                  placeholder="mlm, business, success, marketing"
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                />
+                <p className="text-sm text-gray-500">
+                  Separate with commas for better categorization
+                </p>
+              </div>
 
-            {/* SEO Keywords */}
-            <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
-                SEO Keywords
-              </label>
-              <input
-                type="text"
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
-                placeholder="network marketing, passive income, home business"
-                value={keywords}
-                onChange={(e) => setKeywords(e.target.value)}
-              />
-              <p className="text-sm text-gray-500">Keywords for search engine optimization</p>
+              {/* SEO Keywords */}
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold text-gray-800">
+                  SEO Keywords
+                </label>
+                <input
+                  type="text"
+                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                  placeholder="network marketing, passive income, home business"
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                />
+                <p className="text-sm text-gray-500">
+                  Keywords for search engine optimization
+                </p>
+              </div>
             </div>
           </div>
 
@@ -495,13 +581,26 @@ export default function CreateBlogPage() {
                 Content *
               </label>
               <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  ></path>
                 </svg>
                 <span>Markdown Supported</span>
               </div>
             </div>
-            <div data-color-mode="light" className="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div
+              data-color-mode="light"
+              className="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm"
+            >
               <MDEditor
                 value={content}
                 onChange={setContent}
@@ -535,7 +634,7 @@ export default function CreateBlogPage() {
               >
                 Save Draft
               </button>
-              
+
               <button
                 type="submit"
                 disabled={loading}
@@ -543,9 +642,24 @@ export default function CreateBlogPage() {
               >
                 {loading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Publishing...
                   </>
