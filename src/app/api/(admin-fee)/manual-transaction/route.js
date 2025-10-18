@@ -1,26 +1,39 @@
-
-
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Transaction } from "@/models/Transaction";
 import { User } from "@/models/User";
 import { auth } from "@/auth";
 
-
 export async function POST(req) {
   await connectDB();
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const body = await req.json();
-    const { sender, amount, type, method, note, image } = body;
+    const {
+      sender,
+      amount,
+      type,
+      method,
+      note,
+      image,
+      name,
+      email,
+      username,
+      transactionId,
+      wiseAccountEmail,
+    } = body;
 
     const adminUser = await User.findOne({ role: "admin" });
     if (!adminUser) {
-      return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Admin user not found" },
+        { status: 404 }
+      );
     }
- const receiver = adminUser._id;
+    const receiver = adminUser._id;
 
     if (!sender || !receiver || !amount || !type)
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -34,6 +47,11 @@ export async function POST(req) {
       note,
       image,
       status: "pending",
+      name,
+      email,
+      username,
+      transactionId,
+      wiseAccountEmail,
     });
 
     // (Optional) Notification can be created here later
@@ -49,4 +67,3 @@ export async function POST(req) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
-
