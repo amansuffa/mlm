@@ -37,6 +37,7 @@
     "react-toastify": "^11.0.5",
     "recharts": "^3.1.2",
     "remark-gfm": "^4.0.1",
+    "sass": "^1.93.2",
     "swr": "^2.3.6",
     "twilio": "^5.8.0"
   },

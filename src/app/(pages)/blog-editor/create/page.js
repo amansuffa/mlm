@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import ToastProvider from "@/components/ToastProvider";
 import { toast } from 'react-toastify';
+import '@/Styling/style.scss';
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
@@ -29,6 +30,8 @@ export default function CreateBlogPage() {
   const MAX_THUMBNAIL_SIZE = 2 * 1024 * 1024; // 2MB
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
   const MAX_VIDEO_SIZE = 15 * 1024 * 1024; // 15MB
+  // Toast duration used for navigation after success
+  const TOAST_SUCCESS_MS = 3000; // 3 seconds (matches ToastProvider autoClose)
 
   const handleThumbnailUpload = (e) => {
     const file = e.target.files[0];
@@ -120,6 +123,18 @@ export default function CreateBlogPage() {
     setLoading(true);
     setError("");
 
+    // Validate required fields: title, thumbnail, content
+    if (!title.trim() || !thumbnail || !content.trim()) {
+      const missing = [];
+      if (!title.trim()) missing.push('Title');
+      if (!thumbnail) missing.push('Thumbnail');
+      if (!content.trim()) missing.push('Content');
+      const msg = `Please provide required field(s): ${missing.join(', ')}`;
+      setError(msg);
+      toast.error(msg);
+      setLoading(false);
+      return;
+    }
     try {
       // Create FormData for file uploads
       const formData = new FormData();
@@ -182,10 +197,20 @@ export default function CreateBlogPage() {
           timeout: 120000, // 2 minutes for large uploads
         });
         console.log("API Response:", response.data);
-        // Show success toast and redirect shortly after
-        toast.success(response.data?.message || "Blog created successfully");
+        // Show success toast and navigate only after the toast has finished auto-closing
+        const start = Date.now();
+        toast.success(response.data?.message || "Blog created successfully", {
+          className: 'my-custom-toast',
+          onClose: () => {
+            const elapsed = Date.now() - start;
+            // If the toast was visible for the full auto-close duration, navigate.
+            // If the user dismissed it early, do not navigate.
+            if (elapsed >= TOAST_SUCCESS_MS - 100) {
+              router.push("/blog-editor");
+            }
+          },
+        });
         setLoading(false);
-        setTimeout(() => router.push("/blog-editor"), 1500);
         return;
       } catch (axiosError) {
         // Axios error handling
@@ -301,11 +326,16 @@ export default function CreateBlogPage() {
                 className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
               >
                 <option value="">Select Category</option>
-                <option value="business">Business & Strategy</option>
+                <option value="network-marketing">Network Marketing</option>
+                <option value="team-building">Team Building & Leadership</option>
+                <option value="compensation-plans">Compensation Plans</option>
+                <option value="lead-generation">Lead Generation & Prospecting</option>
+                <option value="recruitment">Recruitment & Onboarding</option>
+                <option value="product-training">Product & Sales Training</option>
+                <option value="duplication-systems">Duplication & Systems</option>
                 <option value="marketing">Marketing & Sales</option>
-                <option value="success">Success Stories</option>
-                <option value="training">Training & Education</option>
-                <option value="news">News & Updates</option>
+                <option value="success-stories">Success Stories</option>
+                <option value="legal-compliance">Legal & Compliance</option>
               </select>
             </div>
 
@@ -321,7 +351,6 @@ export default function CreateBlogPage() {
                   onChange={handleThumbnailUpload}
                   className="hidden"
                   id="thumbnail-upload"
-                  required
                 />
                 <label htmlFor="thumbnail-upload" className="cursor-pointer">
                   {thumbnailPreview ? (
