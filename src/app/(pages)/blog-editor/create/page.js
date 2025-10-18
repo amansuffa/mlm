@@ -29,9 +29,9 @@ export default function CreateBlogPage() {
   // Client-side file size limits (match server-side limits)
   const MAX_THUMBNAIL_SIZE = 2 * 1024 * 1024; // 2MB
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-  const MAX_VIDEO_SIZE = 15 * 1024 * 1024; // 15MB
+  const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 15MB
   // Toast duration used for navigation after success
-  const TOAST_SUCCESS_MS = 3000; // 3 seconds (matches ToastProvider autoClose)
+  const TOAST_SUCCESS_MS = 3000; // 3 seconds
 
   const handleThumbnailUpload = (e) => {
     const file = e.target.files[0];
@@ -710,13 +710,6 @@ export default function CreateBlogPage() {
             </button>
 
             <div className="flex space-x-4">
-              <button
-                type="button"
-                className="px-8 py-3 border-2 border-[#8200DB] text-[#8200DB] rounded-xl hover:bg-[#8200DB] hover:text-white transition-all duration-300 font-semibold"
-              >
-                Save Draft
-              </button>
-
               <button
                 type="submit"
                 disabled={loading}
