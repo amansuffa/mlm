@@ -3,21 +3,26 @@ import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/mongodb";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
-
+import { sendEmail } from "@/lib/sendEmail";
 
 export async function POST(req) {
   try {
-    const { email, password, name,username, referredBy } = await req.json();
+    const { email, password, name, username, referredBy } = await req.json();
     await connectDB();
 
     let user = await User.findOne({ email });
     if (user) {
-      return NextResponse.json({ error: "User already exists" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User already exists" },
+        { status: 400 }
+      );
     }
- user = await User.findOne({ username });
+    user = await User.findOne({ username });
     if (user) {
-      return NextResponse.json({ error: "Username is not available" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Username is not available" },
+        { status: 400 }
+      );
     }
     const hashedPassword = await bcrypt.hash(password, 5);
 
@@ -30,7 +35,10 @@ export async function POST(req) {
       // Verify that the referrer exists
       const referrer = await User.findOne({ username: referredBy });
       if (!referrer) {
-        return NextResponse.json({ error: "Invalid referral username" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Invalid referral username" },
+          { status: 400 }
+        );
       }
     }
     const token = crypto.randomBytes(20).toString("hex");
@@ -41,40 +49,46 @@ export async function POST(req) {
       username,
       password: hashedPassword,
       referredBy: finalReferredBy,
-      isVerified: false,         
-  verificationToken :token
+      isVerified: false,
+      verificationToken: token,
     });
 
-    // transporter config
-const transporter = nodemailer.createTransport({
-  service: "gmail", // ya smtp.mailtrap.io
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+ 
 
-// verification link
-const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
+    // verification link
+    const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
 
-await transporter.sendMail({
-  to: email,
-  subject: "Verify Your Account",
-  html: `<h3>Hello ${name},</h3>
-         <p>Click below to verify your account:</p>
-         <a href="${verifyUrl}">Verify Email</a>`,
-});
 
+
+  const html = `
+    <h2>Verify Your Email</h2>
+    <p>Hi ${name},</p>
+    <p>Thanks for signing up! Please click the link below to verify your email:</p>
+    <a href="${verifyUrl}" style="color:#007bff;text-decoration:none;">Verify Email</a>
+    <p>If you didn’t create an account, you can ignore this email.</p>
+  `;
+
+  
+
+  await sendEmail(email, "Verify your email - Pash Club", html);
 
     return NextResponse.json(
       {
         message: "Signup successful",
-        user: { id: newUser._id, email: newUser.email, name: newUser.name, username: newUser.username },
+        user: {
+          id: newUser._id,
+          email: newUser.email,
+          name: newUser.name,
+          username: newUser.username,
+        },
       },
       { status: 201 }
     );
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

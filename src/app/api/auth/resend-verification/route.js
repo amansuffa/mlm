@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import nodemailer from "nodemailer";
 import crypto from "crypto";
+import { sendEmail } from "@/lib/sendEmail";
+
 
 export async function POST(req) {
   try {
@@ -23,25 +24,16 @@ export async function POST(req) {
     user.verificationToken = token;
     await user.save();
 
-    // send email
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+  
 
     const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
-
-    await transporter.sendMail({
-      from: `"MLM App" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: "Resend Email Verification",
-      html: `<h2>Hello ${user.name},</h2>
+const html = `<h2>Hello ${user.name},</h2>
              <p>Here’s a new link to verify your email:</p>
-             <a href="${verifyUrl}" target="_blank">Verify Email</a>`,
-    });
+             <a href="${verifyUrl}" target="_blank">Verify Email</a>`;
+
+
+      await sendEmail(email, "Resend Email Verification", html);
+    
 
     return NextResponse.json({ message: "Verification email resent" }, { status: 200 });
   } catch (error) {

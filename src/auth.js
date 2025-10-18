@@ -35,8 +35,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
 
           if (!user.isVerified) {
-      throw new Error("Please verify your email before login.");
-    }
+            throw new Error("Please verify your email before login.");
+          }
+
+          if (user.role !== "admin" && !user.adminFeePaid) {
+            throw new Error("Please complete admin fee payment");
+          }
 
           const validPassword = await bcrypt.compare(
             credentials.password,
