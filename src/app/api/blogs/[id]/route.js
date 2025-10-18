@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Blog } from "@/models/Blog"; 
+import { uploadToCloudinary } from "@/lib/uploadCloudinary";
 
 
 
@@ -30,12 +31,61 @@ export async function GET(request, context) {
 export async function PUT(req, { params }) {
   try {
     await connectDB();
-    
-    const { title, content } = await req.json();
 
+    const formData = await req.formData(); 
+    const title = formData.get("title");
+    const content = formData.get("content");
+    const excerpt = formData.get("excerpt");
+    const tags = formData.get("tags");
+    const keywords = formData.get("keywords");
+    const category = formData.get("category");
+
+    // Handle optional thumbnail upload
+    let thumbnailUrl = null;
+    const thumbnail = formData.get("thumbnail");
+    if (thumbnail && typeof thumbnail === "object") {
+      thumbnailUrl = await uploadToCloudinary(thumbnail, "blog-thumbnails");
+    }
+
+    // Handle images (if any)
+    const images = [];
+    const imagesFiles = formData.getAll("images");
+    for (const img of imagesFiles) {
+      const url = await uploadToCloudinary(img, "blog-images");
+      images.push(url);
+    }
+
+    // Handle videos (if any)
+    const videos = [];
+    const videosFiles = formData.getAll("videos");
+    for (const vid of videosFiles) {
+      const url = await uploadToCloudinary(vid, "blog-videos");
+      videos.push(url);
+    }
+
+    // Handle video links
+    const videoLinks = [];
+    for (const [key, value] of formData.entries()) {
+      if (key.startsWith("videoLinks[")) {
+        videoLinks.push(value);
+      }
+    }
+
+    // Update the blog
     const updatedBlog = await Blog.findByIdAndUpdate(
       params.id,
-      { title, content },
+      {
+        title,
+        content,
+        excerpt,
+        tags,
+        keywords,
+        category,
+        thumbnail: thumbnailUrl,
+        images,
+        videos,
+        videoLinks,
+      },
       { new: true }
     );
 
@@ -45,6 +95,8 @@ export async function PUT(req, { params }) {
 
     return NextResponse.json(updatedBlog);
   } catch (error) {
+    console.error("❌ Error updating blog:", error);
     return NextResponse.json({ error: "Failed to update blog" }, { status: 500 });
   }
 }
+

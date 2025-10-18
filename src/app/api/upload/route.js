@@ -1,41 +1,26 @@
-import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { NextResponse } from "next/server";
+import { uploadToCloudinary } from "@/lib/uploadCloudinary";
 
 export async function POST(request) {
   try {
     const formData = await request.formData();
-    const file = formData.get('file');
+    const file = formData.get("file") || formData.get("video");
+    const folder = formData.get("folder") || "uploads";
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No file uploaded' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const ext = path.extname(file.name);
-    const filename = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
-    
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
-    await mkdir(uploadDir, { recursive: true });
-    
-    const filepath = path.join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-    
-    const url = `/uploads/${filename}`;
-    
-    return NextResponse.json({ 
-      success: true,
-      url 
-    });
-
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    return NextResponse.json(
-      { error: 'Error uploading file' },
-      { status: 500 }
-    );
+    try {
+      const url = await uploadToCloudinary(file, folder);
+      return NextResponse.json({ url });
+    } catch (err) {
+      console.error("Cloudinary upload error (single file):", err);
+      return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+    }
+  } catch (err) {
+    console.error("Error in /api/upload:", err);
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 }
+

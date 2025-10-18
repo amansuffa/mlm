@@ -17,7 +17,7 @@ const Nav = ({ setIsOpen }) => {
           src={logo}
           alt="Logo"
           width={180}  
-          height="auto" 
+          height={48}
         />
       </div>
 

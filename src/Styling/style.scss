@@ -1,0 +1,25 @@
+// Styling/style.scss
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+.Toastify__toast {
+  width: 280px !important;
+}
+.my-custom-toast {
+  background-color: #7909C8 !important;
+  color: white !important;
+  font-family: 'Montserrat', sans-serif;
+}
+/* Change only the success icon color (not background) */
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #fff !important; // 👈 Your desired color
+}
+/* Change the close (X) icon color in success toast */
+.Toastify__toast--success .Toastify__close-button svg{
+  margin-top: 15px !important;
+  width: 17px !important;
+  height: 17px !important;
+  fill: #FAFAFA !important
+}
+.Toastify__progress-bar--success {
+  background: #ffffff !important; // your custom brand color
+}

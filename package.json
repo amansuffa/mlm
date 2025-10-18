@@ -16,6 +16,7 @@
     "@uiw/react-md-editor": "^4.0.8",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
     "dotenv": "^17.2.3",
     "formidable": "^3.5.4",
     "framer-motion": "^12.23.12",
@@ -34,8 +35,10 @@
     "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
     "react-svg-worldmap": "^2.0.0-alpha.16",
+    "react-toastify": "^11.0.5",
     "recharts": "^3.1.2",
     "remark-gfm": "^4.0.1",
+    "sass": "^1.93.2",
     "swr": "^2.3.6",
     "twilio": "^5.8.0"
   },
