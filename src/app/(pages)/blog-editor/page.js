@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import axios from "axios";
 
 export default function BlogEditorPage() {
   const [blogs, setBlogs] = useState([]);
@@ -15,12 +16,10 @@ export default function BlogEditorPage() {
   async function fetchBlogs() {
     try {
       setLoading(true);
-      const res = await fetch("/api/blogs?my=true");
-      const data = await res.json();
-
-      if (data.blogs) setBlogs(data.blogs);
+      const { data } = await axios.get("/api/blogs?my=true");
+      if (data?.blogs) setBlogs(data.blogs);
     } catch (err) {
-      console.error("Failed to fetch blogs:", err);
+      console.error("Failed to fetch blogs:", err?.response || err);
     } finally {
       setLoading(false);
     }
@@ -31,17 +30,15 @@ export default function BlogEditorPage() {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      const res = await fetch(`/api/blogs?id=${blogId}`, { method: "DELETE" });
-      const data = await res.json();
-
-      if (res.ok) {
+      const res = await axios.delete(`/api/blogs?id=${blogId}`);
+      if (res.status >= 200 && res.status < 300) {
         alert("Blog deleted successfully");
         fetchBlogs(); // refresh table
       } else {
-        alert(data.error || "Failed to delete blog");
+        alert(res.data?.error || "Failed to delete blog");
       }
     } catch (err) {
-      console.error("Delete failed:", err);
+      console.error("Delete failed:", err?.response || err);
     }
   }
 
@@ -128,7 +125,7 @@ export default function BlogEditorPage() {
               </div>
               <div className="bg-[#8200DB] bg-opacity-10 p-3 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-[#8200DB]"
+                  className="w-6 h-6 text-[#FFFFFF]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -143,34 +140,6 @@ export default function BlogEditorPage() {
               </div>
             </div>
           </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Published</p>
-                <p className="text-2xl font-bold text-gray-800 mt-1">
-                  {blogs.filter((blog) => blog.status === "published").length}
-                </p>
-              </div>
-              <div className="bg-green-500 bg-opacity-10 p-3 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Drafts card removed (draft functionality disabled) */}
         </div>
 
         {/* Filters and Search */}
@@ -290,20 +259,13 @@ export default function BlogEditorPage() {
                         ></path>
                       </svg>
                     </div>
-                  )}
-                  <div className="absolute top-4 right-4">
-                    {blog.status === "published" && (
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                        published
-                      </span>
-                    )}
-                  </div>
+                  )}{" "}
                 </div>
 
                 {/* Blog Content */}
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="bg-[#8200DB] bg-opacity-10 text-[#8200DB] px-3 py-1 rounded-full text-xs font-semibold">
+                    <span className="bg-[#8200DB] bg-opacity-10 text-[#fff] px-3 py-1 rounded-full text-xs font-semibold">
                       {blog.category || "Uncategorized"}
                     </span>
                     <span className="text-gray-500 text-sm">
@@ -316,8 +278,13 @@ export default function BlogEditorPage() {
                   </h3>
 
                   <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                    {blog.excerpt ||
-                      blog.content?.split(" ").slice(0, 20).join(" ") + "..."}
+                    {blog.excerpt ? (
+                      blog.excerpt
+                    ) : (
+                      <span className="text-gray-400 italic">
+                        No excerpt provided.
+                      </span>
+                    )}
                   </p>
 
                   {/* Action Buttons */}
