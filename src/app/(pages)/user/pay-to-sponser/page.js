@@ -136,6 +136,9 @@ export default function PayToSponsorPage() {
           method,
           note,
           image: imageUrl,
+          name: session?.user?.name,
+          email: session?.user?.email,
+          username: session?.user?.username,
         }),
       });
 
@@ -184,12 +187,11 @@ export default function PayToSponsorPage() {
             </p>
           </div>
           {session.user.status == "fully_active" ? (
-             <div className="py-8">
+            <div className="py-8">
               <div className="flex justify-center items-center h-30">
-              
-                          <h3 className="text-2xl font-bold text-gray-900">
-                         Already paid
-                          </h3>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Already paid
+                </h3>
               </div>
             </div>
           ) : (
