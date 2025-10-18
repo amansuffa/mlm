@@ -59,6 +59,7 @@ export default function CreateBlogPage() {
       file,
       name: file.name,
       type: file.type,
+      preview: URL.createObjectURL(file),
     }));
     setUploadedVideos((prev) => [...prev, ...newVideos]);
   };
@@ -100,6 +101,52 @@ export default function CreateBlogPage() {
     setContent((prev) => prev + `\n${markdownVideo}\n`);
   };
 
+  // Upload a single file to /api/upload and return the URL
+  const uploadFileToServer = async (file, folder = "blog-videos") => {
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", folder);
+      const res = await axios.post("/api/upload", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+        timeout: 120000,
+      });
+      return res.data?.url;
+    } catch (err) {
+      console.error("Upload failed:", err);
+      throw err;
+    }
+  };
+
+  // Replace any blob: URLs in content by uploading matching local files and
+  // replacing occurrences with the returned HTTPS URL.
+  const replaceBlobUrlsInContent = async (rawContent) => {
+    if (!rawContent) return rawContent;
+    let updated = String(rawContent);
+    const blobUrls = [...new Set((updated.match(/blob:[^\s)"']+/g) || []))];
+
+    for (const blobUrl of blobUrls) {
+      // Try to find matching uploaded video or image by preview URL
+      const vid = uploadedVideos.find((v) => v.preview === blobUrl);
+      const img = uploadedImages.find((i) => i.preview === blobUrl);
+
+      const fileObj = vid?.file || img?.file;
+      if (!fileObj) continue; // nothing to upload for this blob
+
+      try {
+        const uploadedUrl = await uploadFileToServer(fileObj, vid ? "blog-videos" : "blog-images");
+        if (uploadedUrl) {
+          updated = updated.split(blobUrl).join(uploadedUrl);
+        }
+      } catch (err) {
+        console.error("Failed to upload blob URL:", blobUrl, err);
+        // don't throw; continue with other replacements
+      }
+    }
+
+    return updated;
+  };
+
   // Insert Video Link into Editor
   const insertVideoLinkToEditor = (videoUrl) => {
     if (videoUrl.includes("youtube") || videoUrl.includes("youtu.be")) {
@@ -136,10 +183,13 @@ export default function CreateBlogPage() {
       return;
     }
     try {
-      // Create FormData for file uploads
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("content", content);
+  // Replace any blob URLs in content (upload local files and replace)
+  const contentToSubmit = await replaceBlobUrlsInContent(content);
+
+  // Create FormData for file uploads
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("content", contentToSubmit);
       formData.append("excerpt", excerpt);
       formData.append("tags", tags);
       formData.append("keywords", keywords);
@@ -529,11 +579,18 @@ export default function CreateBlogPage() {
                         <div className="flex space-x-2">
                           <button
                             type="button"
-                            onClick={() =>
-                              insertVideoToEditor(
-                                URL.createObjectURL(video.file)
-                              )
-                            }
+                            onClick={async () => {
+                              try {
+                                const url = await uploadFileToServer(video.file, "blog-videos");
+                                if (url) {
+                                  insertVideoToEditor(url);
+                                  toast.success("Video uploaded and inserted");
+                                }
+                              } catch (err) {
+                                console.error("Insert upload failed:", err);
+                                toast.error("Failed to upload video. Try again.");
+                              }
+                            }}
                             className="text-xs bg-[#8200DB] text-white px-2 py-1 rounded"
                           >
                             Insert
