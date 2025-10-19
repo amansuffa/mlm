@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
 import { toast } from 'react-toastify';
+import ToastProvider from "@/components/ToastProvider";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
+import "@/Styling/style.scss";
 
 export default function BlogEditorPage() {
   const [blogs, setBlogs] = useState([]);
@@ -62,7 +64,9 @@ export default function BlogEditorPage() {
       const res = await axios.delete(`/api/blogs?id=${deleteModal.blogId}`);
       
       if (res.status >= 200 && res.status < 300) {
-        toast.success("🎉 Blog deleted successfully!");
+        toast.success("Blog deleted successfully!",{
+          className: 'my-custom-toast',
+        });
         fetchBlogs(); // refresh table
       } else {
         toast.error("❌ Failed to delete blog");
@@ -109,6 +113,7 @@ export default function BlogEditorPage() {
   return (
     <div className="min-h-screen py-8">
       {/* Delete Confirmation Modal */}
+      <ToastProvider />
       <DeleteConfirmationModal
         isOpen={deleteModal.isOpen}
         onClose={closeDeleteModal}
@@ -306,7 +311,7 @@ export default function BlogEditorPage() {
                 {/* Blog Content */}
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="bg-[#8200DB] bg-opacity-10 text-[#8200DB] px-3 py-1 rounded-full text-xs font-semibold">
+                    <span className="bg-[#8200DB] bg-opacity-10 text-[#fff] px-3 py-1 rounded-full text-xs font-semibold">
                       {blog.category || "Uncategorized"}
                     </span>
                     <span className="text-gray-500 text-sm">
