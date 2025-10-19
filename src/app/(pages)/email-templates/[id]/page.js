@@ -284,13 +284,7 @@ export default function EditEmailTemplate() {
             </button>
 
             <div className="flex space-x-4">
-              <button
-                type="button"
-                onClick={() => router.push(`/email-templates/send/${params.id}`)}
-                className="px-8 py-3 border-2 border-green-500 text-green-600 rounded-xl hover:bg-green-50 hover:border-green-600 transition-all duration-300 font-semibold"
-              >
-                Send Test Email
-              </button>
+            
 
               <button
                 type="submit"
