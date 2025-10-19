@@ -4,12 +4,22 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 
 export default function BlogEditorPage() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
+  
+  // Delete Modal State
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    blogId: null,
+    blogTitle: ""
+  });
+  
   const router = useRouter();
 
   // Fetch user's blogs
@@ -20,25 +30,48 @@ export default function BlogEditorPage() {
       if (data?.blogs) setBlogs(data.blogs);
     } catch (err) {
       console.error("Failed to fetch blogs:", err?.response || err);
+      toast.error("Failed to load blogs");
     } finally {
       setLoading(false);
     }
   }
 
+  // Open delete confirmation modal
+  function openDeleteModal(blogId, blogTitle) {
+    setDeleteModal({
+      isOpen: true,
+      blogId,
+      blogTitle
+    });
+  }
+
+  // Close delete modal
+  function closeDeleteModal() {
+    setDeleteModal({
+      isOpen: false,
+      blogId: null,
+      blogTitle: ""
+    });
+  }
+
   // Delete blog
-  async function deleteBlog(blogId) {
-    if (!confirm("Are you sure you want to delete this blog?")) return;
+  async function deleteBlog() {
+    if (!deleteModal.blogId) return;
 
     try {
-      const res = await axios.delete(`/api/blogs?id=${blogId}`);
+      const res = await axios.delete(`/api/blogs?id=${deleteModal.blogId}`);
+      
       if (res.status >= 200 && res.status < 300) {
-        alert("Blog deleted successfully");
+        toast.success("🎉 Blog deleted successfully!");
         fetchBlogs(); // refresh table
       } else {
-        alert(res.data?.error || "Failed to delete blog");
+        toast.error("❌ Failed to delete blog");
       }
     } catch (err) {
       console.error("Delete failed:", err?.response || err);
+      toast.error("❌ Failed to delete blog");
+    } finally {
+      closeDeleteModal();
     }
   }
 
@@ -63,7 +96,7 @@ export default function BlogEditorPage() {
       filterCategory === "all" || blog.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
-  console.log("Filtered Blogs:", filteredBlogs);
+
   const categories = [
     "all",
     "business",
@@ -75,6 +108,14 @@ export default function BlogEditorPage() {
 
   return (
     <div className="min-h-screen py-8">
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={deleteBlog}
+        blogTitle={deleteModal.blogTitle}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
@@ -113,8 +154,8 @@ export default function BlogEditorPage() {
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Stats Cards - */}
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#8200DB]">
             <div className="flex items-center justify-between">
               <div>
@@ -125,7 +166,7 @@ export default function BlogEditorPage() {
               </div>
               <div className="bg-[#8200DB] bg-opacity-10 p-3 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-[#FFFFFF]"
+                  className="w-6 h-6 text-[#fff]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -259,13 +300,13 @@ export default function BlogEditorPage() {
                         ></path>
                       </svg>
                     </div>
-                  )}{" "}
+                  )}
                 </div>
 
                 {/* Blog Content */}
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="bg-[#8200DB] bg-opacity-10 text-[#fff] px-3 py-1 rounded-full text-xs font-semibold">
+                    <span className="bg-[#8200DB] bg-opacity-10 text-[#8200DB] px-3 py-1 rounded-full text-xs font-semibold">
                       {blog.category || "Uncategorized"}
                     </span>
                     <span className="text-gray-500 text-sm">
@@ -302,7 +343,7 @@ export default function BlogEditorPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => deleteBlog(blog._id)}
+                      onClick={() => openDeleteModal(blog._id, blog.title)}
                       className="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors duration-200 text-sm"
                     >
                       Delete

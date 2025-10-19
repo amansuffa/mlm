@@ -41,41 +41,6 @@ export default function CreateBlogPage() {
       setThumbnailPreview(previewUrl);
     }
   };
-  // const handleImageUpload = async (e) => {
-  //   const files = Array.from(e.target.files);
-
-  //   const newImages = [];
-
-  //   for (const file of files) {
-  //     try {
-  //       // Upload to Cloudinary
-  //       const url = await uploadFileToServer(file, "blog-images");
-
-  //       newImages.push({
-  //         file,
-  //         preview: url,
-  //         name: file.name,
-  //       });
-  //     } catch (err) {
-  //       console.error("Image upload failed:", err);
-  //     }
-  //   }
-
-  //   setUploadedImages((prev) => [...prev, ...newImages]);
-  // };
-
-  // // Handle Video Upload
-  // const handleVideoUpload = (e) => {
-  //   const files = Array.from(e.target.files);
-  //   const newVideos = files.map((file) => ({
-  //     file,
-  //     name: file.name,
-  //     type: file.type,
-  //     preview: URL.createObjectURL(file),
-  //   }));
-  //   setUploadedVideos((prev) => [...prev, ...newVideos]);
-  // };
-
   // Handle Video Links
   const handleFileUpload = async (e, type) => {
     const files = Array.from(e.target.files);
