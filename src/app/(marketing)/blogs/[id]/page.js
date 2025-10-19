@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -17,13 +17,33 @@ export default function SingleBlogPage() {
     if (!content) return "No content available";
     let html = String(content);
 
-    // Convert Markdown image syntax ![alt](https://...) -> <img />
-    html = html.replace(/!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g, (match, alt, src) => {
-      return `<img src="${src}" alt="${alt || "image"}" class="max-w-full rounded-lg my-4"/>`;
-    });
+    // Convert Markdown image syntax -> <img>
+    html = html.replace(
+      /!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g,
+      (match, alt, src) => {
+        return `<img src="${src}" alt="${
+          alt || "image"
+        }" class="max-w-full rounded-lg my-4"/>`;
+      }
+    );
 
-    // Replace newlines with <br/>
+    // Convert Markdown video links -> <video>
+    html = html.replace(
+      /\[([^\]]*)\]\((https?:\/\/[^\s)]+\.mp4)\)/g,
+      (match, text, src) => {
+        return `
+       <div class="flex justify-start my-6">
+        <video controls class="h-60 w-60 rounded-xl shadow-lg">
+          <source src="${src}" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>`;
+      }
+    );
+
+    // 🧾 Replace newlines with <br/>
     html = html.replace(/\n/g, "<br/>");
+
     return html;
   };
 
@@ -368,7 +388,7 @@ export default function SingleBlogPage() {
                     {blog.tags.slice(0, 3).map((tag, index) => (
                       <span
                         key={index}
-                        className="bg-[#8200DB] bg-opacity-10 text-[#8200DB] px-3 py-1 rounded-full text-xs font-semibold"
+                        className="bg-[#8200DB] bg-opacity-10 text-[#fff] px-3 py-1 rounded-full text-xs font-semibold"
                       >
                         #{tag}
                       </span>
