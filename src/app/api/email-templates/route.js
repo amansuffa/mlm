@@ -3,61 +3,11 @@ import { EmailTemplate } from "@/models/EmailTemplate";
 
 import { auth } from "@/auth";
 import { connectDB } from "@/lib/mongodb";
-import { hasPermission } from "@/app/actions/hasPermission";
-
-
 
 export async function GET(req) {
   await connectDB();
-    const session = await auth();
-    console.log("session", session.user);
-    
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
-    }
-
-    const userId = session.user.id
-
-        const hasUserPermission = await hasPermission(userId);
-    
-    if (!hasUserPermission) {
-      return NextResponse.json(
-        { error: "Only admin and paid members can create blogs" },
-        { status: 403 }
-      );
-    }
-
-
-  // admin sees all
-  if (session.user.role === "admin") {
-    const all = await EmailTemplate.find().sort({ createdAt: -1 });
-    return NextResponse.json(all);
-  }
-
-  // user sees their own templates only
-//   const mine = await EmailTemplate.find({ ownerId: session.user._id }).sort({ createdAt: -1 });
-//   return NextResponse.json(mine);
-
-  // Regular user → see default + global (ownerId=null) + their own
-  const templates = await EmailTemplate.find({
-    $or: [
-      { isDefault: true },
-      { ownerId: null }, // admin/global
-      { ownerId: user._id }
-    ]
-  }).sort({ createdAt: -1 });
-
-  return NextResponse.json(templates);
-
-
-}
-
-export async function POST(req) {
-  await connectDB();
   const session = await auth();
+  console.log("session", session.user);
 
   if (!session || !session.user) {
     return NextResponse.json(
@@ -66,32 +16,106 @@ export async function POST(req) {
     );
   }
 
-  const userId = session.user.id;
-
-  const hasUserPermission = await hasPermission(userId);
-  if (!hasUserPermission) {
+  if (session.user.role !== "admin") {
     return NextResponse.json(
-      { error: "Only admin and paid members can create templates" },
+      { error: "Admin access required" },
       { status: 403 }
     );
   }
 
-  const body = await req.json();
+  const templates = await EmailTemplate.find().sort({ createdAt: -1 });
+  return NextResponse.json(templates);
+}
 
-  // Make sure `name` exists
-  if (!body.name || !body.subject || !body.body) {
+export async function POST(req) {
+  await connectDB();
+  const session = await auth();
+  console.log("session", session.user);
+
+  if (!session || !session.user) {
     return NextResponse.json(
-      { error: "Missing required fields" },
-      { status: 400 }
+      { error: "Authentication required" },
+      { status: 401 }
     );
   }
 
-  const tpl = await EmailTemplate.create({
-    name: body.name,
-    subject: body.subject,
-    body: body.body,
-    ownerId: session.user.role === "admin" ? null : userId
-  });
+  if (session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Admin access required" },
+      { status: 403 }
+    );
+  }
 
-  return NextResponse.json(tpl, { status: 201 });
+  try {
+    const data = await req.json();
+    const newTemplate = await EmailTemplate.create(data);
+    return NextResponse.json(newTemplate);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 400 }
+    );
+  }
+}
+export async function PUT(req) {
+  await connectDB();
+  const session = await auth();
+  console.log("session", session.user);
+
+  if (!session || !session.user) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
+  }
+
+  if (session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Admin access required" },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const { id, ...data } = await req.json();
+    const updated = await EmailTemplate.findByIdAndUpdate(id, data, {
+      new: true,
+    });
+    return NextResponse.json(updated);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 400 }
+    );
+  }
+}
+export async function DELETE(req) {
+  await connectDB();
+  const session = await auth();
+  console.log("session", session.user);
+
+  if (!session || !session.user) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
+  }
+
+  if (session.user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Admin access required" },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const { id } = await req.json();
+    await EmailTemplate.findByIdAndDelete(id);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 400 }
+    );
+  }
 }
