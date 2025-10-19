@@ -41,42 +41,57 @@ export default function CreateBlogPage() {
       setThumbnailPreview(previewUrl);
     }
   };
-  const handleImageUpload = async (e) => {
-    const files = Array.from(e.target.files);
+  // const handleImageUpload = async (e) => {
+  //   const files = Array.from(e.target.files);
 
-    const newImages = [];
+  //   const newImages = [];
 
-    for (const file of files) {
-      try {
-        // Upload to Cloudinary
-        const url = await uploadFileToServer(file, "blog-images");
+  //   for (const file of files) {
+  //     try {
+  //       // Upload to Cloudinary
+  //       const url = await uploadFileToServer(file, "blog-images");
 
-        newImages.push({
-          file,
-          preview: url,
-          name: file.name,
-        });
-      } catch (err) {
-        console.error("Image upload failed:", err);
-      }
-    }
+  //       newImages.push({
+  //         file,
+  //         preview: url,
+  //         name: file.name,
+  //       });
+  //     } catch (err) {
+  //       console.error("Image upload failed:", err);
+  //     }
+  //   }
 
-    setUploadedImages((prev) => [...prev, ...newImages]);
-  };
+  //   setUploadedImages((prev) => [...prev, ...newImages]);
+  // };
 
-  // Handle Video Upload
-  const handleVideoUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const newVideos = files.map((file) => ({
-      file,
-      name: file.name,
-      type: file.type,
-      preview: URL.createObjectURL(file),
-    }));
-    setUploadedVideos((prev) => [...prev, ...newVideos]);
-  };
+  // // Handle Video Upload
+  // const handleVideoUpload = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   const newVideos = files.map((file) => ({
+  //     file,
+  //     name: file.name,
+  //     type: file.type,
+  //     preview: URL.createObjectURL(file),
+  //   }));
+  //   setUploadedVideos((prev) => [...prev, ...newVideos]);
+  // };
 
   // Handle Video Links
+  const handleFileUpload = async (e, type) => {
+    const files = Array.from(e.target.files);
+    const folder = type === "video" ? "blog-videos" : "blog-images";
+
+    const uploads = await Promise.all(
+      files.map(async (file) => {
+        const url = await uploadFileToServer(file, folder);
+        return { file, name: file.name, preview: url, type };
+      })
+    );
+
+    if (type === "image") setUploadedImages((prev) => [...prev, ...uploads]);
+    else setUploadedVideos((prev) => [...prev, ...uploads]);
+  };
+
   const addVideoLink = () => {
     setVideoLinks((prev) => [...prev, ""]);
   };
@@ -319,8 +334,6 @@ export default function CreateBlogPage() {
         setLoading(false);
         return;
       }
-
-      router.push("/blog-editor");
     } catch (err) {
       console.error("Error creating blog:", err);
       setError("Something went wrong. Please try again.");
@@ -490,7 +503,7 @@ export default function CreateBlogPage() {
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={handleImageUpload}
+                  onChange={(e) => handleFileUpload(e, "image")}
                   className="hidden"
                   id="image-upload"
                 />
@@ -567,7 +580,7 @@ export default function CreateBlogPage() {
                   type="file"
                   accept="video/*"
                   multiple
-                  onChange={handleVideoUpload}
+                  onChange={(e) => handleFileUpload(e, "video")}
                   className="hidden"
                   id="video-upload"
                 />
