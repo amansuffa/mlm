@@ -255,7 +255,7 @@ export default function EditBlogPage() {
 
   if (fetchLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#8200DB] mx-auto"></div>
           <p className="text-gray-600 mt-4 text-lg">Loading blog data...</p>
@@ -265,7 +265,7 @@ export default function EditBlogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden">
         {/* Professional Header */}
         <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">

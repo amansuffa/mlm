@@ -20,7 +20,9 @@ export default function EditEmailTemplate() {
     subject: "",
     body: "",
   });
-
+  useEffect(() => {
+    fetchTemplate();
+  }, []);
   const fetchTemplate = useCallback(async () => {
     try {
       setFetchLoading(true);
