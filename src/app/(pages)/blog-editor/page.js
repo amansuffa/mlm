@@ -85,7 +85,7 @@ export default function BlogEditorPage() {
   }
 
   function handleViewBlog(id) {
-    const refId = session?.user?.id;
+    const refId = session?.user?.username;
     if (refId) {
       router.push(`/blogs/${id}?ref=${refId}`);
     } else {
