@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -225,7 +226,7 @@ export default function ProfilePage() {
                   <div className="relative mb-6">
                     <div className="w-40 h-40 rounded-full bg-gradient-to-r from-[#8200DB] to-[#6E11B0] flex items-center justify-center text-4xl font-bold text-white shadow-xl overflow-hidden border-4 border-white">
                       {formData.profilePicture || user.profilePicture ? (
-                        <img
+                        <Image
                           src={formData.profilePicture || user.profilePicture}
                           alt="Profile"
                           className="w-full h-full object-cover"

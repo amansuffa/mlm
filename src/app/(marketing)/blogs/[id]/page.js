@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -118,7 +118,7 @@ export default function SingleBlogPage() {
   };
 
   // Check if user has already liked the blog
-  const checkLikeStatus = async () => {
+  const checkLikeStatus = useCallback(async () => {
     try {
       const response = await axios.get(`/api/blogs/${id}/like`);
       
@@ -129,7 +129,7 @@ export default function SingleBlogPage() {
     } catch (error) {
       console.error("Like status check error:", error);
     }
-  };
+  }, [id]);
 
   // Share functionality
   const handleShare = async (platform) => {
@@ -240,7 +240,7 @@ export default function SingleBlogPage() {
     }
 
     fetchBlog();
-  }, [id]);
+  }, [id, checkLikeStatus]);
 
   if (loading) {
     return (
@@ -276,7 +276,7 @@ export default function SingleBlogPage() {
             Blog Not Found
           </h2>
           <p className="text-gray-600 mb-6">
-            The blog you're looking for may have been deleted or doesn't exist.
+            The blog you&apos;re looking for may have been deleted or doesn&apos;t exist.
           </p>
           <button
             onClick={() => window.history.back()}

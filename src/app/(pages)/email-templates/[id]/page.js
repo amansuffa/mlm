@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
@@ -21,11 +21,7 @@ export default function EditEmailTemplate() {
     body: "",
   });
 
-  useEffect(() => {
-    fetchTemplate();
-  }, [params.id]);
-
-  async function fetchTemplate() {
+  const fetchTemplate = useCallback(async () => {
     try {
       setFetchLoading(true);
       const res = await axios.get("/api/email-templates");
@@ -48,7 +44,7 @@ export default function EditEmailTemplate() {
     } finally {
       setFetchLoading(false);
     }
-  }
+  }, [params.id, setForm, setError, setFetchLoading])
 
   async function handleSubmit(e) {
     e.preventDefault();
