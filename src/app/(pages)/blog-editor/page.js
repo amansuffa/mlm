@@ -1,27 +1,28 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import axios from "axios";
-import { toast } from 'react-toastify';
-import ToastProvider from "@/components/ToastProvider";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
+import ToastProvider from "@/components/ToastProvider";
 import "@/Styling/style.scss";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function BlogEditorPage() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
-  
+  const { data: session } = useSession();
+
   // Delete Modal State
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
     blogId: null,
-    blogTitle: ""
+    blogTitle: "",
   });
-  
+
   const router = useRouter();
 
   // Fetch user's blogs
@@ -43,7 +44,7 @@ export default function BlogEditorPage() {
     setDeleteModal({
       isOpen: true,
       blogId,
-      blogTitle
+      blogTitle,
     });
   }
 
@@ -52,7 +53,7 @@ export default function BlogEditorPage() {
     setDeleteModal({
       isOpen: false,
       blogId: null,
-      blogTitle: ""
+      blogTitle: "",
     });
   }
 
@@ -62,10 +63,10 @@ export default function BlogEditorPage() {
 
     try {
       const res = await axios.delete(`/api/blogs?id=${deleteModal.blogId}`);
-      
+
       if (res.status >= 200 && res.status < 300) {
-        toast.success("Blog deleted successfully!",{
-          className: 'my-custom-toast',
+        toast.success("Blog deleted successfully!", {
+          className: "my-custom-toast",
         });
         fetchBlogs(); // refresh table
       } else {
@@ -83,8 +84,13 @@ export default function BlogEditorPage() {
     router.push(`/blog-editor/${blogId}`);
   }
 
-  function handleViewBlog(blogId) {
-    router.push(`/blogs/${blogId}`);
+  function handleViewBlog(id) {
+    const refId = session?.user?.id;
+    if (refId) {
+      router.push(`/blogs/${id}?ref=${refId}`);
+    } else {
+      router.push(`/blogs/${id}`);
+    }
   }
 
   useEffect(() => {

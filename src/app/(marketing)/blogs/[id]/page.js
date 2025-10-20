@@ -1,15 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import ToastProvider from "@/components/ToastProvider";
+import "@/Styling/style.scss";
 
 export default function SingleBlogPage() {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const searchParams = useSearchParams();
+
+  const refId = searchParams.get("ref");
 
   // Helper: convert markdown image syntax and newlines to HTML
   const renderHTMLFromContent = (content) => {
@@ -44,6 +50,38 @@ export default function SingleBlogPage() {
     html = html.replace(/\n/g, "<br/>");
 
     return html;
+  };
+
+  // Generate affiliate link with user reference
+  const generateAffiliateLink = () => {
+    if (!refId) return null;
+    return `${window.location.origin}/blogs/${blog._id}?ref=${refId}`;
+  };
+
+  // Handle Join button click
+  const handleJoinClick = () => {
+    const refId = searchParams.get("ref");
+    if (refId) {
+      window.location.href = `/signup?ref=${refId}`;
+    } else {
+      window.location.href = `/signup`;
+    }
+    setShowJoinModal(false);
+  };
+
+  // Copy affiliate link
+  const copyAffiliateLink = () => {
+    const link = generateAffiliateLink();
+    if (!link) {
+      toast.error("Affiliate link not found");
+      return;
+    }
+    navigator.clipboard.writeText(link);
+    toast.success("Affiliate link copied to clipboard!", {
+      className: "my-custom-toast",
+      toastId: "Affiliate link copied to clipboard!",
+    });
+    setShowJoinModal(false);
   };
 
   useEffect(() => {
@@ -86,7 +124,9 @@ export default function SingleBlogPage() {
   }, [id]);
 
   const handleShare = async (platform) => {
-    const url = `${window.location.origin}/blogs/${blog._id}`;
+    const url = `${window.location.origin}/blogs/${blog._id}?ref=${
+      refId || ""
+    }`;
     const title = blog.title;
     const text = blog.excerpt || blog.content?.substring(0, 100) + "...";
 
@@ -94,7 +134,10 @@ export default function SingleBlogPage() {
       switch (platform) {
         case "copy":
           await navigator.clipboard.writeText(url);
-          toast.success("✅ Blog link copied to clipboard!");
+          toast.success("Blog link copied to clipboard!", {
+            className: "my-custom-toast",
+            toastId: "Blog link copied to clipboard!",
+          });
           break;
         case "twitter":
           window.open(
@@ -177,10 +220,105 @@ export default function SingleBlogPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-8">
+      <ToastProvider />
+      {/* Join Modal */}
+      {showJoinModal && (
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800">
+                    Join Our Community
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Start your journey with us
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <p className="text-gray-700 mb-4">
+                Ready to take the next step? Join our MLM community and start
+                building your business today!
+              </p>
+              <div className="bg-[#8200DB] bg-opacity-10 border border-[#8200DB] border-opacity-20 rounded-lg p-4 mb-4">
+                <p className="text-[#fff] text-sm font-semibold">
+                  🎁 Special offer for blog readers!
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowJoinModal(false)}
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={copyAffiliateLink}
+                className="flex-1 bg-gray-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-gray-700 transition-all duration-300"
+              >
+                Copy Link
+              </button>
+              <button
+                onClick={handleJoinClick}
+                className="flex-1 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white px-4 py-3 rounded-xl font-semibold hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Join Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-[#8200DB] to-[#6E11B0] py-16 lg:py-24">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Top Right Join Button */}
+          <div className="absolute top-6 right-6">
+            <button
+              onClick={() => setShowJoinModal(true)}
+              className="bg-white text-[#8200DB] px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 group"
+            >
+              <svg
+                className="w-5 h-5 group-hover:scale-110 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                ></path>
+              </svg>
+              <span>Join Now</span>
+            </button>
+          </div>
+
           <div className="text-center text-white">
             <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2 mb-6">
               <span className="text-sm font-semibold">
@@ -405,6 +543,34 @@ export default function SingleBlogPage() {
                   }}
                 />
               </article>
+
+              {/* Bottom Join Section */}
+              <div className="mt-12 pt-8 border-t border-gray-200">
+                <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl p-8 text-center text-white">
+                  <h3 className="text-2xl font-bold mb-4">
+                    Ready to Start Your Journey?
+                  </h3>
+                  <p className="text-blue-100 mb-6 text-lg">
+                    Join our MLM community today and unlock your earning
+                    potential. Start building your business with our proven
+                    system.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button
+                      onClick={copyAffiliateLink}
+                      className="bg-white text-[#8200DB] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg"
+                    >
+                      Copy Affiliate Link
+                    </button>
+                    <button
+                      onClick={handleJoinClick}
+                      className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-[#8200DB] transition-all duration-300"
+                    >
+                      Join Now
+                    </button>
+                  </div>
+                </div>
+              </div>
 
               {/* Keywords */}
               {blog.keywords?.length > 0 && blog.keywords[0] && (
