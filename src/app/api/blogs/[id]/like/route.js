@@ -18,37 +18,83 @@ export async function POST(request, context) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
+    // Check if already liked
     const existingLike = await BlogLike.findOne({ blogId: id, ip });
+    
     if (existingLike) {
-      return NextResponse.json({ message: "Already liked" }, { status: 200 });
-    }
+      // Unlike - remove the like
+      await BlogLike.deleteOne({ blogId: id, ip });
+      
+      // Update blog likes count
+      blog.likes = Math.max(0, (blog.likes || 0) - 1);
+      
+      // Update likedBy array
+      if (Array.isArray(blog.likedBy)) {
+        blog.likedBy = blog.likedBy.filter(ipAddr => ipAddr !== ip);
+      }
+      
+      await blog.save();
 
-    await BlogLike.create({ blogId: id, ip });
-
-    blog.likes = (blog.likes || 0) + 1;
-    if (!Array.isArray(blog.likedBy)) {
-      blog.likedBy = [];
-    }
-
-    let liked = false; 
-
-    if (blog.likedBy.includes(ip)) {
-        
-      blog.likedBy = blog.likedBy.filter((x) => x !== ip);
-      liked = false;
+      return NextResponse.json({
+        success: true,
+        liked: false,
+        likesCount: blog.likes
+      });
     } else {
-      blog.likedBy.push(ip);
-      liked = true;
+      // Like - add new like
+      await BlogLike.create({ blogId: id, ip });
+
+      // Update blog likes count
+      blog.likes = (blog.likes || 0) + 1;
+      
+      // Update likedBy array
+      if (!Array.isArray(blog.likedBy)) {
+        blog.likedBy = [];
+      }
+      if (!blog.likedBy.includes(ip)) {
+        blog.likedBy.push(ip);
+      }
+      
+      await blog.save();
+
+      return NextResponse.json({
+        success: true,
+        liked: true,
+        likesCount: blog.likes
+      });
     }
-    await blog.save();
+  } catch (error) {
+    console.error("Error liking blog:", error);
+    return NextResponse.json({ error: "Failed to like blog" }, { status: 500 });
+  }
+}
+
+// GET endpoint to check like status
+export async function GET(request, context) {
+  await connectDB();
+  const { id } = await context.params;
+
+  try {
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+    }
+
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    const existingLike = await BlogLike.findOne({ blogId: id, ip });
+    const liked = !!existingLike;
 
     return NextResponse.json({
       success: true,
       liked,
-      likesCount: blog.likes.length,
+      likesCount: blog.likes || 0
     });
   } catch (error) {
-    console.error("Error liking blog:", error);
-    return NextResponse.json({ error: "Failed to like blog" }, { status: 500 });
+    console.error("Error checking like status:", error);
+    return NextResponse.json({ error: "Failed to check like status" }, { status: 500 });
   }
 }
