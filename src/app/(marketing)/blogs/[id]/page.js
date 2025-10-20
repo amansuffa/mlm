@@ -13,6 +13,8 @@ export default function SingleBlogPage() {
   const [loading, setLoading] = useState(true);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
   const searchParams = useSearchParams();
 
   const refId = searchParams.get("ref");
@@ -84,12 +86,42 @@ export default function SingleBlogPage() {
     setShowJoinModal(false);
   };
 
+  // Handle Like functionality
+  const handleLike = async () => {
+    try {
+      const response = await axios.post(`/api/blogs/${id}/like`);
+      console.log(response)
+      if (response.data.success) {
+        setIsLiked(response.data.liked);
+        setLikesCount(response.data.likesCount);
+      }
+    } catch (error) {
+      console.error("Like error:", error);
+      toast.error("Failed to like blog");
+    }
+  };
+
+  // Check if user has already liked the blog
+  const checkLikeStatus = async () => {
+    try {
+      const response = await axios.get(`/api/blogs/${id}/like`);
+        setIsLiked(response.data.liked);
+        setLikesCount(response.data.likesCount);
+    } catch (error) {
+      console.error("Like status check error:", error);
+    }
+  };
+
   useEffect(() => {
     async function fetchBlog() {
       try {
         const res = await axios.get(`/api/blogs/${id}`);
         const data = res.data;
         setBlog(data.blog);
+        setLikesCount(data.blog.likes || 0);
+
+        // Check like status
+        await checkLikeStatus();
 
         // Fetch related blogs based on category/tags
         if (data.blog.category || data.blog.tags?.length > 0) {
@@ -97,7 +129,9 @@ export default function SingleBlogPage() {
         }
       } catch (err) {
         console.error(err);
-        toast.error("Failed to load blog");
+        toast.error("Failed to load blog",{
+          toastId:'Failed to load blog'
+        });
       } finally {
         setLoading(false);
       }
@@ -261,7 +295,7 @@ export default function SingleBlogPage() {
                 building your business today!
               </p>
               <div className="bg-[#8200DB] bg-opacity-10 border border-[#8200DB] border-opacity-20 rounded-lg p-4 mb-4">
-                <p className="text-[#fff] text-sm font-semibold">
+                <p className="text-[#8200DB] text-sm font-semibold">
                   🎁 Special offer for blog readers!
                 </p>
               </div>
@@ -296,8 +330,7 @@ export default function SingleBlogPage() {
       <div className="relative bg-gradient-to-r from-[#8200DB] to-[#6E11B0] py-16 lg:py-24">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top Right Join Button */}
-          <div className="absolute top-6 right-6">
+          <div className="absolute top-0 right-6 flex flex-col space-y-3">
             <button
               onClick={() => setShowJoinModal(true)}
               className="bg-white text-[#8200DB] px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 group"
@@ -379,7 +412,7 @@ export default function SingleBlogPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 text-sm">Likes</span>
                   <span className="font-semibold text-[#8200DB]">
-                    {blog.likes || 0}
+                    {likesCount}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -389,6 +422,32 @@ export default function SingleBlogPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Like Button in Sidebar */}
+              <button
+                onClick={handleLike}
+                className={`w-full mt-4 px-4 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group ${
+                  isLiked
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white hover:from-[#6E11B0] hover:to-[#8200DB]"
+                }`}
+              >
+                <svg
+                  className={`w-5 h-5 group-hover:scale-110 transition-transform ${
+                    isLiked ? "fill-current" : "fill-none"
+                  }`}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+                <span>{isLiked ? "Liked" : "Like this Blog"}</span>
+              </button>
             </div>
 
             {/* Share Widget */}
@@ -525,7 +584,7 @@ export default function SingleBlogPage() {
                     {blog.tags.slice(0, 3).map((tag, index) => (
                       <span
                         key={index}
-                        className="bg-[#8200DB] bg-opacity-10 text-[#fff] px-3 py-1 rounded-full text-xs font-semibold"
+                        className="bg-[#8200DB] bg-opacity-10 text-[#8200DB] px-3 py-1 rounded-full text-xs font-semibold"
                       >
                         #{tag}
                       </span>
