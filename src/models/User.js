@@ -24,6 +24,28 @@ verificationToken: { type: String, default: null },
   adminFeePaid: { type: Boolean, default: false },
   membershipFeePaid: { type: Boolean, default: false },
   payoutMethods: [payoutMethodSchema],
+  firstName: { type: String, default: "" },
+  middleName: { type: String, default: "" },
+  lastName: { type: String, default: "" },
+  profilePicture: { type: String, default: "" },
+  phone: {
+    countryCode: { type: String, default: "" },
+    number: { type: String, default: "" },
+  },
+  address: {
+    country: { type: String, default: "" },
+    province: { type: String, default: "" },
+    city: { type: String, default: "" },
+  },
+  socialMedia: {
+    facebook: { type: String, default: "" },
+    instagram: { type: String, default: "" },
+    tiktok: { type: String, default: "" },
+    whatsapp: { type: String, default: "" },
+  },
+  pendingEmail: { type: String, default: "" },
+  emailChangeToken: { type: String, default: "" },
+  emailChangeExpires: { type: Date, default: null },
 },
 { timestamps: true } );
 
