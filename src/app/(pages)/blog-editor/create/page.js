@@ -5,8 +5,8 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import axios from "axios";
 import ToastProvider from "@/components/ToastProvider";
-import { toast } from 'react-toastify';
-import '@/Styling/style.scss';
+import { toast } from "react-toastify";
+import "@/Styling/style.scss";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
@@ -41,30 +41,22 @@ export default function CreateBlogPage() {
       setThumbnailPreview(previewUrl);
     }
   };
-
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const newImages = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-      name: file.name,
-    }));
-    setUploadedImages((prev) => [...prev, ...newImages]);
-  };
-
-  // Handle Video Upload
-  const handleVideoUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const newVideos = files.map((file) => ({
-      file,
-      name: file.name,
-      type: file.type,
-      preview: URL.createObjectURL(file),
-    }));
-    setUploadedVideos((prev) => [...prev, ...newVideos]);
-  };
-
   // Handle Video Links
+  const handleFileUpload = async (e, type) => {
+    const files = Array.from(e.target.files);
+    const folder = type === "video" ? "blog-videos" : "blog-images";
+
+    const uploads = await Promise.all(
+      files.map(async (file) => {
+        const url = await uploadFileToServer(file, folder);
+        return { file, name: file.name, preview: url, type };
+      })
+    );
+
+    if (type === "image") setUploadedImages((prev) => [...prev, ...uploads]);
+    else setUploadedVideos((prev) => [...prev, ...uploads]);
+  };
+
   const addVideoLink = () => {
     setVideoLinks((prev) => [...prev, ""]);
   };
@@ -123,7 +115,7 @@ export default function CreateBlogPage() {
   const replaceBlobUrlsInContent = async (rawContent) => {
     if (!rawContent) return rawContent;
     let updated = String(rawContent);
-    const blobUrls = [...new Set((updated.match(/blob:[^\s)"']+/g) || []))];
+    const blobUrls = [...new Set(updated.match(/blob:[^\s)"']+/g) || [])];
 
     for (const blobUrl of blobUrls) {
       // Try to find matching uploaded video or image by preview URL
@@ -134,7 +126,10 @@ export default function CreateBlogPage() {
       if (!fileObj) continue; // nothing to upload for this blob
 
       try {
-        const uploadedUrl = await uploadFileToServer(fileObj, vid ? "blog-videos" : "blog-images");
+        const uploadedUrl = await uploadFileToServer(
+          fileObj,
+          vid ? "blog-videos" : "blog-images"
+        );
         if (uploadedUrl) {
           updated = updated.split(blobUrl).join(uploadedUrl);
         }
@@ -173,23 +168,23 @@ export default function CreateBlogPage() {
     // Validate required fields: title, thumbnail, content
     if (!title.trim() || !thumbnail || !content.trim()) {
       const missing = [];
-      if (!title.trim()) missing.push('Title');
-      if (!thumbnail) missing.push('Thumbnail');
-      if (!content.trim()) missing.push('Content');
-      const msg = `Please provide required field(s): ${missing.join(', ')}`;
+      if (!title.trim()) missing.push("Title");
+      if (!thumbnail) missing.push("Thumbnail");
+      if (!content.trim()) missing.push("Content");
+      const msg = `Please provide required field(s): ${missing.join(", ")}`;
       setError(msg);
       toast.error(msg);
       setLoading(false);
       return;
     }
     try {
-  // Replace any blob URLs in content (upload local files and replace)
-  const contentToSubmit = await replaceBlobUrlsInContent(content);
+      // Replace any blob URLs in content (upload local files and replace)
+      const contentToSubmit = await replaceBlobUrlsInContent(content);
 
-  // Create FormData for file uploads
-  const formData = new FormData();
-  formData.append("title", title);
-  formData.append("content", contentToSubmit);
+      // Create FormData for file uploads
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", contentToSubmit);
       formData.append("excerpt", excerpt);
       formData.append("tags", tags);
       formData.append("keywords", keywords);
@@ -250,7 +245,7 @@ export default function CreateBlogPage() {
         // Show success toast and navigate only after the toast has finished auto-closing
         const start = Date.now();
         toast.success(response.data?.message || "Blog created successfully", {
-          className: 'my-custom-toast',
+          className: "my-custom-toast",
           onClose: () => {
             const elapsed = Date.now() - start;
             // If the toast was visible for the full auto-close duration, navigate.
@@ -270,7 +265,10 @@ export default function CreateBlogPage() {
           const respData = axiosError.response.data;
           // If server returned HTML (Next.js error page), respData will be string starting with '<'
           if (typeof respData === "string" && respData.trim().startsWith("<")) {
-            console.error("Server returned HTML error page:", respData.slice(0, 500));
+            console.error(
+              "Server returned HTML error page:",
+              respData.slice(0, 500)
+            );
             setError("Server error occurred. Please try again later.");
             toast.error("Server error occurred. Please try again later.");
           } else if (respData && respData.error) {
@@ -283,18 +281,24 @@ export default function CreateBlogPage() {
         } else if (axiosError.request) {
           // Request made but no response
           console.error("No response received:", axiosError.request);
-          setError("No response from server. Check your connection and try again.");
-          toast.error("No response from server. Check your connection and try again.");
+          setError(
+            "No response from server. Check your connection and try again."
+          );
+          toast.error(
+            "No response from server. Check your connection and try again."
+          );
         } else {
           // Something else happened
-          setError(axiosError.message || "Something went wrong. Please try again.");
-          toast.error(axiosError.message || "Something went wrong. Please try again.");
+          setError(
+            axiosError.message || "Something went wrong. Please try again."
+          );
+          toast.error(
+            axiosError.message || "Something went wrong. Please try again."
+          );
         }
         setLoading(false);
         return;
       }
-
-      // router.push("/blog-editor");
     } catch (err) {
       console.error("Error creating blog:", err);
       setError("Something went wrong. Please try again.");
@@ -377,12 +381,20 @@ export default function CreateBlogPage() {
               >
                 <option value="">Select Category</option>
                 <option value="network-marketing">Network Marketing</option>
-                <option value="team-building">Team Building & Leadership</option>
+                <option value="team-building">
+                  Team Building & Leadership
+                </option>
                 <option value="compensation-plans">Compensation Plans</option>
-                <option value="lead-generation">Lead Generation & Prospecting</option>
+                <option value="lead-generation">
+                  Lead Generation & Prospecting
+                </option>
                 <option value="recruitment">Recruitment & Onboarding</option>
-                <option value="product-training">Product & Sales Training</option>
-                <option value="duplication-systems">Duplication & Systems</option>
+                <option value="product-training">
+                  Product & Sales Training
+                </option>
+                <option value="duplication-systems">
+                  Duplication & Systems
+                </option>
                 <option value="marketing">Marketing & Sales</option>
                 <option value="success-stories">Success Stories</option>
                 <option value="legal-compliance">Legal & Compliance</option>
@@ -456,7 +468,7 @@ export default function CreateBlogPage() {
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={handleImageUpload}
+                  onChange={(e) => handleFileUpload(e, "image")}
                   className="hidden"
                   id="image-upload"
                 />
@@ -533,7 +545,7 @@ export default function CreateBlogPage() {
                   type="file"
                   accept="video/*"
                   multiple
-                  onChange={handleVideoUpload}
+                  onChange={(e) => handleFileUpload(e, "video")}
                   className="hidden"
                   id="video-upload"
                 />
@@ -581,14 +593,19 @@ export default function CreateBlogPage() {
                             type="button"
                             onClick={async () => {
                               try {
-                                const url = await uploadFileToServer(video.file, "blog-videos");
+                                const url = await uploadFileToServer(
+                                  video.file,
+                                  "blog-videos"
+                                );
                                 if (url) {
                                   insertVideoToEditor(url);
                                   toast.success("Video uploaded and inserted");
                                 }
                               } catch (err) {
                                 console.error("Insert upload failed:", err);
-                                toast.error("Failed to upload video. Try again.");
+                                toast.error(
+                                  "Failed to upload video. Try again."
+                                );
                               }
                             }}
                             className="text-xs bg-[#8200DB] text-white px-2 py-1 rounded"

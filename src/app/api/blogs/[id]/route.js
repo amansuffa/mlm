@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
-import { Blog } from "@/models/Blog"; 
+import { Blog } from "@/models/Blog";
+import { BlogView } from "@/models/BlogView";
 import { uploadToCloudinary } from "@/lib/uploadCloudinary";
-
-
 
 export async function GET(request, context) {
   try {
@@ -15,6 +14,24 @@ export async function GET(request, context) {
 
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+    }
+
+    // Get user IP
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    // Check if this IP has already viewed the blog
+    const existingView = await BlogView.findOne({ blogId: blog._id, ip });
+
+    if (!existingView) {
+      // Create a new view record
+      await BlogView.create({ blogId: blog._id, ip });
+
+      // Increment blog view count
+      blog.views = (blog.views || 0) + 1;
+      await blog.save();
     }
 
     return NextResponse.json({ blog });
@@ -32,7 +49,7 @@ export async function PUT(req, { params }) {
   try {
     await connectDB();
 
-    const formData = await req.formData(); 
+    const formData = await req.formData();
     const title = formData.get("title");
     const content = formData.get("content");
     const excerpt = formData.get("excerpt");
@@ -96,7 +113,9 @@ export async function PUT(req, { params }) {
     return NextResponse.json(updatedBlog);
   } catch (error) {
     console.error("❌ Error updating blog:", error);
-    return NextResponse.json({ error: "Failed to update blog" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update blog" },
+      { status: 500 }
+    );
   }
 }
-
