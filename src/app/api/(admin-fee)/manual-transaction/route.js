@@ -6,9 +6,9 @@ import { auth } from "@/auth";
 
 export async function POST(req) {
   await connectDB();
-  const session = await auth();
-  if (!session)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // const session = await auth();
+  // if (!session)
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const body = await req.json();
