@@ -1,15 +1,17 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { useRouter, useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 import axios from "axios";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
-export default function CreateEmailTemplate() {
+export default function EditEmailTemplate() {
   const router = useRouter();
+  const params = useParams();
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
@@ -18,6 +20,33 @@ export default function CreateEmailTemplate() {
     subject: "",
     body: "",
   });
+  useEffect(() => {
+    fetchTemplate();
+  }, []);
+  const fetchTemplate = useCallback(async () => {
+    try {
+      setFetchLoading(true);
+      const res = await axios.get("/api/email-templates");
+      const template = res.data.find((t) => t._id === params.id);
+      
+      if (template) {
+        setForm({
+          name: template.name || "",
+          type: template.type || "",
+          category: template.category || "",
+          subject: template.subject || "",
+          body: template.body || "",
+        });
+      } else {
+        setError("Template not found");
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError("Failed to load template");
+    } finally {
+      setFetchLoading(false);
+    }
+  }, [params.id, setForm, setError, setFetchLoading])
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -25,11 +54,10 @@ export default function CreateEmailTemplate() {
     setError("");
 
     try {
-      await axios.post("/api/email-templates", form);
-      toast.success("Email template created successfully!");
+      await axios.put("/api/email-templates", { id: params.id, ...form });
+      toast.success("Email template updated successfully!");
       router.push("/email-templates");
     } catch (err) {
-      console.error("Create template error:", err);
       toast.error(err.message);
       setError(err.message);
     } finally {
@@ -37,23 +65,34 @@ export default function CreateEmailTemplate() {
     }
   }
 
+  if (fetchLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#8200DB] mx-auto"></div>
+          <p className="text-gray-600 mt-4 text-lg">Loading template data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-scree py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden">
         {/* Professional Header */}
         <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white">
-                Create Email Template
+                Edit Email Template
               </h1>
               <p className="text-blue-100 mt-2">
-                Design professional email templates for your MLM communications
+                Update and refine your email template
               </p>
             </div>
             <div className="bg-white/20 rounded-lg px-4 py-2">
               <span className="text-white text-sm font-medium">
-                Template Builder
+                Editing Mode
               </span>
             </div>
           </div>
@@ -243,13 +282,7 @@ export default function CreateEmailTemplate() {
             </button>
 
             <div className="flex space-x-4">
-              <button
-                type="button"
-                onClick={() => setForm({ name: "", type: "", subject: "", body: "" })}
-                className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
-              >
-                Clear Form
-              </button>
+            
 
               <button
                 type="submit"
@@ -277,10 +310,10 @@ export default function CreateEmailTemplate() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Creating...
+                    Updating...
                   </>
                 ) : (
-                  "Create Template"
+                  "Update Template"
                 )}
               </button>
             </div>

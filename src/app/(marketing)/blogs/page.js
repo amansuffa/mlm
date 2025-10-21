@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
-export default async function BlogsPage() {
+export default function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
 
   useEffect(() => {
     async function fetchBlogs() {
@@ -73,7 +75,7 @@ export default async function BlogsPage() {
               <div className="flex justify-between items-center mt-5">
                 {/* Read More */}
                 <Link
-                  href={`/blogs/${blog._id}`}
+                  href={`/blogs/${blog._id}?ref=${session.user.username || ""}`}
                   className="text-blue-600 font-medium hover:underline"
                 >
                   Read More →
@@ -83,7 +85,7 @@ export default async function BlogsPage() {
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `${window.location.origin}/blogs/${blog._id}`
+                      `${window.location.origin}/blogs/${blog._id}?ref=${session.user.username || ""}`
                     );
                     alert("Blog link copied to clipboard!");
                   }}

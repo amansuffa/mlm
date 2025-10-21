@@ -12,10 +12,8 @@ import {
   FaUserFriends,
   FaUsers,
   FaWallet,
+  FaHospitalUser,
 } from "react-icons/fa";
-import { FaHospitalUser } from "react-icons/fa";
-
-
 
 export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   const pathname = usePathname();
@@ -23,76 +21,79 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   console.log("Sidebar Status:", status, "Role:", role);
 
   const allLinks = [
-    { 
-      href: "/dashboard", 
-      label: "Dashboard", 
-      icon: <FaTachometerAlt />, 
-      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
+    {
+      href: "/dashboard",
+      label: "Dashboard",
+      icon: <FaTachometerAlt />,
+      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
     },
-    { 
-      href: "/user/profile", 
-      label: "Profile", 
-      icon: <FaUser />, 
-      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
+    {
+      href: "/user/profile",
+      label: "Profile",
+      icon: <FaUser />,
+      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
     },
-    { 
-      href: "/user/downline", 
-      label: "Downline", 
-      icon: <FaUsers />, 
-      statuses: ["membership_paid", "fully_active"] 
+    {
+      href: "/user/downline",
+      label: "Downline",
+      icon: <FaUsers />,
+      statuses: ["fully_active"],
     },
-    { 
-      href: "/user/referrals", 
-      label: "My Referrals", 
-      icon: <FaUserFriends />, 
-      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"] 
+    {
+      href: "/user/referrals",
+      label: "My Referrals",
+      icon: <FaUserFriends />,
+      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
     },
-    // { 
-    //   href: "/user/withdrawal", 
-    //   label: "Withdrawal", 
-    //   icon: <FaWallet />, 
-    //   statuses: ["fully_active"] 
-    // },
-    { 
-      href: "/transactions", 
-      label: "Transactions", 
-      icon: <FaExchangeAlt />, 
-      statuses: ["membership_paid", "fully_active"] 
+    {
+      href: "/user/pay-to-sponser",
+      label: "Pay to Sponser",
+      icon: <FaUserFriends />,
+      roles:["user"]
     },
-    { 
-      href: "/blog-editor", 
-      label: "Blog Editor", 
-      icon: <FaClipboardList />, 
-      statuses: ["admin_fee_paid", "membership_paid", "fully_active"] 
+    {
+      href: "/transactions",
+      label: "Transactions",
+      icon: <FaExchangeAlt />,
+      statuses: ["fully_active"],
     },
-    { 
-      href: "/email-templates", 
-      label: "Email Templates", 
-      icon: <FaEnvelope />, 
-      statuses: ["admin_fee_paid", "membership_paid", "fully_active"] 
+    // 👇 Admin-only links
+    {
+      href: "/blog-editor",
+      label: "Blog Editor",
+      icon: <FaClipboardList />,
+      roles: ["admin"],
     },
-    { 
-      href: "/manage-users", 
-      label: "Manage Users", 
-      icon: <FaUserCog />, 
-      statuses: ["admin_fee_paid", "membership_paid", "fully_active"], 
-      roles: ["admin"] // ✅ only visible to admins
+    {
+      href: "/email-templates",
+      label: "Email Templates",
+      icon: <FaEnvelope />,
+      roles: ["admin"],
     },
-    { 
-      href: "/manage-plans", 
-      label: "Manage Plans", 
-      icon: <FaHospitalUser />, 
-      statuses: ["admin_fee_paid", "membership_paid", "fully_active"], 
-      roles: ["admin"] // ✅ only visible to admins
-    }
+    {
+      href: "/manage-users",
+      label: "Manage Users",
+      icon: <FaUserCog />,
+      roles: ["admin"],
+    },
+    {
+      href: "/manage-plans",
+      label: "Manage Plans",
+      icon: <FaHospitalUser />,
+      roles: ["admin"],
+    },
   ];
 
-  // ✅ Filter: first check status, then if link has a roles condition, check role too
-  const filteredLinks = allLinks.filter(
-    (link) =>
-      link.statuses.includes(status) &&
-      (!link.roles || link.roles.includes(role))
-  );
+  // ✅ Filter logic: show link if
+  // - it has a matching status (if defined), and
+  // - it has a matching role (if defined)
+  const filteredLinks = allLinks.filter((link) => {
+    const statusAllowed =
+      !link.statuses || link.statuses.includes(status);
+    const roleAllowed =
+      !link.roles || link.roles.includes(role);
+    return statusAllowed && roleAllowed;
+  });
 
   return (
     <>
