@@ -5,9 +5,9 @@ export default function HomePage() {
   return (
     <>
       <Navbar />
-      <section className="bg-gradient-to-r from-purple-50 to-purple-100 min-h-screen flex flex-col items-center justify-center text-center p-6">
+      <section className="min-h-screen flex flex-col items-center justify-center text-center p-6">
         {/* Hero Section */}
-        <h1 className="text-4xl md:text-5xl font-bold text-purple-800 mb-4">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 heading-primary heading-light">
           Build Your Team. Grow Your Income.
         </h1>
         <p className="text-lg text-gray-700 mb-6 max-w-2xl">

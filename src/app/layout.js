@@ -1,18 +1,15 @@
 import { Geist, Geist_Mono } from "next/font/google";
-
+import { ThemeProvider } from 'next-themes';
 import "./globals.css";
 import Providers from "./Provider";
-// import { connectDB } from "@/lib/mongodb";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
 export const metadata = {
   title: "MLM App",
   description: "A simple MLM app built with Next.js and MongoDB",
@@ -24,9 +21,11 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black transition-colors duration-300`}
       >
-        <Providers>{children}</Providers>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <Providers>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

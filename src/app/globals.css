@@ -8,3 +8,24 @@ button {
   cursor: pointer;
 }
 
+.dark .heading-primary {
+  color: #fbbf24; 
+}
+.light .heading-light {
+  color: gray; 
+}
+
+.dark {
+  /* Dark Theme Custom Colors (Black + Golden) */
+  --bg-primary: #25293C;
+  --bg-secondary: #111827;
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --accent-color: #d4af37; /* Golden */
+  --sidebar-bg: #1f2937;
+}
+
+body {
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
