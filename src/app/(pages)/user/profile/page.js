@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -108,34 +109,41 @@ export default function ProfilePage() {
     }
   }
 
-  async function handleImageUpload(file) {
-    if (!file) return;
+  async function handleImageUpload(file,folder = "payment-proof") {
+  if (!file) return;
 
-    setUploading(true);
+  setUploading(true);
+
+  try {
     const formDataUpload = new FormData();
     formDataUpload.append("file", file);
+        formDataUpload.append("folder", folder);
 
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formDataUpload,
-      });
-      const data = await res.json();
-      console.log("Upload response:", data);
 
-      if (data.success) {
-        setFormData((prev) => ({ ...prev, profilePicture: data.url }));
-        console.log("Image URL set:", data.url);
-      } else {
-        alert(data.error || "Failed to upload image");
-      }
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert("Error uploading image");
-    } finally {
-      setUploading(false);
+    const res = await axios.post("/api/upload", formDataUpload, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 120000,
+    });
+
+    
+
+    const data = res.data.url;
+    console.log("Upload response:", data);
+
+    if (data) {
+      setFormData((prev) => ({ ...prev, profilePicture: data }));
+      toast.success("✅ Image uploaded successfully!");
+    } else {
+      toast.error(res.error || "❌ Failed to upload image");
     }
+  } catch (err) {
+    console.error("Upload error:", err);
+    toast.error("Error uploading image");
+  } finally {
+    setUploading(false);
   }
+}
+
 
   const displayName =
     user?.firstName && user?.lastName
@@ -229,6 +237,8 @@ export default function ProfilePage() {
                         <Image
                           src={formData.profilePicture || user.profilePicture}
                           alt="Profile"
+                           width={500} 
+  height={500}
                           className="w-full h-full object-cover"
                         />
                       ) : (

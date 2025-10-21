@@ -67,30 +67,25 @@ function PaymentForm() {
     });
   };
 
-  const uploadImage = async (file) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "ml_default");
-      // formData.append("type", "payment");
+  const uploadImage = async (file, folder = "payment-proof") => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", folder);
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+    const res = await axios.post("/api/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 120000,
+    });
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Failed to upload image");
-      }
+    console.log("✅ Cloudinary Upload Response:", res.data);
 
-      const data = await res.json();
-      return data.url;
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw new Error("Image upload failed");
-    }
-  };
+    return res.data.url; 
+  } catch (error) {
+    console.error("❌ Error uploading image:", error.response?.data || error.message);
+    throw new Error("Image upload failed");
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
