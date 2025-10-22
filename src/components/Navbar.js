@@ -214,13 +214,13 @@ export default function Navbar() {
               height={180}
             />
           </div>
-          <Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-yellow-400 transition-colors duration-200">
+          <Link href="/" className="dark:hover:text-yellow-400 transition-colors duration-200 font-medium">
             Home
           </Link>
-          <Link href="/blogs" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-yellow-400 transition-colors duration-200">
+          <Link href="/blogs" className="dark:hover:text-yellow-400 transition-colors duration-200 font-medium">
             Blogs
           </Link>
-          <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-yellow-400 transition-colors duration-200">
+          <Link href="/about" className="dark:hover:text-yellow-400 transition-colors duration-200 font-medium">
             About
           </Link>
           {session?.user && (
@@ -275,12 +275,12 @@ export default function Navbar() {
           {!session?.user ? (
             <>
               <Link href="/login">
-                <button className="px-4 py-2 bg-purple-600 dark:bg-yellow-400 text-white dark:text-black rounded-md hover:opacity-90 transition-opacity duration-200 font-medium">
+                <button className="px-4 py-2 dark:bg-yellow-400 dark:text-[#181A20] rounded-md hover:opacity-90 transition-opacity duration-200 font-medium">
                   Login
                 </button>
               </Link>
               <Link href="/signup">
-                <button className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:opacity-90 transition-opacity duration-200 font-medium">
+                <button className="px-4 py-2 bg-gray-200 dark:bg-[#29313D] text-gray-800 dark:text-gray-200 rounded-md hover:opacity-90 transition-opacity duration-200 font-medium">
                   Signup
                 </button>
               </Link>

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-.hero{
+.hero {
     min-height: calc(100vh - 68px);
 }
 
@@ -8,24 +8,28 @@ button {
   cursor: pointer;
 }
 
-.dark .heading-primary {
-  color: #fbbf24; 
-}
-.light .heading-light {
-  color: gray; 
+:root {
+  --bg-primary: #FFFFFF;   
+  --button-bg: #EDEDED; 
+  --text-primary: #000000; 
+  --custom-bg-color: #1F2937
 }
 
 .dark {
-  /* Dark Theme Custom Colors (Black + Golden) */
-  --bg-primary: #151517;
-  --bg-secondary: #111827;
-  --text-primary: #ffffff;
-  --text-secondary: #d1d5db;
-  --accent-color: #d4af37; /* Golden */
-  --sidebar-bg: #1f2937;
+  --bg-primary: #181A20;     
+  --text-primary: #ffffff;  
+  --button-bg: #29313D;  
 }
 
 body {
   background-color: var(--bg-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  color: var(--text-primary);
+}
+.custom {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.custom-div {
+  background-color: var(--custom-bg-color);
 }
