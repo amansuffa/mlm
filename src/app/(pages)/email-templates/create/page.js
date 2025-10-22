@@ -19,26 +19,64 @@ export default function CreateEmailTemplate() {
     body: "",
   });
 
+  // Convert markdown to HTML with proper line breaks
+  const convertToHtml = (markdown) => {
+    if (!markdown) return "";
+    
+    // First, convert line breaks to <br> tags
+    let html = markdown.replace(/\n/g, '<br>');
+    
+    // Then handle other markdown basics
+    html = html
+      // Headers
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+      // Italic
+      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+      // Links
+      .replace(/\[([^\[]+)\]\(([^\)]+)\)/g, '<a href="$2" style="color: #8200DB; text-decoration: none;">$1</a>')
+      // Lists
+      .replace(/^\s*\- (.*$)/gim, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    
+    return html;
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      await axios.post("/api/email-templates", form);
+      // Convert the markdown body to HTML before saving
+      const formData = {
+        ...form,
+        body: convertToHtml(form.body),
+        body_markdown: form.body // Optional: save markdown version too
+      };
+
+      await axios.post("/api/email-templates", formData);
       toast.success("Email template created successfully!");
       router.push("/email-templates");
     } catch (err) {
       console.error("Create template error:", err);
-      toast.error(err.message);
-      setError(err.message);
+      toast.error(err.response?.data?.message || err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);
     }
   }
 
+  // Handle editor change and show real-time preview
+  const handleEditorChange = (value) => {
+    setForm({ ...form, body: value });
+  };
+
   return (
-    <div className="min-h-scree py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden">
         {/* Professional Header */}
         <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">
@@ -200,34 +238,75 @@ export default function CreateEmailTemplate() {
             >
               <MDEditor
                 value={form.body}
-                onChange={(value) => setForm({ ...form, body: value })}
+                onChange={handleEditorChange}
                 height={400}
                 preview="edit"
+                textareaProps={{
+                  placeholder: "Write your email content here...\n\nPress Enter for new lines\nUse **bold** for emphasis\nAdd variables like {{FirstName}}"
+                }}
               />
             </div>
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
               <span># Headings</span>
               <span>**Bold**</span>
               <span>*Italic*</span>
               <span>- Lists</span>
               <span>[Links](url)</span>
+              <span>Enter = &lt;br&gt; tag</span>
               <span>HTML allowed</span>
             </div>
           </div>
 
-          {/* Preview Section */}
+          {/* Real-time Preview Section */}
+          <div className="space-y-3">
+            <label className="block text-lg font-semibold text-gray-800">
+              Live Preview
+            </label>
+            <div className="border-2 border-gray-200 rounded-xl p-6 bg-white min-h-[200px]">
+              {form.body ? (
+                <div 
+                  className="email-preview prose max-w-none"
+                  style={{ 
+                    whiteSpace: 'pre-wrap',
+                    fontFamily: 'Arial, sans-serif',
+                    lineHeight: '1.6'
+                  }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: convertToHtml(form.body) 
+                  }}
+                />
+              ) : (
+                <div className="text-gray-400 text-center py-8">
+                  <svg
+                    className="w-12 h-12 mx-auto mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                  <p>Start typing above to see the preview here</p>
+                  <p className="text-sm mt-1">Enter key will create line breaks in the final email</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* HTML Output Preview (Optional) */}
           {form.body && (
             <div className="space-y-3">
               <label className="block text-lg font-semibold text-gray-800">
-                Preview
+                HTML Output (What gets stored)
               </label>
-              <div className="border-2 border-gray-200 rounded-xl p-6 bg-white">
-                <div className="prose max-w-none">
-                  <div 
-                    className="email-preview"
-                    dangerouslySetInnerHTML={{ __html: form.body }}
-                  />
-                </div>
+              <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
+                <code className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+                  {convertToHtml(form.body)}
+                </code>
               </div>
             </div>
           )}
@@ -245,7 +324,7 @@ export default function CreateEmailTemplate() {
             <div className="flex space-x-4">
               <button
                 type="button"
-                onClick={() => setForm({ name: "", type: "", subject: "", body: "" })}
+                onClick={() => setForm({ name: "", type: "", category: "", subject: "", body: "" })}
                 className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
               >
                 Clear Form
@@ -253,7 +332,7 @@ export default function CreateEmailTemplate() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !form.body}
                 className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 {loading ? (

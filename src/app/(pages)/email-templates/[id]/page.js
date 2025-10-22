@@ -13,6 +13,7 @@ export default function EditEmailTemplate() {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState("");
+  const [originalBody, setOriginalBody] = useState("");
   const [form, setForm] = useState({
     name: "",
     type: "",
@@ -20,7 +21,63 @@ export default function EditEmailTemplate() {
     subject: "",
     body: "",
   });
- 
+
+  // Convert markdown to HTML with proper line breaks
+  const convertToHtml = (markdown) => {
+    if (!markdown) return "";
+    
+    // First, convert line breaks to <br> tags
+    let html = markdown.replace(/\n/g, '<br>');
+    
+    // Then handle other markdown basics
+    html = html
+      // Headers
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+      // Italic
+      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+      // Links
+      .replace(/\[([^\[]+)\]\(([^\)]+)\)/g, '<a href="$2" style="color: #8200DB; text-decoration: none;">$1</a>')
+      // Lists
+      .replace(/^\s*\- (.*$)/gim, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    
+    return html;
+  };
+
+  // Convert HTML back to markdown for editing
+  const convertToMarkdown = (html) => {
+    if (!html) return "";
+    
+    let markdown = html
+      // Replace <br> tags with newlines
+      .replace(/<br\s*\/?>/gi, '\n')
+      // Headers
+      .replace(/<h1>(.*?)<\/h1>/gi, '# $1\n')
+      .replace(/<h2>(.*?)<\/h2>/gi, '## $1\n')
+      .replace(/<h3>(.*?)<\/h3>/gi, '### $1\n')
+      // Bold
+      .replace(/<strong>(.*?)<\/strong>/gi, '**$1**')
+      .replace(/<b>(.*?)<\/b>/gi, '**$1**')
+      // Italic
+      .replace(/<em>(.*?)<\/em>/gi, '*$1*')
+      .replace(/<i>(.*?)<\/i>/gi, '*$1*')
+      // Links
+      .replace(/<a\s+href="([^"]*)"[^>]*>([^<]*)<\/a>/gi, '[$2]($1)')
+      // Lists
+      .replace(/<ul>\s*<li>(.*?)<\/li>\s*<\/ul>/gis, '- $1\n')
+      .replace(/<li>(.*?)<\/li>/gi, '- $1\n')
+      // Remove other HTML tags but keep content
+      .replace(/<[^>]*>/g, '')
+      // Clean up multiple newlines
+      .replace(/\n\s*\n\s*\n/g, '\n\n');
+    
+    return markdown.trim();
+  };
+
   const fetchTemplate = useCallback(async () => {
     try {
       setFetchLoading(true);
@@ -28,13 +85,17 @@ export default function EditEmailTemplate() {
       const template = res.data.find((t) => t._id === params.id);
       
       if (template) {
+        // Convert stored HTML back to markdown for editing
+        const bodyMarkdown = template.body_markdown || convertToMarkdown(template.body);
+        
         setForm({
           name: template.name || "",
           type: template.type || "",
           category: template.category || "",
           subject: template.subject || "",
-          body: template.body || "",
+          body: bodyMarkdown,
         });
+        setOriginalBody(bodyMarkdown);
       } else {
         setError("Template not found");
       }
@@ -44,26 +105,51 @@ export default function EditEmailTemplate() {
     } finally {
       setFetchLoading(false);
     }
-  }, [params.id, setForm, setError, setFetchLoading])
- useEffect(() => {
+  }, [params.id]);
+
+  useEffect(() => {
     fetchTemplate();
   }, [fetchTemplate]);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      await axios.put("/api/email-templates", { id: params.id, ...form });
+      // Convert the markdown body to HTML before saving
+      const formData = {
+        id: params.id,
+        name: form.name,
+        type: form.type,
+        category: form.category,
+        subject: form.subject,
+        body: convertToHtml(form.body),
+        body_markdown: form.body // Save markdown version for future editing
+      };
+
+      await axios.put("/api/email-templates", formData);
       toast.success("Email template updated successfully!");
       router.push("/email-templates");
     } catch (err) {
-      toast.error(err.message);
-      setError(err.message);
+      console.error("Update error:", err);
+      toast.error(err.response?.data?.message || err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);
     }
   }
+
+  // Handle editor change
+  const handleEditorChange = (value) => {
+    setForm({ ...form, body: value });
+  };
+
+  // Check if form has changes
+  const hasChanges = form.body !== originalBody || 
+                    form.name !== form.name || 
+                    form.category !== form.category || 
+                    form.subject !== form.subject;
 
   if (fetchLoading) {
     return (
@@ -90,10 +176,19 @@ export default function EditEmailTemplate() {
                 Update and refine your email template
               </p>
             </div>
-            <div className="bg-white/20 rounded-lg px-4 py-2">
-              <span className="text-white text-sm font-medium">
-                Editing Mode
-              </span>
+            <div className="flex items-center space-x-3">
+              {hasChanges && (
+                <div className="bg-yellow-500/20 rounded-lg px-3 py-1">
+                  <span className="text-yellow-200 text-sm font-medium">
+                    Unsaved Changes
+                  </span>
+                </div>
+              )}
+              <div className="bg-white/20 rounded-lg px-4 py-2">
+                <span className="text-white text-sm font-medium">
+                  Editing Mode
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -239,35 +334,78 @@ export default function EditEmailTemplate() {
             >
               <MDEditor
                 value={form.body}
-                onChange={(value) => setForm({ ...form, body: value })}
+                onChange={handleEditorChange}
                 height={400}
                 preview="edit"
+                textareaProps={{
+                  placeholder: "Write your email content here...\n\nPress Enter for new lines\nUse **bold** for emphasis\nAdd variables like {{FirstName}}"
+                }}
               />
             </div>
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
               <span># Headings</span>
               <span>**Bold**</span>
               <span>*Italic*</span>
               <span>- Lists</span>
               <span>[Links](url)</span>
+              <span>Enter = &lt;br&gt; tag</span>
               <span>HTML allowed</span>
             </div>
           </div>
 
-          {/* Preview Section */}
+          {/* Real-time Preview Section */}
+          <div className="space-y-3">
+            <label className="block text-lg font-semibold text-gray-800">
+              Live Preview
+            </label>
+            <div className="border-2 border-gray-200 rounded-xl p-6 bg-white min-h-[200px]">
+              {form.body ? (
+                <div 
+                  className="email-preview prose max-w-none"
+                  style={{ 
+                    whiteSpace: 'pre-wrap',
+                    fontFamily: 'Arial, sans-serif',
+                    lineHeight: '1.6'
+                  }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: convertToHtml(form.body) 
+                  }}
+                />
+              ) : (
+                <div className="text-gray-400 text-center py-8">
+                  <svg
+                    className="w-12 h-12 mx-auto mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                  <p>Start typing above to see the preview here</p>
+                  <p className="text-sm mt-1">Enter key will create line breaks in the final email</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* HTML Output Preview (Optional) */}
           {form.body && (
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
-                Preview
-              </label>
-              <div className="border-2 border-gray-200 rounded-xl p-6 bg-white">
-                <div className="prose max-w-none">
-                  <div 
-                    className="email-preview"
-                    dangerouslySetInnerHTML={{ __html: form.body }}
-                  />
+              <details className="border-2 border-gray-200 rounded-xl overflow-hidden">
+                <summary className="bg-gray-50 px-6 py-4 cursor-pointer font-semibold text-gray-800">
+                  HTML Output (What gets stored)
+                </summary>
+                <div className="p-4 bg-white">
+                  <code className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+                    {convertToHtml(form.body)}
+                  </code>
                 </div>
-              </div>
+              </details>
             </div>
           )}
 
@@ -282,11 +420,27 @@ export default function EditEmailTemplate() {
             </button>
 
             <div className="flex space-x-4">
-            
+              <button
+                type="button"
+                onClick={() => {
+                  setForm({
+                    name: form.name,
+                    type: form.type,
+                    category: form.category,
+                    subject: form.subject,
+                    body: originalBody
+                  });
+                  toast.success("Changes reverted");
+                }}
+                disabled={!hasChanges}
+                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Revert Changes
+              </button>
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !form.body || !hasChanges}
                 className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 {loading ? (
