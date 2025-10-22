@@ -20,9 +20,7 @@ export default function EditEmailTemplate() {
     subject: "",
     body: "",
   });
-  useEffect(() => {
-    fetchTemplate();
-  }, [fetchTemplate]);
+ 
   const fetchTemplate = useCallback(async () => {
     try {
       setFetchLoading(true);
@@ -47,7 +45,9 @@ export default function EditEmailTemplate() {
       setFetchLoading(false);
     }
   }, [params.id, setForm, setError, setFetchLoading])
-
+ useEffect(() => {
+    fetchTemplate();
+  }, [fetchTemplate]);
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
