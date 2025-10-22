@@ -17,7 +17,7 @@ export default function HomePage() {
 
         <div className="flex gap-4">
           <Link href="/signup">
-            <button className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+            <button className="px-6 py-3 text-white rounded-md dark:bg-[#C38A06]">
               Get Started
             </button>
           </Link>
