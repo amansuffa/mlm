@@ -248,6 +248,7 @@ export default function Navbar() {
             {/* Toggle Switch */}
             <button
               onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              aria-label="Toggle theme"
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-600 dark:focus:ring-yellow-400 focus:ring-offset-2 ${
                 theme === 'dark' ? 'bg-yellow-400' : 'bg-gray-300'
               }`}

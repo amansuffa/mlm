@@ -8,7 +8,7 @@ button {
   cursor: pointer;
 }
 
-:root {
+/* :root {
   --bg-primary: #FFFFFF;   
   --button-bg: #EDEDED; 
   --text-primary: #000000; 
@@ -32,4 +32,36 @@ body {
 
 .custom-div {
   background-color: var(--custom-bg-color);
-}
+} */
+
+
+/* ******************************************** */
+
+ :root {
+      --primary: #B8860B;
+      --secondary: #DAA520;
+      --accent: #FFD700;
+      --background: #f3f4f6;
+      --card: #FFFFFF;
+      --cardsec:#F9FAFB;
+      --text: #1F2937;
+      --border: #E5E7EB;
+    }
+.dark {
+      --primary: #B8860B;
+      --secondary: #DAA520;
+      --accent: #FDE68A;
+      --background: #111827;
+      /* --background-gradient: linear-gradient(to bottom, #111827, #1f2937, #111827, #111827); */
+      --card: #111827;
+      --cardsec:#374151;
+      --text: #F3F4F6;
+      --border: #4B5563;
+    }
+
+
+body {
+  background-image: var(--background);
+  color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+} 
