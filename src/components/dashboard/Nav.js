@@ -46,10 +46,10 @@ const Nav = ({ setIsOpen }) => {
 
       {/* Right section */}
       <div className="flex items-center gap-3">
-        <ThemeToggleButton/>
          <Link href="/" style={{ color: 'var(--text)' }} className="hover:opacity-80">
             Home
           </Link>
+        <ThemeToggleButton/>
         <Logout />
 
         {/* Hamburger (mobile only) */}
