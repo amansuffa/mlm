@@ -18,7 +18,7 @@ const Nav = ({ setIsOpen }) => {
 
   if (!mounted) {
     return (
-      <nav className="bg-white shadow-md">
+      <nav style={{ backgroundColor: 'var(--card)' }} className="shadow-md md:sticky top-0 z-50">
         <div className="w-full h-[68px] px-4 py-3 flex justify-between items-center">
           {/* Loading state */}
           <div className="flex items-center gap-6">
@@ -31,7 +31,7 @@ const Nav = ({ setIsOpen }) => {
 
 
   return (
-    <div className="bg-gray-50 h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50">
+    <div className="h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50" style={{ backgroundColor: 'var(--card)' }}>
 
       {/* Logo */}
       <div className="flex justify-center overflow-hidden h-full">
@@ -47,7 +47,7 @@ const Nav = ({ setIsOpen }) => {
       {/* Right section */}
       <div className="flex items-center gap-3">
         <ThemeToggleButton/>
-         <Link href="/" className="text-gray-700 hover:text-purple-600">
+         <Link href="/" style={{ color: 'var(--text)' }} className="hover:opacity-80">
             Home
           </Link>
         <Logout />
@@ -55,11 +55,13 @@ const Nav = ({ setIsOpen }) => {
         {/* Hamburger (mobile only) */}
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="md:hidden p-2 rounded-lg hover:bg-gray-700/50 transition"
+          className="md:hidden p-2 rounded-lg hover:opacity-80"
+          style={{ backgroundColor: 'var(--cardsec)' }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 text-gray-700"
+            className="w-6 h-6"
+            style={{ color: 'var(--text)' }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

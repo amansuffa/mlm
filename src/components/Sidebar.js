@@ -98,7 +98,7 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   return (
     <>
       <aside
-        className={`fixed top-0 left-0 min-h-screen w-64 p-6 border-r border-[var(--border)] flex flex-col z-40 transform transition-transform duration-300
+        className={`fixed top-0 left-0 min-h-screen w-64 p-6 border-r border-t border-[var(--border)] flex flex-col z-40 transform transition-transform duration-300
         bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 text-white shadow-2xl
         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
         md:translate-x-0 md:static md:block`}

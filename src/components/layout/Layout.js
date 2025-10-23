@@ -41,7 +41,7 @@ export default function Layout({ children, role , status}) {
       <Nav setIsOpen={setIsOpen} />
       <div className="flex flex-1">
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role={role} status={status}/>
-        <main className="px-6 w-full bg-[var(--background)] min-h-screen">{children}</main>
+        <main className="px-6 w-full bg-[var(--background)] border-t border-[var(--border)] min-h-screen">{children}</main>
       </div>
     </div>
   );
