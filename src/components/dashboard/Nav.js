@@ -6,7 +6,30 @@ import Logout from "../Logout";
 import Image from "next/image";
 import logo from "../../assets/logo.png";
 
+import { useEffect, useState } from 'react';
+import ThemeToggleButton from "../ThemeToggleButton";
+
 const Nav = ({ setIsOpen }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <nav className="bg-white shadow-md">
+        <div className="w-full h-[68px] px-4 py-3 flex justify-between items-center">
+          {/* Loading state */}
+          <div className="flex items-center gap-6">
+            <Image src={logo} alt="Logo" width={180} height={180} />
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+
   return (
     <div className="bg-gray-50 h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50">
 
@@ -23,6 +46,7 @@ const Nav = ({ setIsOpen }) => {
 
       {/* Right section */}
       <div className="flex items-center gap-3">
+        <ThemeToggleButton/>
          <Link href="/" className="text-gray-700 hover:text-purple-600">
             Home
           </Link>
