@@ -1,0 +1,83 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import Comment from "@/models/Comment";
+import {Blog} from "@/models/Blog";
+import { connectDB } from "@/lib/mongodb";
+
+// GET - Fetch comments for a blog
+export async function GET(request, context) {
+  try {
+    await connectDB();
+    const { id } = context.params;
+
+    const comments = await Comment.find({ blogId: id, parentId: null })
+      .populate("userId", "name username")
+      .populate({
+        path: "replies",
+        populate: {
+          path: "userId",
+          select: "name username"
+        }
+      })
+      .sort({ createdAt: -1 });
+
+    return NextResponse.json({ success: true, comments });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+// POST - Add new comment or reply
+export async function POST(request, context) {
+  try {
+    const session = await auth(request);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    await connectDB();
+    const { id } = context.params;
+    const { content, parentId } = await request.json();
+
+    // Check if blog exists
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return NextResponse.json(
+        { success: false, error: "Blog not found" },
+        { status: 404 }
+      );
+    }
+
+    const comment = new Comment({
+      content,
+      blogId: id,
+      userId: session.user.id,
+      parentId: parentId || null
+    });
+
+    await comment.save();
+
+    // If it's a reply, add to parent comment's replies array
+    if (parentId) {
+      await Comment.findByIdAndUpdate(parentId, {
+        $push: { replies: comment._id }
+      });
+    }
+
+    // Populate the user data
+    await comment.populate("userId", "name username");
+
+    return NextResponse.json({ success: true, comment });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
