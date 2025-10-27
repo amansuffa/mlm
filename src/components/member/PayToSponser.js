@@ -4,7 +4,7 @@ import React from "react";
 
 export default function PayToSponser() {
   return (
-    <div className="rounded-2xl shadow-lg p-6" style={{ backgroundColor: 'var(--card)' }}>
+    <div className="rounded-2xl shadow-lg p-6" style={{ backgroundColor: 'var(--card)', border:`1px solid var(--border)`}}>
      
       
       <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--text)' }}>✅ Complete your step 2, Pay $500 to sponser</h3>

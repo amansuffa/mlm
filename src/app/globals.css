@@ -52,7 +52,7 @@ body {
       --secondary: #DAA520;
       --accent: #FDE68A;
       --background: #111827;
-      /* --background-gradient: linear-gradient(to bottom, #111827, #1f2937, #111827, #111827); */
+      --background-gradient: linear-gradient(to bottom, #111827, #1f2937, #111827, #111827);
       --card: #111827;
       --cardsec:#374151;
       --text: #F3F4F6;
