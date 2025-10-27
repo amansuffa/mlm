@@ -62,7 +62,11 @@ export default function EmailTemplatesPage() {
             </button>
             <button
               onClick={() => toast.dismiss(t.id)}
-              className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400 transition-colors"
+              className="px-3 py-1 rounded text-sm"
+              style={{
+                backgroundColor: 'var(--cardsec)',
+                color: 'var(--text)'
+              }}
             >
               Cancel
             </button>
@@ -72,12 +76,12 @@ export default function EmailTemplatesPage() {
       {
         duration: Infinity,
         style: {
-          background: theme === 'dark' ? '#1F2937' : 'white',
-          border: theme === 'dark' ? '1px solid #374151' : '1px solid #e5e7eb',
+          background: 'var(--card)',
+          border: '1px solid var(--border)',
           borderRadius: '12px',
           padding: '16px',
           boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-          color: theme === 'dark' ? 'white' : 'inherit',
+          color: 'var(--text)',
         },
       }
     );
@@ -102,13 +106,12 @@ export default function EmailTemplatesPage() {
 
   return (
     <div 
-      className="min-h-screen py-8 transition-colors duration-300"
-    >
+      className="min-h-screen py-8"    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
           <div 
-            className="rounded-2xl shadow-xl overflow-hidden transition-all duration-300"
+            className="rounded-2xl shadow-xl overflow-hidden"
             style={{ 
               background: `linear-gradient(135deg, var(--primary), var(--secondary))`
             }}
@@ -125,11 +128,11 @@ export default function EmailTemplatesPage() {
                 </div>
                 <Link
                   href="/email-templates/create"
-                  className="bg-white text-gray-800 px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group"
+                  className="bg-white text-gray-800 px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group"
                   style={{ color: 'var(--primary)' }}
                 >
                   <svg
-                    className="w-5 h-5 transition-transform group-hover:scale-110"
+                    className="w-5 h-5 group-hover:scale-110"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -152,7 +155,7 @@ export default function EmailTemplatesPage() {
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
           <div className="rounded-xl" style={{border: `1px solid var(--border)`}}>
           <div 
-            className="rounded-xl shadow-lg p-6 border-l-4 transition-all duration-300 hover:shadow-xl"
+            className="rounded-xl shadow-lg p-6 border-l-4 hover:shadow-xl"
             style={{ 
               backgroundColor: 'var(--card)',
               borderLeftColor: 'var(--primary)',
@@ -167,7 +170,8 @@ export default function EmailTemplatesPage() {
                 </p>
               </div>
               <div 
-                className="p-3 rounded-lg bg-[var(--primary)]/20 transition-all duration-300"              >
+                className="p-3 rounded-lg bg-[var(--primary)]/20"
+              >
                 <svg
                   className="w-6 h-6"
                   style={{ color: 'var(--primary)' }}
@@ -191,7 +195,7 @@ export default function EmailTemplatesPage() {
 
         {/* Filters and Search */}
         <div 
-          className="rounded-xl shadow-lg p-6 mb-6 transition-all duration-300"
+          className="rounded-xl shadow-lg p-6 mb-6"
           style={{ 
             backgroundColor: 'var(--card)',
             border: `1px solid var(--border)`
@@ -205,7 +209,7 @@ export default function EmailTemplatesPage() {
                   placeholder="Search templates..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                  className="w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2"
                   style={{ 
                     backgroundColor: `var(--cardsec)`,
                     border: `2px solid var(--border)`,
@@ -213,7 +217,7 @@ export default function EmailTemplatesPage() {
                   }}
                 />
                 <svg
-                  className="absolute left-3 top-3.5 w-5 h-5 transition-colors duration-300"
+                  className="absolute left-3 top-3.5 w-5 h-5"
                   style={{ color: 'var(--primary)' }}
                   fill="none"
                   stroke="currentColor"
@@ -233,10 +237,10 @@ export default function EmailTemplatesPage() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                className="rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
                 style={{ 
-                  backgroundColor: `var(--cardsec)`,
-                  border: `2px solid var(--border)`,
+                  backgroundColor: 'var(--cardsec)',
+                  border: '2px solid var(--border)',
                   color: 'var(--text)'
                 }}
               >
@@ -253,7 +257,7 @@ export default function EmailTemplatesPage() {
         {/* Templates Table */}
         {loading ? (
           <div 
-            className="rounded-xl shadow-lg p-12 text-center transition-all duration-300"
+            className="rounded-xl shadow-lg p-12 text-center"
             style={{ 
               backgroundColor: 'var(--card)',
               border: `1px solid var(--border)`
@@ -267,18 +271,18 @@ export default function EmailTemplatesPage() {
           </div>
         ) : filteredTemplates.length === 0 ? (
           <div 
-            className="rounded-xl shadow-lg p-12 text-center transition-all duration-300"
+            className="rounded-xl shadow-lg p-12 text-center"
             style={{ 
               backgroundColor: 'var(--card)',
               border: `1px solid var(--border)`
             }}
           >
             <div 
-              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300"
+              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4"
               style={{ backgroundColor: 'var(--primary)', opacity: '0.1' }}
             >
               <svg
-                className="w-12 h-12 transition-colors duration-300"
+                className="w-12 h-12"
                 style={{ color: 'var(--primary)' }}
                 fill="none"
                 stroke="currentColor"
@@ -313,7 +317,7 @@ export default function EmailTemplatesPage() {
           </div>
         ) : (
           <div 
-            className="rounded-xl shadow-lg overflow-hidden transition-all duration-300"
+            className="rounded-xl shadow-lg overflow-hidden"
             style={{ 
               backgroundColor: 'var(--card)',
               border: `1px solid var(--border)`
