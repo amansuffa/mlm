@@ -9,6 +9,7 @@ import PayoutSettingsCard from "@/components/member/PayoutSettingsCard";
 import ConfirmPayments from "@/components/member/ConfirmPayments";
 import DownlineTree from "@/components/dashboard/DownlineTree"; 
 import TransactionsTable from "@/components/dashboard/TransactionsTable"; 
+import SalesOverview from "./dashboard/SalesOverview";
 
 export default function DashboardMember({ session }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,8 +28,9 @@ export default function DashboardMember({ session }) {
 
       {/* Left/Main Section */}
       <div className="space-y-6 sm:col-span-2 lg:col-span-2">
+        <SalesOverview/>
         <EarningsChart />
-        <ReferralsOverview />
+        
       </div>
 
       {/* Right Sidebar Widgets */}
@@ -41,7 +43,8 @@ export default function DashboardMember({ session }) {
       </div>
 
       {/* Full Width Section */}
-      <div className="col-span-1 sm:col-span-2 lg:col-span-3">
+      <div className="col-span-1 space-y-6 sm:col-span-2 lg:col-span-3">
+        <ReferralsOverview />
         <TransactionsTable />
       </div>
     </main>
