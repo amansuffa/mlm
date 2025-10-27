@@ -49,7 +49,7 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       href: "/user/pay-to-sponser",
       label: "Pay to Sponser",
       icon: <FaUserFriends />,
-      roles:["user"]
+      statuses: ["free", "admin_fee_paid"],
     },
     {
       href: "/transactions",
