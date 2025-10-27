@@ -316,7 +316,7 @@ export default function PayoutSettingsPage() {
             {editingIndex !== null ? "✏️ Edit Payout Method" : "➕ Add New Payout Method"}
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="space-y-6 mb-6">
             <div>
               <label className="block text-sm font-medium mb-2 opacity-80">
                 Method Name
@@ -334,19 +334,17 @@ export default function PayoutSettingsPage() {
                 }}
               />
             </div>
-
-
             
             <div>
               <label className="block text-sm font-medium mb-2 opacity-80">
                 Details
               </label>
-              <input
-                type="text"
-                placeholder="e.g., Account number, email, wallet address"
+              <textarea
+                placeholder="e.g., Account number, email, wallet address, routing number, etc."
                 value={form.details}
                 onChange={(e) => setForm({ ...form, details: e.target.value })}
-                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                rows={4}
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300 resize-vertical"
                 style={{ 
                   backgroundColor: `var(--cardsec)`,
                   border: `2px solid var(--border)`,
