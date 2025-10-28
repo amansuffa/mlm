@@ -34,6 +34,12 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
     },
     {
+      href: "/dashboard/payout-settings",
+      label: "Payout Settings",
+      icon: <FaUser />,
+      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
+    },
+    {
       href: "/user/downline",
       label: "Downline",
       icon: <FaUsers />,
