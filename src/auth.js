@@ -38,9 +38,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new Error("Please verify your email before login.");
           }
 
-          // if (user.role !== "admin" && !user.adminFeePaid) {
-          //   throw new Error("Please complete admin fee payment");
-          // }
+          if (user.role !== "admin" && !user.adminFeePaid) {
+            throw new Error("Please complete admin fee payment");
+          }
 
           const validPassword = await bcrypt.compare(
             credentials.password,
@@ -81,6 +81,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.status = user.status;
         token.username = user.username;
         token.referredBy = user.referredBy;
+        token.adminFeePaid = user.adminFeePaid;
+        token.membershipFeePaid = user.membershipFeePaid;
       }
       return token;
     },
@@ -92,6 +94,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.status = token.status;
         session.user.username = token.username;
         session.user.referredBy = token.referredBy;
+        session.user.adminFeePaid = token.adminFeePaid;
+        session.user.membershipFeePaid = token.membershipFeePaid;
       }
       return session;
     },

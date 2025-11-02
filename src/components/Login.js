@@ -26,9 +26,7 @@ export default function Login() {
         const session = await getSession();
         console.log("Session after login:", session?.user);
 
-        if (session?.user.role !== "admin" && !session?.user.adminFeePaid) {
-          router.push(`/payment?uid=${session?.user.id}`);
-        } else if (session?.user) {
+         if (session?.user) {
           router.push("/dashboard");
         }
       }
