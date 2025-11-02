@@ -13,6 +13,8 @@ import {
   FaUsers,
   FaWallet,
   FaHospitalUser,
+  FaCreditCard,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, setIsOpen, status, role }) {
@@ -36,8 +38,8 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
     {
       href: "/dashboard/payout-settings",
       label: "Payout Settings",
-      icon: <FaUser />,
-      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
+      icon: <FaCreditCard />,
+      statuses: ["fully_active"],
     },
     {
       href: "/user/downline",
@@ -49,7 +51,7 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       href: "/user/referrals",
       label: "My Referrals",
       icon: <FaUserFriends />,
-      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
+      statuses: ["fully_active"],
     },
     {
       href: "/user/pay-to-sponser",
@@ -61,6 +63,12 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       href: "/transactions",
       label: "Transactions",
       icon: <FaExchangeAlt />,
+      statuses: ["fully_active"],
+    },
+    {
+      href: "/confirm-payments",
+      label: "Pending Transactions",
+      icon: <FaCheckCircle />,
       statuses: ["fully_active"],
     },
     // 👇 Admin-only links
