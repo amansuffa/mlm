@@ -25,9 +25,9 @@ export async function POST(req) {
       sponsor: {
         id: sponsor?._id,
         name: `Sponsor: ${sponsor?.username || "No Sponsor"}`,
-        method: sponsorPayout?.type ? sponsorPayout.type.charAt(0).toUpperCase() + sponsorPayout.type.slice(1) : "Not set",
-        accountNumber: sponsorPayout?.details?.get('accountNumber') || sponsorPayout?.details?.get('number') || "Not provided",
-        bankName: sponsorPayout?.details?.get('bankName') || sponsorPayout?.details?.get('name') || "Not specified",
+        method: sponsorPayout?.methodName || "Not set",
+        accountNumber: sponsorPayout?.details || "Not provided",
+        bankName: sponsorPayout?.methodName || "Not specified",
         amount: 500
       }
     };
