@@ -145,7 +145,7 @@ ${disclaimer}`,
 Welcome to PASH.CLUB – we’re excited to have you on board! 🎉<br><br>
 Before we can activate your free member account, we just need to confirm your email address. This ensures you’ll receive important updates, training, and access details without missing anything.<br><br>
 👉 Please click the link below to confirm your email now:<br>
-<a href="{{ConfirmEmailLink}}">Confirm My Email Address</a><br><br>
+<a href="{{ConfirmEmailLink}}" style="color:#007bff;text-decoration:none;">Confirm My Email Address</a><br><br>
 Once confirmed, you’ll get:<br>
 ✅ A Welcome Email<br>
 ✅ Step-by-Step guide on how to get started<br><br>

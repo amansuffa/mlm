@@ -109,7 +109,7 @@ export default function EmailTemplatesPage() {
       toast.loading("Sending emails in bulk...");
       await axios.post("/api/email/send-bulk", {
         templateType: selectedTemplate.type,
-        userCategory,
+        userCategory: userCategory,
       });
       toast.dismiss();
       toast.success(`Emails sent successfully to ${userCategory} users!`);
@@ -139,6 +139,8 @@ export default function EmailTemplatesPage() {
     { value: "admin_fee_paid", label: "Admin Fee Paid" },
     { value: "membership_paid", label: "Membership Paid" },
     { value: "fully_active", label: "Fully Active Members" },
+    { value: "unverified", label: "Unverified Members" },
+    { value: "all", label: "All Members" },
   ];
 
 
