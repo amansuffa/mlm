@@ -93,7 +93,7 @@ export async function POST(req) {
         MemberFullName: `${user.firstName} ${user.lastName}`,
         MemberEmail: user.email,
         MemberUsername: user.username,
-        SponsorUser: user.referredBy || "", //yahn abi usernam store ho rha h ise object me convert kr k uska name fetch krna h
+        SponsorName: user.referredBy || "", //yahn abi usernam store ho rha h ise object me convert kr k uska name fetch krna h
         LoginLink: `${process.env.NEXTAUTH_URL}/login`,
         AdminFeeLink: `${process.env.NEXTAUTH_URL}/payment/?uid=${user._id}`,
         SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
