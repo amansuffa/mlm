@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import {Transaction} from "@/models/Transaction";
 import {User} from "@/models/User";
+import { distributeMembershipFee } from "@/utils/feeDistribution";
 
 export async function GET(request,context) {
   try {
@@ -48,6 +49,22 @@ export async function PATCH(req, context) {
       user.adminFeePaid = true;
     } else if (tx.type === "membership") {
       user.membershipFeePaid = true;
+      
+      // ✅ Fee Distribution Logic - Membership Payment Approved
+      // Carefully wrapped in try-catch so existing flow doesn't break
+      try {
+        const distributionResult = await distributeMembershipFee(user, tx.amount || 500);
+        
+        if (distributionResult.success) {
+          console.log(`✅ Fee distributed: $${distributionResult.amount} to ${distributionResult.recipient.username} (${distributionResult.distributionType})`);
+          console.log(`📊 Referrer ${distributionResult.referrer.username} invite count: ${distributionResult.inviteNumber}`);
+        } else {
+          console.warn(`⚠️ Fee distribution skipped: ${distributionResult.message}`);
+        }
+      } catch (feeError) {
+        // Log error but don't break the transaction approval
+        console.error("Error in fee distribution (non-blocking):", feeError);
+      }
     }
   } else {
     // If rejected, set payment flag to false

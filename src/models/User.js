@@ -46,6 +46,14 @@ verificationToken: { type: String, default: null },
   pendingEmail: { type: String, default: "" },
   emailChangeToken: { type: String, default: "" },
   emailChangeExpires: { type: Date, default: null },
+  
+  // Fee Distribution Fields
+  directInvitesCount: { type: Number, default: 0 }, // Kitne direct invites kiye hain
+  earnings: {
+    total: { type: Number, default: 0 },      // Total earnings (including withdrawn)
+    available: { type: Number, default: 0 },  // Available to withdraw
+    withdrawn: { type: Number, default: 0 },  // Already withdrawn
+  },
 },
 { timestamps: true } );
 
