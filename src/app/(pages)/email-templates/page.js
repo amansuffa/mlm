@@ -108,7 +108,7 @@ export default function EmailTemplatesPage() {
     try {
       toast.loading("Sending emails in bulk...");
       await axios.post("/api/email/send-bulk", {
-        templateType: selectedTemplate.type,
+        templateId: selectedTemplate._id,
         userCategory: userCategory,
       });
       toast.dismiss();

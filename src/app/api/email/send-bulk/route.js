@@ -6,7 +6,6 @@ import { connectDB } from "@/lib/mongodb";
 import { sendEmail } from "@/lib/sendEmail";
 import { parseTemplate } from "@/lib/parseTemplate";
 import crypto from "crypto";
-import { use } from "react";
 
 function generateVerificationToken() {
   return crypto.randomBytes(20).toString("hex");
@@ -14,7 +13,7 @@ function generateVerificationToken() {
 
 export async function POST(req) {
   try {
-    const { templateType, userCategory } = await req.json();
+    const { userCategory, templateId } = await req.json();
     await connectDB();
     console.log("userCategory", userCategory);
     const session = await auth();
@@ -34,8 +33,11 @@ export async function POST(req) {
       );
     }
 
-    const template = await EmailTemplate.findOne({ type: templateType });
-    if (!template) return res.status(404).json({ error: "Template not found" });
+     const template = await EmailTemplate.findById(templateId);
+    
+    if (!template) {
+      return NextResponse.json({ error: "Template not found" }, { status: 404 });
+    }
 
     let users = [];
     switch (userCategory) {
