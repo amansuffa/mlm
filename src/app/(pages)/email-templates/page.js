@@ -91,6 +91,10 @@ export default function EmailTemplatesPage() {
     router.push(`/email-templates/${templateId}`);
   }
 
+  function handleBulkSend(templateId) {
+    
+  }
+
   // Filter templates based on search and type
   const filteredTemplates = templates.filter((template) => {
     const matchesSearch = 
@@ -366,20 +370,30 @@ export default function EmailTemplatesPage() {
                       <td className="py-4 px-6">
                         <div className="flex justify-center space-x-2">
                           <button
-                            onClick={() => handleEditTemplate(template._id)}
-                            className="px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:shadow-lg"
-                            style={{ 
-                              backgroundColor: 'var(--primary)',
-                              color: 'white'
-                            }}
+                            onClick={() => handleBulkSend(template._id)}
+                            className="p-2 transition-all duration-200 hover:opacity-70 flex items-center justify-center"
+                            style={{ color: 'var(--primary)' }}
                           >
-                            Edit
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => handleEditTemplate(template._id)}
+                            className="p-2 transition-all duration-200 hover:opacity-70 flex items-center justify-center"
+                            style={{ color: 'var(--primary)' }}
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
                           </button>
                           <button
                             onClick={() => handleDelete(template._id, template.name)}
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors duration-200 text-sm"
+                            className="p-2 transition-all duration-200 hover:opacity-70 flex items-center justify-center text-red-500"
                           >
-                            Delete
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
                           </button>
                         </div>
                       </td>
