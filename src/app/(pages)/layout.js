@@ -1,13 +1,12 @@
 
-import { auth } from "@/auth"; 
+"use client";
+import { useSession } from "next-auth/react";
 import Layout from "@/components/layout/Layout";
 
-export default async function DashboardLayout({ children }) {
-  const session = await auth();
+export default function DashboardLayout({ children }) {
+  const { data: session } = useSession();
   const role = session?.user?.role || "guest";
-  const status = session?.user?.status; 
-
-  console.log("DashboardLayout Role:", role);
+  const status = session?.user?.status;
 
   return (
     <Layout role={role} status={status}>

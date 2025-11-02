@@ -88,14 +88,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-        session.user.status = token.status;
-        session.user.username = token.username;
-        session.user.referredBy = token.referredBy;
-        session.user.adminFeePaid = token.adminFeePaid;
-        session.user.membershipFeePaid = token.membershipFeePaid;
+      if (token?.id) {
+        try {
+          await connectDB();
+          const user = await User.findById(token.id);
+          if (user) {
+            session.user.id = user._id.toString();
+            session.user.role = user.role;
+            session.user.status = user.status;
+            session.user.username = user.username;
+            session.user.referredBy = user.referredBy;
+            session.user.adminFeePaid = user.adminFeePaid;
+            session.user.membershipFeePaid = user.membershipFeePaid;
+          }
+        } catch (error) {
+          console.error("Session callback error:", error);
+        }
       }
       return session;
     },
