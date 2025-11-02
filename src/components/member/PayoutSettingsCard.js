@@ -49,7 +49,7 @@ export default function PayoutSettingsCard() {
       {primaryMethod ? (
         <p className="text-gray-700">
           Primary Method:{" "}
-          <span className="font-semibold capitalize">{primaryMethod.type}</span>
+          <span className="font-semibold capitalize">{primaryMethod.methodName}</span>
         </p>
       ) : (
         <p className="text-red-500 text-sm">

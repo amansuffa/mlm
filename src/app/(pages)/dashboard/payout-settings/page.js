@@ -18,35 +18,35 @@ export default function PayoutSettingsPage() {
   });
 
   const userId = session?.user?.id;
-
   useEffect(() => {
+    const fetchPayoutMethods = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/user/${userId}/payout-settings`);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        
+        const data = await res.json();
+        console.log('API Response:', data);
+        
+        setPayouts(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Failed to fetch payout methods:", err);
+        toast.error(`Failed to load payout methods: ${err.message}`);
+        setPayouts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (status === "authenticated" && userId) {
       fetchPayoutMethods();
     }
-  }, [status, userId, fetchPayoutMethods]);
+  }, [status, userId]);
 
-  const fetchPayoutMethods = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/user/${userId}/payout-settings`);
-      
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-      
-      const data = await res.json();
-      console.log('API Response:', data);
-      
-      // Ensure data is an array
-      setPayouts(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Failed to fetch payout methods:", err);
-      toast.error(`Failed to load payout methods: ${err.message}`);
-      setPayouts([]); // Set empty array on error
-    } finally {
-      setLoading(false);
-    }
-  }
+ 
 
   const handleSave = async () => {
     if (!form.methodName.trim() || !form.details.trim()) {
