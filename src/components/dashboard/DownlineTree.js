@@ -6,6 +6,41 @@ import Tree from "react-d3-tree";
 export default function DownlineTree() {
   const treeContainer = useRef(null);
   const [dimensions, setDimensions] = useState({ x: 0, y: 0 });
+  const [treeData, setTreeData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  async function fetchReferralTree() {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/referrals/tree");
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log("Received tree data:", data);
+        if (!data.treeData || data.treeData.length === 0) {
+          setError("No downline data available");
+          setTreeData([]);
+        } else {
+          setTreeData(data.treeData);
+          setError(null);
+        }
+      } else {
+        setError(data.error || "Failed to fetch referral tree");
+        setTreeData([]);
+      }
+    } catch (error) {
+      setError("Error fetching referral tree. Please try again later.");
+      console.error("Error fetching referral tree:", error);
+      setTreeData([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchReferralTree();
+  }, []);
 
   useEffect(() => {
     function setSize() {
@@ -18,24 +53,6 @@ export default function DownlineTree() {
     window.addEventListener("resize", setSize);
     return () => window.removeEventListener("resize", setSize);
   }, []);
-
-  const treeData = [
-    {
-      name: "You (Admin)",
-      referral_type: "blue",
-      children: [
-        {
-          name: "John Doe",
-          referral_type: "green",
-          children: [
-            { name: "Ali Raza", referral_type: "red" },
-            { name: "Sarah Khan", referral_type: "red" }
-          ]
-        },
-        { name: "Ahmed Malik", referral_type: "green" }
-      ]
-    }
-  ];
 
   const renderCustomNode = ({ nodeDatum, toggleNode }) => (
     <g onClick={toggleNode} style={{ cursor: "pointer" }}>
@@ -69,18 +86,42 @@ export default function DownlineTree() {
 
   return (
     <div className="bg-white shadow-lg rounded-2xl p-5 h-full flex flex-col">
-      <h3 className="text-lg font-bold text-gray-700 mb-4">🌳 Downline Tree</h3>
-      <div ref={treeContainer} className="flex-1 w-full">
-        {dimensions.x !== 0 && (
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold text-gray-700">🌳 Downline Tree</h3>
+        <button 
+          onClick={fetchReferralTree}
+          className="text-blue-600 hover:text-blue-800"
+        >
+          ↻ Refresh
+        </button>
+      </div>
+
+      <div ref={treeContainer} className="flex-1 w-full" style={{ minHeight: "400px" }}>
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-gray-500">Loading downline tree...</div>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-red-500">{error}</div>
+          </div>
+        ) : dimensions.x !== 0 && treeData.length > 0 ? (
           <Tree
             data={treeData}
             orientation="vertical"
             renderCustomNodeElement={renderCustomNode}
             translate={dimensions}
             zoom={0.8}
+            initialDepth={1}
             zoomable
             collapsible
+            separation={{ siblings: 2, nonSiblings: 2.5 }}
+            nodeSize={{ x: 200, y: 100 }}
           />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-gray-500">No downline data available</div>
+          </div>
         )}
       </div>
 

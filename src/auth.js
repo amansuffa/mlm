@@ -34,22 +34,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new Error("Invalid email or username");
           }
 
-          if (!user.isVerified) {
-            throw new Error("Please verify your email before login.");
-          }
+          // if (!user.isVerified) {
+          //   throw new Error("Please verify your email before login.");
+          // }
 
-          if (user.role !== "admin" && !user.adminFeePaid) {
-            throw new Error("Please complete admin fee payment");
-          }
+          // if (user.role !== "admin" && !user.adminFeePaid) {
+          //   throw new Error("Please complete admin fee payment");
+          // }
 
-          const validPassword = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
+          // const validPassword = await bcrypt.compare(
+          //   credentials.password,
+          //   user.password
+          // );
           
-          if (!validPassword) {
-            throw new Error("Invalid password");
-          }
+          // if (!validPassword) {
+          //   throw new Error("Invalid password");
+          // }
 
           return {
             id: user._id.toString(),

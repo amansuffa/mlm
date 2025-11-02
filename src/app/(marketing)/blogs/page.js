@@ -75,7 +75,7 @@ export default function BlogsPage() {
               <div className="flex justify-between items-center mt-5">
                 {/* Read More */}
                 <Link
-                  href={`/blogs/${blog._id}?ref=${session.user.username || ""}`}
+                  href={`/blogs/${blog._id}?ref=${session?.user?.username || ""}`}
                   className="text-blue-600 font-medium hover:underline"
                 >
                   Read More →
@@ -85,7 +85,7 @@ export default function BlogsPage() {
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `${window.location.origin}/blogs/${blog._id}?ref=${session.user.username || ""}`
+                      `${window.location.origin}/blogs/${blog._id}?ref=${session?.user?.username || ""}`
                     );
                     alert("Blog link copied to clipboard!");
                   }}

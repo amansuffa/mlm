@@ -6,6 +6,10 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+
+    // fetch all my referal users and their referral users in a tree from database 
+      // const [referralUsers, setReferralUsers] = useState([]);
+
     const session = await auth();
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

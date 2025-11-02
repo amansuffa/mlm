@@ -24,6 +24,7 @@ export async function POST(req) {
         { status: 400 }
       );
     }
+
     const hashedPassword = await bcrypt.hash(password, 5);
 
     // If no referredBy, set to admin's username
@@ -60,13 +61,13 @@ export async function POST(req) {
 
 
 
-  const html = `
-    <h2>Verify Your Email</h2>
-    <p>Hi ${name},</p>
-    <p>Thanks for signing up! Please click the link below to verify your email:</p>
-    <a href="${verifyUrl}" style="color:#007bff;text-decoration:none;">Verify Email</a>
-    <p>If you didn’t create an account, you can ignore this email.</p>
-  `;
+    const html = `
+      <h2>Verify Your Email</h2>
+      <p>Hi ${name},</p>
+      <p>Thanks for signing up! Please click the link below to verify your email:</p>
+      <a href="${verifyUrl}" style="color:#007bff;text-decoration:none;">Verify Email</a>
+      <p>If you didn’t create an account, you can ignore this email.</p>
+    `;
 
   
 
