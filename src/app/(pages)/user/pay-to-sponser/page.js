@@ -314,7 +314,7 @@ export default function PayToSponsorPage() {
                   type="text"
                   value={method}
                   onChange={(e) => setMethod(e.target.value)}
-                  placeholder="e.g. JazzCash, Bank, Easypaisa"
+                  placeholder="e.g., Bank Transfer, PayPal, etc."
                   className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
                 />
               </div>

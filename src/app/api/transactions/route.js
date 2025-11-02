@@ -49,6 +49,9 @@ import { connectDB } from "@/lib/mongodb";
 import { Transaction } from "@/models/Transaction";
 import { User } from "@/models/User";
 import { auth } from "@/auth";
+import { EmailTemplate } from "@/models/EmailTemplate";
+import { sendEmail } from "@/lib/sendEmail";
+import { parseTemplate } from "@/lib/parseTemplate";
 
 // ✅ Get All Transactions
 export async function GET() {
@@ -101,7 +104,24 @@ export async function POST(req) {
       image,
       status: "pending",
     });
+    const user = await User.findById(sender);
+        if (!user)
+          return NextResponse.json({ error: "User not found" }, { status: 404 });
+const template = await EmailTemplate.findOne({
+          type: "user_membership_fee_paid",
+        });
+        if (!template) {
+          return NextResponse.json(
+            { error: "Template not found" },
+            { status: 404 }
+          );
+        }
 
+        const html = parseTemplate(template.body, {
+          FirstName: user.name,
+        });
+
+        await sendEmail(user.email, template.subject, html);
     // (Optional) Notification can be created here later
     // await Notification.create({
     //   user: receiver,

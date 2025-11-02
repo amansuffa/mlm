@@ -39,7 +39,7 @@ export default function TransactionDetailsPage() {
       alert(`Transaction ${action}ed successfully`);
       await fetchTransaction(); // Refresh transaction data
     } else {
-      alert("Failed to update transaction");
+      alert(data.error || "Failed to update transaction");
     }
   };
 
