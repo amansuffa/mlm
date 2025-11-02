@@ -321,7 +321,7 @@ ${disclaimer}
   `,
       isDefault: true,
     },
-
+ 
     // ====================== 🤝 SPONSOR EMAILS ======================
     {
       name: "Sponsor - New Referral Signed Up",

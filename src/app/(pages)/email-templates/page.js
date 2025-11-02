@@ -13,6 +13,10 @@ export default function EmailTemplatesPage() {
   const [filterType, setFilterType] = useState("all");
   const router = useRouter();
   const { theme } = useTheme();
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [userCategory, setUserCategory] = useState("");
+
 
   useEffect(() => {
     fetchTemplates();
@@ -91,9 +95,33 @@ export default function EmailTemplatesPage() {
     router.push(`/email-templates/${templateId}`);
   }
 
-  function handleBulkSend(templateId) {
-    
+    function handleBulkSend(template) {
+    setSelectedTemplate(template);
+    setShowBulkModal(true);
   }
+
+    async function sendBulkEmail() {
+    if (!userCategory) {
+      toast.error("Please select a user category");
+      return;
+    }
+    try {
+      toast.loading("Sending emails in bulk...");
+      await axios.post("/api/email/send-bulk", {
+        templateType: selectedTemplate.type,
+        userCategory,
+      });
+      toast.dismiss();
+      toast.success(`Emails sent successfully to ${userCategory} users!`);
+      setShowBulkModal(false);
+      setUserCategory("");
+    } catch (err) {
+      toast.dismiss();
+      console.error(err);
+      toast.error("Failed to send emails");
+    }
+  }
+
 
   // Filter templates based on search and type
   const filteredTemplates = templates.filter((template) => {
@@ -106,7 +134,13 @@ export default function EmailTemplatesPage() {
 
   const templateTypes = ["all", "Admin", "User", "Sponsor", "Promotion", "System", "Sponsor of Sponsor", "Leads", "Other"];
 
-  
+    const userCategories = [
+    { value: "free", label: "Free Members" },
+    { value: "admin_fee_paid", label: "Admin Fee Paid" },
+    { value: "membership_paid", label: "Membership Paid" },
+    { value: "fully_active", label: "Fully Active Members" },
+  ];
+
 
   return (
     <div 
@@ -370,7 +404,7 @@ export default function EmailTemplatesPage() {
                       <td className="py-4 px-6">
                         <div className="flex justify-center space-x-2">
                           <button
-                            onClick={() => handleBulkSend(template._id)}
+                            onClick={() => handleBulkSend(template)}
                             className="p-2 transition-all duration-200 hover:opacity-70 flex items-center justify-center"
                             style={{ color: 'var(--primary)' }}
                           >
@@ -399,6 +433,71 @@ export default function EmailTemplatesPage() {
                       </td>
                     </tr>
                   ))}
+                  {showBulkModal && (
+  <div
+    className="fixed inset-0 flex items-center justify-center z-50 bg-black/60"
+    onClick={() => setShowBulkModal(false)}
+  >
+    <div
+      className="bg-[var(--card)] rounded-xl shadow-2xl p-6 w-full max-w-md relative"
+      onClick={(e) => e.stopPropagation()}
+      style={{ border: "1px solid var(--border)" }}
+    >
+      <h3
+        className="text-xl font-semibold mb-4"
+        style={{ color: "var(--text)" }}
+      >
+        Send Bulk Email
+      </h3>
+      <p className="opacity-80 mb-4">
+        Select which group of users should receive{" "}
+        <strong>{selectedTemplate?.name}</strong>
+      </p>
+
+      <select
+        value={userCategory}
+        onChange={(e) => setUserCategory(e.target.value)}
+        className="w-full rounded-lg px-4 py-3 mb-6 focus:outline-none border-2"
+        style={{
+          backgroundColor: "var(--cardsec)",
+          borderColor: "var(--border)",
+          color: "var(--text)",
+        }}
+      >
+        <option value="">Select User Category</option>
+        {userCategories.map((cat) => (
+          <option key={cat.value} value={cat.value}>
+            {cat.label}
+          </option>
+        ))}
+      </select>
+
+      <div className="flex justify-end space-x-3">
+        <button
+          onClick={() => setShowBulkModal(false)}
+          className="px-4 py-2 rounded-lg"
+          style={{
+            backgroundColor: "var(--cardsec)",
+            color: "var(--text)",
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={sendBulkEmail}
+          className="px-5 py-2 rounded-lg font-semibold transition-all"
+          style={{
+            background: `linear-gradient(135deg, var(--primary), var(--secondary))`,
+            color: "white",
+          }}
+        >
+          Send Now
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
                 </tbody>
               </table>
             </div>
