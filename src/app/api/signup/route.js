@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/mongodb";
 import crypto from "crypto";
 import { sendEmail } from "@/lib/sendEmail";
+import { EmailTemplate } from "@/models/EmailTemplate";
+import { parseTemplate } from "@/lib/parseTemplate";
+
 
 export async function POST(req) {
   try {
@@ -58,8 +61,8 @@ export async function POST(req) {
     // verification link
     const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
 
-
-
+const template = await EmailTemplate.findOne({ type: "user_confirm_email" });
+    if (!template) {
   const html = `
     <h2>Verify Your Email</h2>
     <p>Hi ${name},</p>
@@ -68,9 +71,21 @@ export async function POST(req) {
     <p>If you didn’t create an account, you can ignore this email.</p>
   `;
 
+  await sendEmail(email, "Verify your email - Pash Club", html);
+    };
+
+
+
+  const html = parseTemplate(template.body, {
+          FirstName: name,
+          ConfirmEmailLink: verifyUrl,
+        })
+     await sendEmail(email, template.subject, html);
+        
+
   
 
-  await sendEmail(email, "Verify your email - Pash Club", html);
+  
 
     return NextResponse.json(
       {
