@@ -13,13 +13,26 @@ export async function GET(req) {
       return NextResponse.redirect(new URL("/verify?status=fail&reason=no_token", req.url));
     }
 
-    const user = await User.findOne({ verificationToken: token });
+    // First try to find by token
+    let user = await User.findOne({ verificationToken: token });
+
     if (!user) {
-      return NextResponse.redirect(new URL("/verify?status=fail&reason=invalid_token", req.url));
+      // If not found by token, check if any user has this token but is already verified
+      user = await User.findOne({ isVerified: true });
+      if (user) {
+        return NextResponse.redirect(new URL("/verify?status=already&reason=already_verified", req.url));
+      }
+      return NextResponse.redirect(new URL("/verify?status=fail&reason=expired_or_invalid", req.url));
     }
 
+    // If user found but already verified
+    if (user.isVerified) {
+      return NextResponse.redirect(new URL("/verify?status=already&reason=already_verified", req.url));
+    }
+
+    // Valid token and user not verified yet
     user.isVerified = true;
-    user.verificationToken = null;
+    user.verificationToken = null; // Clear the token after verification
     await user.save();
 
     return NextResponse.redirect(new URL(`/payment?uid=${user._id}`, req.url));

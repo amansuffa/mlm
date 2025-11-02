@@ -59,28 +59,35 @@ export async function POST(req) {
  
 
     // verification link
-    const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
+        const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
 
-const template = await EmailTemplate.findOne({ type: "user_confirm_email" });
-    if (!template) {
-  const html = `
-    <h2>Verify Your Email</h2>
-    <p>Hi ${name},</p>
-    <p>Thanks for signing up! Please click the link below to verify your email:</p>
-    <a href="${verifyUrl}" style="color:#007bff;text-decoration:none;">Verify Email</a>
-    <p>If you didn’t create an account, you can ignore this email.</p>
-  `;
-
-  await sendEmail(email, "Verify your email - Pash Club", html);
-    };
-
-
-
-  const html = parseTemplate(template.body, {
-          FirstName: name,
-          ConfirmEmailLink: verifyUrl,
-        })
-     await sendEmail(email, template.subject, html);
+    // Find email template
+    const template = await EmailTemplate.findOne({ type: "user_confirm_email" });
+    let html;
+    
+    if (template) {
+      // Use custom template if available
+      html = parseTemplate(template.body, {
+        FirstName: name,
+        MemberFullName: name,
+        MemberEmail: email,
+        VerificationLink: verifyUrl,
+        ConfirmEmailLink: verifyUrl
+      });
+      await sendEmail(email, template.subject, html);
+    } else {
+      // Use default template if no custom template exists
+      html = `
+        <h2>Verify Your Email</h2>
+        <p>Hi ${name},</p>
+        <p>Thanks for signing up! Please click the link below to verify your email:</p>
+        <a href="${verifyUrl}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email</a>
+        <p>Or copy and paste this link in your browser:</p>
+        <p>${verifyUrl}</p>
+        <p>If you didn't create an account, you can ignore this email.</p>
+      `;
+      await sendEmail(email, "Verify your email", html);
+    }
         
 
   
