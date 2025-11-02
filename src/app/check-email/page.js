@@ -64,7 +64,7 @@ export default function CheckEmail() {
                 onClick={() => setShowResendForm(true)}
                 className="text-blue-600 hover:text-blue-800 underline"
               >
-                Didn't receive yet? Resend
+                Didn&apos;t receive yet? Resend
               </button>
             </>
           ) : (

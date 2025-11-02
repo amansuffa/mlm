@@ -23,9 +23,9 @@ export default function PayoutSettingsPage() {
     if (status === "authenticated" && userId) {
       fetchPayoutMethods();
     }
-  }, [status, userId]);
+  }, [status, userId, fetchPayoutMethods]);
 
-  async function fetchPayoutMethods() {
+  const fetchPayoutMethods = async () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/user/${userId}/payout-settings`);
