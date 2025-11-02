@@ -70,6 +70,7 @@ export async function PATCH(req, context) {
 
         const html = parseTemplate(template.body, {
           FirstName: user.name,
+          LoginLink: `${process.env.NEXTAUTH_URL}/login`,
           SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
         });
 
@@ -77,7 +78,6 @@ export async function PATCH(req, context) {
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
 
-        
         const template = await EmailTemplate.findOne({
           type: "user_membership_activated",
         });
@@ -90,8 +90,7 @@ export async function PATCH(req, context) {
 
         const html = parseTemplate(template.body, {
           FirstName: user.name,
-                  LoginLink: `${process.env.NEXTAUTH_URL}/login`,
-
+          LoginLink: `${process.env.NEXTAUTH_URL}/login`,
         });
 
         await sendEmail(user.email, template.subject, html);

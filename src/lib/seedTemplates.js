@@ -193,6 +193,7 @@ ${disclaimer}
        Hi {{FirstName}},<br><br>
 Thanks for paying the $50 one-time admin fee – Step 1 is complete ✅<br><br>
 Now it’s time for the final step:<br>
+Login here: <a href="{{LoginLink}}">Go to Dashboard »</a><br><br>
 👉 Pay the membership fee directly to your sponsor to unlock your membership and activate your income stream.<br>
 <a href="{{SponsorPaymentLink}}">Pay Your Sponsor Now »</a><br><br>
 This will give you:<br>
