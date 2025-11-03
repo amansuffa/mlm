@@ -42,11 +42,10 @@ export async function GET() {
 
     kpis.totalDownline = kpis.directReferrals + kpis.indirectReferrals;
 
-    const earningsAgg = await Transaction.aggregate([
-      { $match: { toUser: username } }, // assuming toUser stores username as well
-      { $group: { _id: null, total: { $sum: "$amount" } } }
-    ]);
-    kpis.totalEarnings = `$${earningsAgg[0]?.total || 0}`;
+    // Updated: User.earnings field se earnings fetch karo
+    const currentUser = await User.findOne({ username }).select("earnings");
+    const totalEarnings = currentUser?.earnings?.total || 0;
+    kpis.totalEarnings = `$${totalEarnings}`;
   }
 
   return NextResponse.json(kpis);

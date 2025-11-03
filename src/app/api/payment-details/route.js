@@ -17,17 +17,51 @@ export async function POST(req) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const sponsor = user.referredBy ? await User.findOne({ username: user.referredBy }).select('username payoutMethods') : null;
+    // Fee Distribution Logic - Correct recipient calculate karna
+    // Pehla invite → referrer ke sponsor ko (1-up pass-up)
+    // Doosra+ invite → direct referrer ko
     
-    const sponsorPayout = sponsor?.payoutMethods?.find(method => method.isPrimary) || sponsor?.payoutMethods?.[0];
+    let recipientUser = null;
+    let recipientLabel = "No Sponsor";
+
+    if (user.referredBy) {
+      // Direct referrer find karo
+      const directReferrer = await User.findOne({ username: user.referredBy })
+        .select('username referredBy directInvitesCount payoutMethods');
+      
+      if (directReferrer) {
+        const inviteCount = directReferrer.directInvitesCount || 0;
+        
+        if (inviteCount === 0 && directReferrer.referredBy) {
+          // Pehla invite hai - 1-Up Pass-Up
+          // Fee referrer ke sponsor ko jayegi
+          recipientUser = await User.findOne({ username: directReferrer.referredBy })
+            .select('username payoutMethods');
+          recipientLabel = `Sponsor (1-Up): ${recipientUser?.username || "Not found"}`;
+        } else {
+          // Doosra ya usse zyada invite hai
+          // Fee direct referrer ko jayegi
+          recipientUser = directReferrer;
+          recipientLabel = `Sponsor (Direct): ${directReferrer.username}`;
+        }
+      } else {
+        // Direct referrer nahi mila - fallback to old logic
+        recipientUser = await User.findOne({ username: user.referredBy })
+          .select('username payoutMethods');
+        recipientLabel = `Sponsor: ${recipientUser?.username || "Not found"}`;
+      }
+    }
+    
+    // Payout method find karo
+    const recipientPayout = recipientUser?.payoutMethods?.find(method => method.isPrimary) || recipientUser?.payoutMethods?.[0];
 
     const paymentDetails = {
       sponsor: {
-        id: sponsor?._id,
-        name: `Sponsor: ${sponsor?.username || "No Sponsor"}`,
-        method: sponsorPayout?.methodName || "Not set",
-        accountNumber: sponsorPayout?.details || "Not provided",
-        bankName: sponsorPayout?.methodName || "Not specified",
+        id: recipientUser?._id || null,
+        name: recipientLabel,
+        method: recipientPayout?.methodName || recipientPayout?.type || "Not set",
+        accountNumber: recipientPayout?.details || recipientPayout?.details?.get?.('accountNumber') || recipientPayout?.details?.get?.('number') || "Not provided",
+        bankName: recipientPayout?.methodName || recipientPayout?.details?.get?.('bankName') || recipientPayout?.details?.get?.('name') || "Not specified",
         amount: 500
       }
     };
