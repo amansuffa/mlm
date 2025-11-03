@@ -23,25 +23,50 @@ export default function CreateEmailTemplate() {
   // Convert markdown to HTML with proper line breaks
   const convertToHtml = (markdown) => {
     if (!markdown) return "";
+    let html = String(markdown);
+
+    // Convert headings (order matters - longest patterns first)
+    html = html.replace(/^###### (.+)$/gm, '<h6 style="font-size: 0.875rem; font-weight: bold; margin: 0.5rem 0 0.125rem 0;">$1</h6>');
+    html = html.replace(/^##### (.+)$/gm, '<h5 style="font-size: 1rem; font-weight: bold; margin: 0.625rem 0 0.1875rem 0;">$1</h5>');
+    html = html.replace(/^#### (.+)$/gm, '<h4 style="font-size: 1.125rem; font-weight: bold; margin: 0.75rem 0 0.25rem 0;">$1</h4>');
+    html = html.replace(/^### (.+)$/gm, '<h3 style="font-size: 1.25rem; font-weight: bold; margin: 1rem 0 0.5rem 0;">$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2 style="font-size: 1.5rem; font-weight: bold; margin: 1.25rem 0 0.75rem 0;">$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1 style="font-size: 1.875rem; font-weight: bold; margin: 1.5rem 0 1rem 0;">$1</h1>');
     
-    // First, convert line breaks to <br> tags
-    let html = markdown.replace(/\n/g, '<br>');
-    
-    // Then handle other markdown basics
-    html = html
-      // Headers
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      // Bold
-      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-      // Italic
-      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-      // Links
-      .replace(/\[([^\[]+)\]\(([^\)]+)\)/g, '<a href="$2" style="color: #8200DB; text-decoration: none;">$1</a>')
-      // Lists
-      .replace(/^\s*\- (.*$)/gim, '<li>$1</li>')
-      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    // Convert asterisk headings (*** = h1, ** = h2, * = h3)
+    html = html.replace(/^\*\*\*\s*(.+)$/gm, '<h1 style="font-size: 1.875rem; font-weight: bold; margin: 1.5rem 0 1rem 0;">$1</h1>');
+    html = html.replace(/^\*\*\s*(.+)$/gm, '<h2 style="font-size: 1.5rem; font-weight: bold; margin: 1.25rem 0 0.75rem 0;">$1</h2>');
+    html = html.replace(/^\*\s*(.+)$/gm, '<h3 style="font-size: 1.25rem; font-weight: bold; margin: 1rem 0 0.5rem 0;">$1</h3>');
+
+    // Convert bold text **text** or __text__
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+    // Convert italic text *text* or _text_
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    // Convert links [text](url)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #8200DB; text-decoration: none;">$1</a>');
+
+    // Convert unordered lists - item
+    html = html.replace(/^- (.+)$/gm, '<li style="margin-left: 1rem;">$1</li>');
+    html = html.replace(/(<li[^>]*>.*<\/li>)/s, '<ul style="margin: 1rem 0;">$1</ul>');
+
+    // Convert ordered lists 1. item
+    html = html.replace(/^\d+\. (.+)$/gm, '<li style="margin-left: 1rem;">$1</li>');
+    html = html.replace(/(<li[^>]*>.*<\/li>)/s, '<ol style="margin: 1rem 0; list-style-type: decimal; padding-left: 1rem;">$1</ol>');
+
+    // Convert blockquotes > text
+    html = html.replace(/^> (.+)$/gm, '<blockquote style="border-left: 4px solid #ccc; padding-left: 1rem; font-style: italic; color: #666; margin: 1rem 0;">$1</blockquote>');
+
+    // Convert horizontal rules ---
+    html = html.replace(/^---$/gm, '<hr style="border: none; border-top: 1px solid #ccc; margin: 1.5rem 0;">');
+
+
+
+    // Replace newlines with <br/>
+    html = html.replace(/\n/g, '<br>');
     
     return html;
   };
@@ -74,6 +99,13 @@ export default function CreateEmailTemplate() {
   // Handle editor change and show real-time preview
   const handleEditorChange = (value) => {
     setForm({ ...form, body: value });
+  };
+
+  // Handle small text insertion
+  const insertSmallText = () => {
+    const htmlTag = '<small>TEXT_HERE</small>';
+    const newBody = (form.body || '') + htmlTag;
+    setForm({ ...form, body: newBody });
   };
 
   return (
@@ -183,21 +215,33 @@ export default function CreateEmailTemplate() {
               <label className="block text-lg font-semibold text-gray-800">
                 Email Body *
               </label>
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="flex items-center space-x-3">
+                <button
+                  type="button"
+                  onClick={insertSmallText}
+                  className="flex items-center gap-1 px-3 py-1.5 bg-[#8200DB] hover:bg-[#6E11B0] text-white rounded-lg text-xs font-medium transition-colors shadow-sm"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  ></path>
-                </svg>
-                <span>Markdown & HTML Supported</span>
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                  </svg>
+                  Small Text
+                </button>
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    ></path>
+                  </svg>
+                  <span>Markdown & HTML Supported</span>
+                </div>
               </div>
             </div>
             <div
@@ -214,13 +258,13 @@ export default function CreateEmailTemplate() {
                 }}
               />
             </div>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mt-2">
               <span># Headings</span>
               <span>**Bold**</span>
               <span>*Italic*</span>
               <span>- Lists</span>
               <span>[Links](url)</span>
-              <span>Enter = &lt;br&gt; tag</span>
+              <span>&lt;small&gt; tag</span>
               <span>HTML allowed</span>
             </div>
           </div>
