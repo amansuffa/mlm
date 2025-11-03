@@ -866,10 +866,12 @@ import axios from "axios";
 import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 import ToastProvider from "@/components/ToastProvider";
 import "@/Styling/style.scss";
 
 export default function SingleBlogPage() {
+  const { data: session } = useSession();
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -1848,12 +1850,15 @@ export default function SingleBlogPage() {
                                 <span className="text-xs text-gray-500">
                                   {new Date(comment.createdAt).toLocaleDateString()}
                                 </span>
-                                <button
-                                  onClick={() => handleDeleteComment(comment._id)}
-                                  className="text-red-500 hover:text-red-700 text-xs"
-                                >
-                                  Delete
-                                </button>
+                                {/* Only show delete for comment author */}
+                                {comment.userId?._id === session?.user?.id && (
+                                  <button
+                                    onClick={() => handleDeleteComment(comment._id)}
+                                    className="text-red-500 hover:text-red-700 text-xs"
+                                  >
+                                    Delete
+                                  </button>
+                                )}
                               </div>
                             </div>
                             <p className="text-gray-700">{comment.content}</p>
@@ -1915,12 +1920,15 @@ export default function SingleBlogPage() {
                                           <span className="text-xs text-gray-500">
                                             {new Date(reply.createdAt).toLocaleDateString()}
                                           </span>
-                                          <button
-                                            onClick={() => handleDeleteComment(reply._id)}
-                                            className="text-red-500 hover:text-red-700 text-xs"
-                                          >
-                                            Delete
-                                          </button>
+                                          {/* Only show delete for reply author */}
+                                          {reply.userId?._id === session?.user?.id && (
+                                            <button
+                                              onClick={() => handleDeleteComment(reply._id)}
+                                              className="text-red-500 hover:text-red-700 text-xs"
+                                            >
+                                              Delete
+                                            </button>
+                                          )}
                                         </div>
                                       </div>
                                       <p className="text-gray-700 text-sm">{reply.content}</p>

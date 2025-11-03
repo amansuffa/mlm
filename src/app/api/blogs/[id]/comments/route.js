@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import Comment from "@/models/Comment";
+import {Comment} from "@/models/Comment";
 import {Blog} from "@/models/Blog";
 import { connectDB } from "@/lib/mongodb";
 
@@ -8,7 +8,7 @@ import { connectDB } from "@/lib/mongodb";
 export async function GET(request, context) {
   try {
     await connectDB();
-    const { id } = context.params;
+    const { id } = await context.params;
 
     const comments = await Comment.find({ blogId: id, parentId: null })
       .populate("userId", "name username")
@@ -33,17 +33,26 @@ export async function GET(request, context) {
 // POST - Add new comment or reply
 export async function POST(request, context) {
   try {
-    const session = await auth(request);
-    if (!session) {
+    const session = await auth();
+    console.log("Session:", session);
+    
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { success: false, error: "Unauthorized" },
+        { success: false, error: "Please login to comment" },
         { status: 401 }
       );
     }
 
     await connectDB();
-    const { id } = context.params;
+    const { id } = await context.params;
     const { content, parentId } = await request.json();
+
+    if (!content?.trim()) {
+      return NextResponse.json(
+        { success: false, error: "Comment content is required" },
+        { status: 400 }
+      );
+    }
 
     // Check if blog exists
     const blog = await Blog.findById(id);
@@ -55,7 +64,7 @@ export async function POST(request, context) {
     }
 
     const comment = new Comment({
-      content,
+      content: content.trim(),
       blogId: id,
       userId: session.user.id,
       parentId: parentId || null
@@ -75,6 +84,7 @@ export async function POST(request, context) {
 
     return NextResponse.json({ success: true, comment });
   } catch (error) {
+    console.error("Comment POST error:", error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
