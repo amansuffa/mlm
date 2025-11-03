@@ -26,8 +26,7 @@ export async function POST(req) {
 
     if (user.referredBy) {
       // Direct referrer find karo
-      const directReferrer = await User.findOne({ username: user.referredBy })
-        .select('username referredBy directInvitesCount payoutMethods');
+      const directReferrer = await User.findOne({ username: user.referredBy });
       
       if (directReferrer) {
         const inviteCount = directReferrer.directInvitesCount || 0;
@@ -35,8 +34,7 @@ export async function POST(req) {
         if (inviteCount === 0 && directReferrer.referredBy) {
           // Pehla invite hai - 1-Up Pass-Up
           // Fee referrer ke sponsor ko jayegi
-          recipientUser = await User.findOne({ username: directReferrer.referredBy })
-            .select('username payoutMethods');
+          recipientUser = await User.findOne({ username: directReferrer.referredBy });
           recipientLabel = `Sponsor (1-Up): ${recipientUser?.username || "Not found"}`;
         } else {
           // Doosra ya usse zyada invite hai
@@ -46,8 +44,7 @@ export async function POST(req) {
         }
       } else {
         // Direct referrer nahi mila - fallback to old logic
-        recipientUser = await User.findOne({ username: user.referredBy })
-          .select('username payoutMethods');
+        recipientUser = await User.findOne({ username: user.referredBy });
         recipientLabel = `Sponsor: ${recipientUser?.username || "Not found"}`;
       }
     }
@@ -58,10 +55,11 @@ export async function POST(req) {
     const paymentDetails = {
       sponsor: {
         id: recipientUser?._id || null,
-        name: recipientLabel,
+        name: recipientUser?.name || "Not found",
+        label: recipientLabel,
         method: recipientPayout?.methodName || recipientPayout?.type || "Not set",
-        accountNumber: recipientPayout?.details || recipientPayout?.details?.get?.('accountNumber') || recipientPayout?.details?.get?.('number') || "Not provided",
-        bankName: recipientPayout?.methodName || recipientPayout?.details?.get?.('bankName') || recipientPayout?.details?.get?.('name') || "Not specified",
+        details: recipientPayout?.details || "Not provided",
+       
         amount: 500
       }
     };

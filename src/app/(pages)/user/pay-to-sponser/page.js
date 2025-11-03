@@ -32,6 +32,7 @@ export default function PayToSponsorPage() {
 
         if (!detailsRes.ok) throw new Error("Failed to fetch payment details");
         const detailsData = await detailsRes.json();
+        console.log("✅ Payment Details:", detailsData);
 
         // Fetch payment status
         const statusRes = await fetch("/api/transactions/status", {
@@ -50,13 +51,14 @@ export default function PayToSponsorPage() {
             title: "Membership Payment",
             amount: detailsData.sponsor.amount,
             type: "membership",
+            label: detailsData.sponsor.label,
             status: mapStatus(statusData.membershipStatus),
-            details: {
+            paymentDetails: {
               name: detailsData.sponsor.name,
               receiverId: detailsData.sponsor.id,
               method: detailsData.sponsor.method,
-              accountNumber: detailsData.sponsor.accountNumber,
-              bankName: detailsData.sponsor.bankName,
+              details: detailsData.sponsor.details,
+            
             },
           },
         ];
@@ -128,7 +130,7 @@ export default function PayToSponsorPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sender: currentUserId,
-          receiver: selectedPayment.details.receiverId,
+          receiver: selectedPayment.paymentDetails.receiverId,
           amount: selectedPayment.amount,
           type: selectedPayment.type,
           method,
@@ -219,25 +221,25 @@ export default function PayToSponsorPage() {
                             <div className="flex justify-between">
                               <span className="text-gray-600">Pay to:</span>
                               <span className="font-medium text-gray-900">
-                                {payment.details.name}
+                                {payment.paymentDetails.name}
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-gray-600">Method:</span>
                               <span className="font-medium text-gray-900">
-                                {payment.details.method}
+                                {payment.paymentDetails.method}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-600">Account:</span>
+                              <span className="text-gray-600">Details:</span>
                               <span className="font-medium text-gray-900">
-                                {payment.details.accountNumber}
+                                {payment.paymentDetails.details}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-600">Bank:</span>
+                              <span className="text-gray-600">Label:</span>
                               <span className="font-medium text-gray-900">
-                                {payment.details.bankName}
+                                {payment.label}
                               </span>
                             </div>
                           </div>
