@@ -54,6 +54,13 @@ export async function PATCH(req, context) {
     if (!user)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+    const receiver = await User.findById(tx.toUser);
+    if (!receiver)
+      return NextResponse.json(
+        { error: "Receiver not found" },
+        { status: 404 }
+      );
+
     // Update user payment flags only if approved
     if (action === "approve") {
       if (tx.type === "admin") {
@@ -77,6 +84,12 @@ export async function PATCH(req, context) {
         await sendEmail(user.email, template.subject, html);
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
+        if (!sponsor.hasFirstSale || sponsor.firstSaleLocked) {
+          receiver.hasFirstSale = true;
+          receiver.firstSaleLocked = false;
+          receiver.firstSaleLockedBy = null;
+          await receiver.save();
+        }
 
         const template = await EmailTemplate.findOne({
           type: "user_membership_activated",
@@ -126,6 +139,16 @@ export async function PATCH(req, context) {
         user.adminFeePaid = false;
       } else if (tx.type === "membership") {
         user.membershipFeePaid = false;
+        if (!sponsor.hasFirstSale || sponsor.firstSaleLocked) {
+          receiver.firstSaleLocked = false;
+          receiver.firstSaleLockedBy = null;
+          await receiver.save();
+          const receiverUpline = await User.findOne({
+            username: receiver.referredBy,
+          });
+              receiverUpline.passupReferrals.push(user._id);
+          await receiverUpline.save();
+        }
       }
     }
 
