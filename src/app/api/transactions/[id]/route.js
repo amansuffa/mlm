@@ -90,6 +90,13 @@ export async function PATCH(req, context) {
           receiver.firstSaleLockedBy = null;
           await receiver.save();
         }
+        const receiverUpline = await User.findOne({
+          username: receiver.referredBy,
+        });
+        if (receiverUpline) {
+          receiverUpline.passupReferrals.push(user._id);
+          await receiverUpline.save();
+        }
 
         const template = await EmailTemplate.findOne({
           type: "user_membership_activated",
@@ -143,11 +150,6 @@ export async function PATCH(req, context) {
           receiver.firstSaleLocked = false;
           receiver.firstSaleLockedBy = null;
           await receiver.save();
-          const receiverUpline = await User.findOne({
-            username: receiver.referredBy,
-          });
-              receiverUpline.passupReferrals.push(user._id);
-          await receiverUpline.save();
         }
       }
     }
