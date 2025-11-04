@@ -80,16 +80,11 @@ export async function PATCH(req, context) {
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
         if (sponsor && (!sponsor.hasFirstSale || sponsor.firstSaleLocked)) {
-          sponsor.hasFirstSale = true;
-          sponsor.firstSaleLocked = false;
-          sponsor.firstSaleLockedBy = null;
-          await sponsor.save();
-        }
-        
-        if (sponsor) {
+          // This is sponsor's first sale - do 1-up pass-up
           const sponsorUpline = await User.findOne({
             username: sponsor.referredBy,
           });
+          console.log("Sponsorupline", sponsorUpline);
           if (sponsorUpline) {
             if (!sponsorUpline.passupReferrals) {
               sponsorUpline.passupReferrals = [];
@@ -97,6 +92,11 @@ export async function PATCH(req, context) {
             sponsorUpline.passupReferrals.push(user._id);
             await sponsorUpline.save();
           }
+          
+          sponsor.hasFirstSale = true;
+          sponsor.firstSaleLocked = false;
+          sponsor.firstSaleLockedBy = null;
+          await sponsor.save();
         }
         
 

@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
     earnings: {
       total: { type: Number, default: 0 }, 
     },
+    passupReferrals: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
     //   notifications: [{
     //     type: { type: String },
