@@ -38,14 +38,15 @@ export async function POST(req) {
       }
     }
 
-
+    // Fee Distribution Logic - Correct recipient calculate karna
     // Pehla invite → referrer ke sponsor ko (1-up pass-up)
     // Doosra+ invite → direct referrer ko
 
     let recipientUser = null;
     let recipientLabel = "No Sponsor";
+ 
 
-    if (sponsor.hasFirstSale || sponsor.firstSaleLocked) {
+    if (sponsor.hasFirstSale || sponsor.firstSaleLocked && sponsor.firstSaleLockedBy != userId) {
       // sponsor already has or pending first sale
       recipientUser = sponsor;
       recipientLabel = `Sponsor (Direct): ${
@@ -72,6 +73,9 @@ if (!sponsorUpline) {recipientUser = sponsor;
         recipientUser?.username || sponsorUpline.username || "Not found"
       }`;}
     }
+
+
+  
 
     // Payout method find karo
     const recipientPayout =
