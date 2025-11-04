@@ -54,12 +54,6 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       statuses: ["fully_active"],
     },
     {
-      href: "/user/pay-to-sponser",
-      label: "Pay to Sponser",
-      icon: <FaUserFriends />,
-      statuses: ["free", "admin_fee_paid"],
-    },
-    {
       href: "/transactions",
       label: "Transactions",
       icon: <FaExchangeAlt />,

@@ -13,7 +13,7 @@ export default function PayToSponser() {
         upload proof of payment. Approval may take 24–48 hours.
       </p>
       <Link href="/user/pay-to-sponser" className="inline-block px-4 py-2 rounded-lg text-white font-medium" style={{ background: 'linear-gradient(to right, var(--primary), var(--secondary))' }}>
-        Upload Proof & Confirm
+        Pay now & Upload Proof
       </Link>
     </div>
   );
