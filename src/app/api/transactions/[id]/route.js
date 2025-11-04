@@ -54,12 +54,7 @@ export async function PATCH(req, context) {
     if (!user)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    const receiver = await User.findById(tx.toUser);
-    if (!receiver)
-      return NextResponse.json(
-        { error: "Receiver not found" },
-        { status: 404 }
-      );
+    const sponsor = await User.findOne({ username: user.referredBy });
 
     // Update user payment flags only if approved
     if (action === "approve") {
@@ -84,19 +79,26 @@ export async function PATCH(req, context) {
         await sendEmail(user.email, template.subject, html);
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
-        if (!receiver.hasFirstSale || receiver.firstSaleLocked) {
-          receiver.hasFirstSale = true;
-          receiver.firstSaleLocked = false;
-          receiver.firstSaleLockedBy = null;
-          await receiver.save();
+        if (sponsor && (!sponsor.hasFirstSale || sponsor.firstSaleLocked)) {
+          sponsor.hasFirstSale = true;
+          sponsor.firstSaleLocked = false;
+          sponsor.firstSaleLockedBy = null;
+          await sponsor.save();
         }
-        const receiverUpline = await User.findOne({
-          username: receiver.referredBy,
-        });
-        if (receiverUpline) {
-          receiverUpline.passupReferrals.push(user._id);
-          await receiverUpline.save();
+        
+        if (sponsor) {
+          const sponsorUpline = await User.findOne({
+            username: sponsor.referredBy,
+          });
+          if (sponsorUpline) {
+            if (!sponsorUpline.passupReferrals) {
+              sponsorUpline.passupReferrals = [];
+            }
+            sponsorUpline.passupReferrals.push(user._id);
+            await sponsorUpline.save();
+          }
         }
+        
 
         const template = await EmailTemplate.findOne({
           type: "user_membership_activated",
@@ -146,10 +148,10 @@ export async function PATCH(req, context) {
         user.adminFeePaid = false;
       } else if (tx.type === "membership") {
         user.membershipFeePaid = false;
-        if (!receiver.hasFirstSale || receiver.firstSaleLocked) {
-          receiver.firstSaleLocked = false;
-          receiver.firstSaleLockedBy = null;
-          await receiver.save();
+        if (sponsor && (!sponsor.hasFirstSale || sponsor.firstSaleLocked)) {
+          sponsor.firstSaleLocked = false;
+          sponsor.firstSaleLockedBy = null;
+          await sponsor.save();
         }
       }
     }
@@ -172,6 +174,7 @@ export async function PATCH(req, context) {
 
     return NextResponse.json({ success: true, data: tx });
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Transaction approval error:", error);
+    return NextResponse.json({ error: "Server error", details: error.message }, { status: 500 });
   }
 }
