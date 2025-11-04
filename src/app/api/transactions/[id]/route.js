@@ -84,7 +84,7 @@ export async function PATCH(req, context) {
         await sendEmail(user.email, template.subject, html);
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
-        if (!sponsor.hasFirstSale || sponsor.firstSaleLocked) {
+        if (!receiver.hasFirstSale || receiver.firstSaleLocked) {
           receiver.hasFirstSale = true;
           receiver.firstSaleLocked = false;
           receiver.firstSaleLockedBy = null;
@@ -146,7 +146,7 @@ export async function PATCH(req, context) {
         user.adminFeePaid = false;
       } else if (tx.type === "membership") {
         user.membershipFeePaid = false;
-        if (!sponsor.hasFirstSale || sponsor.firstSaleLocked) {
+        if (!receiver.hasFirstSale || receiver.firstSaleLocked) {
           receiver.firstSaleLocked = false;
           receiver.firstSaleLockedBy = null;
           await receiver.save();
