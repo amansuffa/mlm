@@ -94,9 +94,65 @@ export async function POST(req) {
     if (!sender || !receiver || !amount || !type)
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
+    // For membership transactions, verify recipient is correct based on lock status
+    let finalReceiver = receiver;
+    if (type === "membership") {
+      const user = await User.findById(sender);
+      if (!user) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+      }
+
+      const sponsor = await User.findOne({ username: user.referredBy });
+      if (!sponsor) {
+        return NextResponse.json({ error: "Sponsor not found" }, { status: 404 });
+      }
+
+      // Check if sponsor's first sale is locked
+      if (sponsor.firstSaleLocked) {
+        // Check if locked by current user
+        if (
+          sponsor.firstSaleLockedBy &&
+          sponsor.firstSaleLockedBy.toString() === sender
+        ) {
+          // Locked by current user → pay to sponsor's sponsor (1-up pass-up)
+          const sponsorUpline = await User.findOne({
+            username: sponsor.referredBy,
+          });
+          if (sponsorUpline) {
+            finalReceiver = sponsorUpline._id;
+          } else {
+            // No sponsor upline → fallback to sponsor
+            finalReceiver = sponsor._id;
+          }
+        } else {
+          // Locked by someone else → pay to sponsor
+          finalReceiver = sponsor._id;
+        }
+      } else if (sponsor.hasFirstSale) {
+        // Sponsor already has first sale → pay to sponsor
+        finalReceiver = sponsor._id;
+      } else {
+        // No first sale → pay to sponsor's sponsor (1-up pass-up) and set lock
+        const sponsorUpline = await User.findOne({
+          username: sponsor.referredBy,
+        });
+        if (sponsorUpline) {
+          finalReceiver = sponsorUpline._id;
+          // Set lock for sponsor's first sale
+          sponsor.firstSaleLocked = true;
+          sponsor.firstSaleLockedBy = user._id;
+          sponsor.firstSaleLockedAt = new Date();
+          await sponsor.save();
+        } else {
+          // No sponsor upline → fallback to sponsor
+          finalReceiver = sponsor._id;
+        }
+      }
+    }
+
     const newTx = await Transaction.create({
       fromUser: sender,
-      toUser: receiver,
+      toUser: finalReceiver,
       amount,
       type,
       method,
@@ -104,35 +160,35 @@ export async function POST(req) {
       image,
       status: "pending",
     });
+
     const user = await User.findById(sender);
-        if (!user)
-          return NextResponse.json({ error: "User not found" }, { status: 404 });
-const template = await EmailTemplate.findOne({
-          type: "user_membership_fee_paid",
-        });
-        if (!template) {
-          return NextResponse.json(
-            { error: "Template not found" },
-            { status: 404 }
-          );
-        }
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
-        const html = parseTemplate(template.body, {
-          FirstName: user.name,
-        });
+    const template = await EmailTemplate.findOne({
+      type: "user_membership_fee_paid",
+    });
+    if (!template) {
+      return NextResponse.json(
+        { error: "Template not found" },
+        { status: 404 }
+      );
+    }
 
-        await sendEmail(user.email, template.subject, html);
-    // (Optional) Notification can be created here later
-    // await Notification.create({
-    //   user: receiver,
-    //   message: `New payment of $${amount} received from ${session.user.name}`,
-    //   link: `/transactions`,
-    // });
+    const html = parseTemplate(template.body, {
+      FirstName: user.name,
+    });
+
+    await sendEmail(user.email, template.subject, html);
 
     return NextResponse.json({ success: true, data: newTx });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Error creating transaction:", err);
+    return NextResponse.json(
+      { error: "Server error", details: err.message },
+      { status: 500 }
+    );
   }
 }
 

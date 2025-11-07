@@ -79,26 +79,74 @@ export async function PATCH(req, context) {
         await sendEmail(user.email, template.subject, html);
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
-        if (sponsor && (!sponsor.hasFirstSale || sponsor.firstSaleLocked)) {
-          // This is sponsor's first sale - do 1-up pass-up
-          const sponsorUpline = await User.findOne({
-            username: sponsor.referredBy,
-          });
-          console.log("Sponsorupline", sponsorUpline);
-          if (sponsorUpline) {
-            if (!sponsorUpline.passupReferrals) {
-              sponsorUpline.passupReferrals = [];
+
+        // ✅ Fee Distribution Logic - Membership Payment Approved
+        // This must run BEFORE updating sponsor status
+        let distributionResult = null;
+        try {
+          distributionResult = await distributeMembershipFee(
+            user,
+            tx.amount || 500
+          );
+
+          if (distributionResult.success) {
+            console.log(
+              `✅ Fee distributed: $${distributionResult.amount} to ${distributionResult.recipient.username} (${distributionResult.distributionType})`
+            );
+            console.log(
+              `📊 Referrer ${distributionResult.referrer.username} invite count: ${distributionResult.inviteNumber}`
+            );
+
+            // ✅ PART 5: Add to passupReferrals only if distributionType is "pass_up"
+            if (distributionResult.distributionType === "pass_up") {
+              const recipient = distributionResult.recipient;
+              if (recipient && recipient._id) {
+                if (!recipient.passupReferrals) {
+                  recipient.passupReferrals = [];
+                }
+                // Check if user._id already exists to avoid duplicates
+                if (
+                  !recipient.passupReferrals.some(
+                    (id) => id.toString() === user._id.toString()
+                  )
+                ) {
+                  recipient.passupReferrals.push(user._id);
+                  await recipient.save();
+                  console.log(
+                    `✅ Added user ${user.username} to ${recipient.username}'s passupReferrals`
+                  );
+                }
+              }
             }
-            sponsorUpline.passupReferrals.push(user._id);
-            await sponsorUpline.save();
+            // If distributionType is "direct", do NOT push to passupReferrals
+          } else {
+            console.warn(
+              `⚠️ Fee distribution skipped: ${distributionResult.message}`
+            );
           }
-          
-          sponsor.hasFirstSale = true;
-          sponsor.firstSaleLocked = false;
-          sponsor.firstSaleLockedBy = null;
+        } catch (feeError) {
+          // Log error but don't break the transaction approval
+          console.error("Error in fee distribution (non-blocking):", feeError);
+        }
+
+        // Update sponsor's first sale status
+        if (sponsor) {
+          // If this was sponsor's first sale (pass-up), mark it as complete
+          if (
+            distributionResult &&
+            distributionResult.success &&
+            distributionResult.distributionType === "pass_up"
+          ) {
+            sponsor.hasFirstSale = true;
+          }
+          // Unlock sponsor's first sale (if it was locked)
+          if (sponsor.firstSaleLocked) {
+            sponsor.firstSaleLocked = false;
+            sponsor.firstSaleLockedBy = null;
+            sponsor.firstSaleLockedAt = null;
+          }
           await sponsor.save();
         }
-        
 
         const template = await EmailTemplate.findOne({
           type: "user_membership_activated",
@@ -116,31 +164,6 @@ export async function PATCH(req, context) {
         });
 
         await sendEmail(user.email, template.subject, html);
-
-        // ✅ Fee Distribution Logic - Membership Payment Approved
-        // Carefully wrapped in try-catch so existing flow doesn't break
-        try {
-          const distributionResult = await distributeMembershipFee(
-            user,
-            tx.amount || 500
-          );
-
-          if (distributionResult.success) {
-            console.log(
-              `✅ Fee distributed: $${distributionResult.amount} to ${distributionResult.recipient.username} (${distributionResult.distributionType})`
-            );
-            console.log(
-              `📊 Referrer ${distributionResult.referrer.username} invite count: ${distributionResult.inviteNumber}`
-            );
-          } else {
-            console.warn(
-              `⚠️ Fee distribution skipped: ${distributionResult.message}`
-            );
-          }
-        } catch (feeError) {
-          // Log error but don't break the transaction approval
-          console.error("Error in fee distribution (non-blocking):", feeError);
-        }
       }
     } else {
       // If rejected, set payment flag to false

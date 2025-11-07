@@ -1,7 +1,20 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { Transaction } from "@/models/Transaction";
 
+/**
+ * Payment Details API
+ * Returns payment recipient information based on lock status and transaction history
+ * 
+ * Logic:
+ * 1. If user has pending transaction → return same sponsor from transaction
+ * 2. If sponsor.firstSaleLocked == true:
+ *    - If locked by current user → return sponsor's sponsor (1-up pass-up)
+ *    - Else → return sponsor (someone else locked it)
+ * 3. If sponsor.hasFirstSale == true → return sponsor
+ * 4. Else → return sponsor's sponsor (1-up pass-up)
+ */
 export async function POST(req) {
   try {
     await connectDB();
@@ -12,72 +25,91 @@ export async function POST(req) {
     }
 
     const user = await User.findById(userId);
-
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // const sponsor = await User.findById(user.sponsor);
+    // Get sponsor
     const sponsor = await User.findOne({ username: user.referredBy });
-
     if (!sponsor) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "Sponsor not found" }, { status: 404 });
     }
-
-    const LOCK_DURATION = 1000 * 60 * 30; // 30 minutes
-
-    if (sponsor.firstSaleLocked && sponsor.firstSaleLockedAt) {
-      const timeElapsed =
-        Date.now() - new Date(sponsor.firstSaleLockedAt).getTime();
-      if (timeElapsed > LOCK_DURATION) {
-        // auto unlock
-        sponsor.firstSaleLocked = false;
-        sponsor.firstSaleLockedBy = null;
-        sponsor.firstSaleLockedAt = null;
-        await sponsor.save();
-      }
-    }
-
-    // Fee Distribution Logic - Correct recipient calculate karna
-    // Pehla invite → referrer ke sponsor ko (1-up pass-up)
-    // Doosra+ invite → direct referrer ko
 
     let recipientUser = null;
     let recipientLabel = "No Sponsor";
- 
 
-    if (sponsor.hasFirstSale || sponsor.firstSaleLocked && sponsor.firstSaleLockedBy != userId) {
-      // sponsor already has or pending first sale
+    // Step 1: Check if user already has a pending membership transaction
+    const pendingTransaction = await Transaction.findOne({
+      fromUser: userId,
+      type: "membership",
+      status: "pending",
+    }).sort({ createdAt: -1 });
+
+    if (pendingTransaction) {
+      // User already has pending transaction → return same recipient
+      recipientUser = await User.findById(pendingTransaction.toUser);
+      if (recipientUser) {
+        recipientLabel = `Sponsor (From Pending Transaction): ${
+          recipientUser.username || "Not found"
+        }`;
+      } else {
+        // Fallback to sponsor if recipient not found
+        recipientUser = sponsor;
+        recipientLabel = `Sponsor (Direct): ${sponsor.username || "Not found"}`;
+      }
+    }
+    // Step 2: Check if sponsor's first sale is locked
+    else if (sponsor.firstSaleLocked) {
+      // Check if locked by current user
+      if (
+        sponsor.firstSaleLockedBy &&
+        sponsor.firstSaleLockedBy.toString() === userId
+      ) {
+        // Locked by current user → 1-up pass-up
+        const sponsorUpline = await User.findOne({
+          username: sponsor.referredBy,
+        });
+        if (sponsorUpline) {
+          recipientUser = sponsorUpline;
+          recipientLabel = `Sponsor (1-Up Pass-Up): ${
+            sponsorUpline.username || "Not found"
+          }`;
+        } else {
+          // No sponsor upline → fallback to sponsor
+          recipientUser = sponsor;
+          recipientLabel = `Sponsor (Direct): ${sponsor.username || "Not found"}`;
+        }
+      } else {
+        // Locked by someone else → return sponsor
+        recipientUser = sponsor;
+        recipientLabel = `Sponsor (Direct - Locked by Another User): ${
+          sponsor.username || "Not found"
+        }`;
+      }
+    }
+    // Step 3: Check if sponsor already has first sale
+    else if (sponsor.hasFirstSale) {
       recipientUser = sponsor;
-      recipientLabel = `Sponsor (Direct): ${
-        recipientUser?.username || sponsor.username || "Not found"
-      }`;
-    } else {
-      // const sponsorUpline = await User.findById(sponsor.sponsorId);
+      recipientLabel = `Sponsor (Direct): ${sponsor.username || "Not found"}`;
+    }
+    // Step 4: Default → 1-up pass-up
+    else {
       const sponsorUpline = await User.findOne({
         username: sponsor.referredBy,
       });
-if (!sponsorUpline) {recipientUser = sponsor;
-      recipientLabel = `Sponsor (Direct): ${
-        recipientUser?.username || sponsor.username || "Not found"
-      }`;}
-
-    if (sponsorUpline) {    sponsor.firstSaleLocked = true;
-      sponsor.firstSaleLockedBy = user._id;
-      sponsor.firstSaleLockedAt = new Date();
-      await sponsor.save();
-
-
-      recipientUser = sponsorUpline;
-      recipientLabel = `Sponsor (1-Up Pass-Up): ${
-        recipientUser?.username || sponsorUpline.username || "Not found"
-      }`;}
+      if (sponsorUpline) {
+        recipientUser = sponsorUpline;
+        recipientLabel = `Sponsor (1-Up Pass-Up): ${
+          sponsorUpline.username || "Not found"
+        }`;
+      } else {
+        // No sponsor upline → fallback to sponsor
+        recipientUser = sponsor;
+        recipientLabel = `Sponsor (Direct): ${sponsor.username || "Not found"}`;
+      }
     }
 
-
-  
-
-    // Payout method find karo
+    // Get payout method
     const recipientPayout =
       recipientUser?.payoutMethods?.find((method) => method.isPrimary) ||
       recipientUser?.payoutMethods?.[0];
@@ -90,7 +122,6 @@ if (!sponsorUpline) {recipientUser = sponsor;
         method:
           recipientPayout?.methodName || recipientPayout?.type || "Not set",
         details: recipientPayout?.details || "Not provided",
-
         amount: 500,
       },
     };
@@ -98,6 +129,9 @@ if (!sponsorUpline) {recipientUser = sponsor;
     return NextResponse.json(paymentDetails);
   } catch (error) {
     console.error("Error fetching payment details:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server error", details: error.message },
+      { status: 500 }
+    );
   }
 }

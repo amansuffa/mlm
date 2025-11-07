@@ -18,6 +18,24 @@ export default function PayToSponsorPage() {
   useEffect(() => {
     if (!currentUserId) return;
 
+    // ✅ PART 4: Lock sponsor's first sale when page loads
+    const lockPayment = async () => {
+      try {
+        await fetch("/api/payment-lock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: currentUserId,
+            action: "lock",
+          }),
+        });
+      } catch (err) {
+        console.error("❌ Error locking payment:", err);
+      }
+    };
+
+    lockPayment();
+
     async function fetchData() {
       setStatusLoading(true);
       try {
@@ -71,6 +89,64 @@ export default function PayToSponsorPage() {
     }
 
     fetchData();
+
+    // ✅ PART 4: Unlock sponsor's first sale when component unmounts
+    return () => {
+      const unlockPayment = async () => {
+        try {
+          // Use sendBeacon for browser close/navigation away
+          if (navigator.sendBeacon) {
+            const data = JSON.stringify({
+              userId: currentUserId,
+              action: "unlock",
+            });
+            navigator.sendBeacon(
+              "/api/payment-lock",
+              new Blob([data], { type: "application/json" })
+            );
+          } else {
+            // Fallback to fetch if sendBeacon not available
+            fetch("/api/payment-lock", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userId: currentUserId,
+                action: "unlock",
+              }),
+              keepalive: true, // Keep request alive even after page unload
+            }).catch(() => {
+              // Ignore errors during cleanup
+            });
+          }
+        } catch (err) {
+          // Ignore errors during cleanup
+        }
+      };
+      unlockPayment();
+    };
+  }, [currentUserId]);
+
+  // ✅ PART 4: Handle browser close/tab close
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    const handleBeforeUnload = () => {
+      // Unlock when browser/tab closes
+      const data = JSON.stringify({
+        userId: currentUserId,
+        action: "unlock",
+      });
+      navigator.sendBeacon(
+        "/api/payment-lock",
+        new Blob([data], { type: "application/json" })
+      );
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, [currentUserId]);
 
   const mapStatus = (status) => {
