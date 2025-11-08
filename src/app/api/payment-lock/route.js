@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
-
+import { Transaction } from "@/models/Transaction";
 /**
  * Payment Lock/Unlock API
  * Manages real-time lock system for sponsor's first sale
@@ -64,10 +64,18 @@ export async function POST(req) {
       return NextResponse.json({ error: "Sponsor not found" }, { status: 404 });
     }
 
+    const pendingTransaction = await Transaction.findOne({
+      fromUser: sponsor.firstSaleLockedBy,
+      type: "membership",
+      status: "pending",
+    }).sort({ createdAt: -1 });
+
     // Handle lock/unlock action
+
+    if(!sponsor.hasFirstSale){
     if (action === "lock") {
       // Set lock only if sponsor doesn't have first sale yet
-      if (!sponsor.hasFirstSale) {
+      if (!sponsor.firstSaleLocked) {
         sponsor.firstSaleLocked = true;
         sponsor.firstSaleLockedBy = user._id;
         sponsor.firstSaleLockedAt = new Date();
@@ -78,6 +86,7 @@ export async function POST(req) {
       if (
         sponsor.firstSaleLocked &&
         sponsor.firstSaleLockedBy?.toString() === userId
+        && !pendingTransaction
       ) {
         sponsor.firstSaleLocked = false;
         sponsor.firstSaleLockedBy = null;
@@ -85,7 +94,7 @@ export async function POST(req) {
         await sponsor.save();
       }
     }
-
+}
     return NextResponse.json({
       success: true,
       message: `Sponsor lock ${action === "lock" ? "set" : "removed"} successfully`,

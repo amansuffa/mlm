@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import { Transaction } from "@/models/Transaction";
 
 /**
  * Payment Details API
@@ -38,32 +37,12 @@ export async function POST(req) {
     let recipientUser = null;
     let recipientLabel = "No Sponsor";
 
-    // Step 1: Check if user already has a pending membership transaction
-    const pendingTransaction = await Transaction.findOne({
-      fromUser: userId,
-      type: "membership",
-      status: "pending",
-    }).sort({ createdAt: -1 });
-
-    if (pendingTransaction) {
-      // User already has pending transaction → return same recipient
-      recipientUser = await User.findById(pendingTransaction.toUser);
-      if (recipientUser) {
-        recipientLabel = `Sponsor (From Pending Transaction): ${
-          recipientUser.username || "Not found"
-        }`;
-      } else {
-        // Fallback to sponsor if recipient not found
-        recipientUser = sponsor;
-        recipientLabel = `Sponsor (Direct): ${sponsor.username || "Not found"}`;
-      }
-    }
     // Step 2: Check if sponsor's first sale is locked
-    else if (sponsor.firstSaleLocked) {
+   if (sponsor.firstSaleLocked) {
       // Check if locked by current user
       if (
         sponsor.firstSaleLockedBy &&
-        sponsor.firstSaleLockedBy.toString() === userId
+        sponsor.firstSaleLockedBy.toString() == userId
       ) {
         // Locked by current user → 1-up pass-up
         const sponsorUpline = await User.findOne({

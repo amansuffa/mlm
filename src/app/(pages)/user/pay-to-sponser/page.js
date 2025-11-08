@@ -279,7 +279,8 @@ export default function PayToSponsorPage() {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm text-yellow-800 font-medium">
-                      Please complete payment within 30 minutes or link will expire.
+Make sure to upload your payment proof before closing this window; otherwise, the payment will not be accepted.<br/>
+Please note:This data may change anytime, so avoid saving it and make your payment immediately.
                     </p>
                   </div>
                 </div>
