@@ -117,13 +117,20 @@ export async function PATCH(req, context) {
                   );
                 }
               }
+            } else if (distributionResult.distributionType === "direct") {
+              const recipient = distributionResult.recipient;
+              if (!recipient.directSales) {
+                recipient.directSales = [];
+              }
+              recipient.directSales.push(user._id);
+              await recipient.save();
+
+              console.log(
+                `✅ Added user ${user.username} to ${recipient.username}'s directSales`
+              );
             }
             // If distributionType is "direct", do NOT push to passupSales
           } else {
-            if (!sponsor.directSales) {
-                  sponsor.directSales = [];
-                }
-            sponsor.directSales.push(user._id)
             console.warn(
               `⚠️ Fee distribution skipped: ${distributionResult.message}`
             );
@@ -202,6 +209,9 @@ export async function PATCH(req, context) {
     return NextResponse.json({ success: true, data: tx });
   } catch (error) {
     console.error("Transaction approval error:", error);
-    return NextResponse.json({ error: "Server error", details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server error", details: error.message },
+      { status: 500 }
+    );
   }
 }
