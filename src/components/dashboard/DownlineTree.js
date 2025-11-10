@@ -2,10 +2,14 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Tree from "react-d3-tree";
+import { useRouter } from "next/navigation";
 
 export default function DownlineTree() {
+  const router = useRouter();
   const treeContainer = useRef(null);
   const [dimensions, setDimensions] = useState({ x: 0, y: 0 });
+  const [treeData, setTreeData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     function setSize() {
@@ -19,36 +23,53 @@ export default function DownlineTree() {
     return () => window.removeEventListener("resize", setSize);
   }, []);
 
-  const treeData = [
-    {
-      name: "You (Admin)",
-      referral_type: "blue",
-      children: [
-        {
-          name: "John Doe",
-          referral_type: "green",
-          children: [
-            { name: "Ali Raza", referral_type: "red" },
-            { name: "Sarah Khan", referral_type: "red" }
-          ]
-        },
-        { name: "Ahmed Malik", referral_type: "green" }
-      ]
+  useEffect(() => {
+    fetchTreeData();
+  }, []);
+
+  const fetchTreeData = async () => {
+    try {
+      const response = await fetch("/api/dashboard/downline-tree");
+      const result = await response.json();
+      
+      console.log("Tree data:", result);
+      
+      if (response.ok) {
+        setTreeData(result);
+      }
+    } catch (error) {
+      console.error("Error fetching tree data:", error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const getNodeColor = (nodeDatum) => {
+    console.log("Node data:", nodeDatum);
+    
+    // Use referral_type from API if available
+    if (nodeDatum.referral_type === "blue") {
+      return "url(#blueGradient)";
+    } else if (nodeDatum.referral_type === "green") {
+      return "url(#greenGradient)";
+    } else if (nodeDatum.referral_type === "red") {
+      return "url(#redGradient)";
+    }
+    
+    // Fallback logic
+    if (nodeDatum.name === "You" || nodeDatum.isRoot) {
+      return "url(#blueGradient)";
+    }
+    
+    return "url(#greenGradient)";
+  };
 
   const renderCustomNode = ({ nodeDatum, toggleNode }) => (
     <g onClick={toggleNode} style={{ cursor: "pointer" }}>
       {/* Node Circle */}
       <circle
         r={16}
-        fill={
-          nodeDatum.referral_type === "blue"
-            ? "url(#blueGradient)"
-            : nodeDatum.referral_type === "green"
-            ? "url(#greenGradient)"
-            : "url(#redGradient)"
-        }
+        fill={getNodeColor(nodeDatum)}
         stroke="#fff"
         strokeWidth="3"
         filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.2))"
@@ -69,9 +90,21 @@ export default function DownlineTree() {
 
   return (
     <div className="bg-white shadow-lg rounded-2xl p-5 h-full flex flex-col">
-      <h3 className="text-lg font-bold text-gray-700 mb-4">🌳 Downline Tree</h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-bold text-gray-700">🌳 Downline Tree</h3>
+        <button
+          onClick={() => router.push('/user/downline')}
+          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+        >
+          Show More
+        </button>
+      </div>
       <div ref={treeContainer} className="flex-1 w-full">
-        {dimensions.x !== 0 && (
+        {loading ? (
+          <div className="text-center py-8">Loading...</div>
+        ) : treeData.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">No downline data available</div>
+        ) : dimensions.x !== 0 ? (
           <Tree
             data={treeData}
             orientation="vertical"
@@ -81,7 +114,7 @@ export default function DownlineTree() {
             zoomable
             collapsible
           />
-        )}
+        ) : null}
       </div>
 
       <svg width="0" height="0">
