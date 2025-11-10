@@ -95,14 +95,14 @@ export default function ReferralsOverview() {
         </table>
       </div>
 
-      {/* Show More Button */}
+      {/* Show All Button */}
       {referrals.length > 0 && (
-        <div className="mt-4 text-right">
+        <div className="mt-4 text-center">
           <Link
             href="/user/referrals"
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="inline-block px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
           >
-            Show More →
+            Show All
           </Link>
         </div>
       )}

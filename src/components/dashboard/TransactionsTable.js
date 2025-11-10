@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function TransactionsTable() {
   const [transactions, setTransactions] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
@@ -80,6 +82,18 @@ export default function TransactionsTable() {
           </tbody>
         </table>
       </div>
+      
+      {/* Show All Button */}
+      {transactions.length > 0 && (
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => router.push('/transactions')}
+            className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+          >
+            Show All
+          </button>
+        </div>
+      )}
     </div>
   );
 }
