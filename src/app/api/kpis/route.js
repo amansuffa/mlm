@@ -21,28 +21,28 @@ export async function GET() {
     currentRank: session.user.rank || "Bronze",
   };
 
-  if (role === "admin") {
-    // ✅ Admin — show total platform stats
-    const allUsers = await User.find({ role: "user" });
+  // if (role === "admin") {
+  //   // ✅ Admin — show total platform stats
+  //   const allUsers = await User.find({ role: "user" });
 
-    const totalDirectSales = allUsers.reduce(
-      (sum, u) => sum + (u.directSales?.length || 0),
-      0
-    );
-    const totalPassupSales = allUsers.reduce(
-      (sum, u) => sum + (u.passupSales?.length || 0),
-      0
-    );
-    const totalEarnings = allUsers.reduce(
-      (sum, u) => sum + (u.earnings?.total || 0),
-      0
-    );
+  //   const totalDirectSales = allUsers.reduce(
+  //     (sum, u) => sum + (u.directSales?.length || 0),
+  //     0
+  //   );
+  //   const totalPassupSales = allUsers.reduce(
+  //     (sum, u) => sum + (u.passupSales?.length || 0),
+  //     0
+  //   );
+  //   const totalEarnings = allUsers.reduce(
+  //     (sum, u) => sum + (u.earnings?.total || 0),
+  //     0
+  //   );
 
-    kpis.directSales = totalDirectSales;
-    kpis.passupSales = totalPassupSales;
-    kpis.totalSales = totalDirectSales + totalPassupSales;
-    kpis.totalEarnings = `$${totalEarnings}`;
-  } else {
+  //   kpis.directSales = totalDirectSales;
+  //   kpis.passupSales = totalPassupSales;
+  //   kpis.totalSales = totalDirectSales + totalPassupSales;
+  //   kpis.totalEarnings = `$${totalEarnings}`;
+  // } else {
     // ✅ Regular user — show personal KPIs
     const currentUser = await User.findOne({ username }).select(
       "directSales passupSales earnings"
@@ -57,7 +57,7 @@ export async function GET() {
     kpis.passupSales = passupSales;
     kpis.totalSales = totalSales;
     kpis.totalEarnings = `$${totalEarnings}`;
-  }
+  // }
 
   return NextResponse.json(kpis);
 }
