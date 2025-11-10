@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import KPISection from "@/components/dashboard/KPISection";
-
+import TopReferrers from "@/components/dashboard/TopReferrers";
 import EarningsChart from "@/components/dashboard/EarningsChart";
 import ReferralsOverview from "@/components/member/ReferralsOverview";
 import PayoutSettingsCard from "@/components/member/PayoutSettingsCard";
-import DownlineTree from "@/components/dashboard/DownlineTree"; 
-import TransactionsTable from "@/components/dashboard/TransactionsTable"; 
+import DownlineTree from "@/components/dashboard/DownlineTree";
+import TransactionsTable from "@/components/dashboard/TransactionsTable";
 import SalesOverview from "./dashboard/SalesOverview";
 import PayToSponser from "./member/PayToSponser";
 
@@ -17,7 +17,10 @@ export default function DashboardMember({ session }) {
   return (
     <main className="py-6 w-full">
       {/* Welcome */}
-      <h1 className="text-3xl md:text-4xl font-extrabold mb-6" style={{ color: 'var(--text)' }}>
+      <h1
+        className="text-3xl md:text-4xl font-extrabold mb-6"
+        style={{ color: "var(--text)" }}
+      >
         Welcome, {session?.user?.name || "Member"} 👋
       </h1>
 
@@ -39,6 +42,7 @@ export default function DashboardMember({ session }) {
           {/* Right Sidebar Widgets */}
           <div className="flex flex-col gap-6 sm:col-span-2 lg:col-span-1">
             <PayoutSettingsCard />
+            <TopReferrers />
             <div className="flex-1">
               <DownlineTree />
             </div>
