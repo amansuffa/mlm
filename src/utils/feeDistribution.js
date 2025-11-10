@@ -75,12 +75,15 @@ export async function distributeMembershipFee(newMember, feeAmount = 500) {
     if (recipientUser) {
       recipientUser.earnings = recipientUser.earnings || {
         total: 0,
-        available: 0,
-        withdrawn: 0,
+        history: [],
       };
 
       recipientUser.earnings.total += feeAmount;
-      recipientUser.earnings.available += feeAmount;
+      recipientUser.earnings.history.push({
+        amount: feeAmount,
+        date: new Date(),
+        source: distributionType === "pass_up" ? "passup" : "direct"
+      });
       
       await recipientUser.save();
 
