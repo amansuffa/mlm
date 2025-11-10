@@ -3,11 +3,11 @@
 import { useState } from "react";
 import KPISection from "@/components/dashboard/KPISection";
 import SalesOverview from "@/components/dashboard/SalesOverview";
-import VisitorsChart from "@/components/dashboard/VisitorsChart";
+import VisitorsChart from "@/components/dashboard/EarningsChart";
 import TopReferrers from "@/components/dashboard/TopReferrers";
 import TransactionsTable from "@/components/dashboard/TransactionsTable";
 import DownlineTree from "@/components/dashboard/DownlineTree";
-import WeeklyRevenue from "@/components/dashboard/WeeklyRevenue";
+import WeeklyRevenue from "@/components/dashboard/AdminEarningsChart";
 
 export default function DashboardAdmin({ session }) {
   const [isOpen, setIsOpen] = useState(false);

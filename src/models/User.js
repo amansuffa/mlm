@@ -63,6 +63,13 @@ const userSchema = new mongoose.Schema(
     directInvitesCount: { type: Number, default: 0 }, 
     earnings: {
       total: { type: Number, default: 0 }, 
+       history: [
+    {
+      amount: { type: Number, required: true },
+      date: { type: Date, default: Date.now },
+      source: { type: String, default: "sale" }, // optional: "direct" | "passup"
+    },
+  ],
     },
     
     

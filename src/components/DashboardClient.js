@@ -3,7 +3,7 @@
 import { useState } from "react";
 import KPISection from "@/components/dashboard/KPISection";
 
-import EarningsChart from "@/components/member/EarningsChart";
+import EarningsChart from "@/components/dashboard/EarningsChart";
 import ReferralsOverview from "@/components/member/ReferralsOverview";
 import PayoutSettingsCard from "@/components/member/PayoutSettingsCard";
 import DownlineTree from "@/components/dashboard/DownlineTree"; 
