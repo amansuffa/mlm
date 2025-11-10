@@ -37,7 +37,12 @@ export default function TransactionDetailsPage() {
 
     if (data.success) {
       alert(`Transaction ${action}ed successfully`);
-      await fetchTransaction(); // Refresh transaction data
+      // Redirect back to the appropriate page
+      if (from === 'confirm-payments') {
+        router.push('/confirm-payments');
+      } else {
+        router.push('/transactions');
+      }
     } else {
       alert(data.error || "Failed to update transaction");
     }
