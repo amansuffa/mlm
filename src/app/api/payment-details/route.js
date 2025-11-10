@@ -61,7 +61,7 @@ export async function POST(req) {
       } else {
         // Locked by someone else → return sponsor
         recipientUser = sponsor;
-        recipientLabel = `Sponsor (Direct - Locked by Another User): ${
+        recipientLabel = `Sponsor (Direct): ${
           sponsor.username || "Not found"
         }`;
       }

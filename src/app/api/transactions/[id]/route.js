@@ -97,29 +97,33 @@ export async function PATCH(req, context) {
               `📊 Referrer ${distributionResult.referrer.username} invite count: ${distributionResult.inviteNumber}`
             );
 
-            // ✅ PART 5: Add to passupReferrals only if distributionType is "pass_up"
+            // ✅ PART 5: Add to passupSales only if distributionType is "pass_up"
             if (distributionResult.distributionType === "pass_up") {
               const recipient = distributionResult.recipient;
               if (recipient && recipient._id) {
-                if (!recipient.passupReferrals) {
-                  recipient.passupReferrals = [];
+                if (!recipient.passupSales) {
+                  recipient.passupSales = [];
                 }
                 // Check if user._id already exists to avoid duplicates
                 if (
-                  !recipient.passupReferrals.some(
+                  !recipient.passupSales.some(
                     (id) => id.toString() === user._id.toString()
                   )
                 ) {
-                  recipient.passupReferrals.push(user._id);
+                  recipient.passupSales.push(user._id);
                   await recipient.save();
                   console.log(
-                    `✅ Added user ${user.username} to ${recipient.username}'s passupReferrals`
+                    `✅ Added user ${user.username} to ${recipient.username}'s passupSales`
                   );
                 }
               }
             }
-            // If distributionType is "direct", do NOT push to passupReferrals
+            // If distributionType is "direct", do NOT push to passupSales
           } else {
+            if (!sponsor.directSales) {
+                  sponsor.directSales = [];
+                }
+            sponsor.directSales.push(user._id)
             console.warn(
               `⚠️ Fee distribution skipped: ${distributionResult.message}`
             );

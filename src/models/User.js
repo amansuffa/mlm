@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema(
     firstSaleLockedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     firstSaleLockedAt: { type: Date, default: null },
 
+    passupSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    directSales:[{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+
     status: {
       type: String,
       enum: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
@@ -61,8 +64,8 @@ const userSchema = new mongoose.Schema(
     earnings: {
       total: { type: Number, default: 0 }, 
     },
-    passupReferrals: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-
+    
+    
     //   notifications: [{
     //     type: { type: String },
     //     message: String,
