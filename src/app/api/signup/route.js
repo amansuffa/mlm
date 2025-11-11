@@ -59,25 +59,47 @@ export async function POST(req) {
  
 
     // verification link
-        const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
-
-    // Find email template
-    const template = await EmailTemplate.findOne({ type: "user_confirm_email" });
-    let html;
+    const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
+    // Find email reciever
+    const sponsor = await User.findOne({ username: finalReferredBy });
+    const admin = await User.findOne({ role: "admin" });
+    // Find email templates
+    const userTemplate = await EmailTemplate.findOne({ type: "user_confirm_email" });
+    const sponsorTemplate = await EmailTemplate.findOne({ type: "sponsor_new_referral" });
+    const adminTemplate = await EmailTemplate.findOne({ type: "admin_new_signup" });
     
-    if (template) {
-      // Use custom template if available
-      html = parseTemplate(template.body, {
-        FirstName: name,
-        MemberFullName: name,
-        MemberEmail: email,
-        VerificationLink: verifyUrl,
-        ConfirmEmailLink: verifyUrl
-      });
-      await sendEmail(email, template.subject, html);
-    } else {
-      // Use default template if no custom template exists
-      html = `
+    const templateData = {
+      MemberFirstName: name,
+      MemberName: name,
+      MemberEmail: email,
+      MemberUsername: username,
+      SponsorName: sponsor?.name || 'N/A',
+      SponsorFirstName: sponsor?.firstName || 'N/A',
+      VerificationLink: verifyUrl,
+      ConfirmEmailLink: verifyUrl
+    };
+    
+    // Send email to user
+    if (userTemplate) {
+      const userHtml = parseTemplate(userTemplate.body, templateData);
+      await sendEmail(email, userTemplate.subject, userHtml);
+    }
+    
+    // Send email to sponsor
+    if (sponsorTemplate && sponsor) {
+      const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+      await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+    }
+    
+    // Send email to admin
+    if (adminTemplate && admin) {
+      const adminHtml = parseTemplate(adminTemplate.body, templateData);
+      await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+    }
+    
+    // Fallback if no user template exists
+    if (!userTemplate) {
+      const defaultHtml = `
         <h2>Verify Your Email</h2>
         <p>Hi ${name},</p>
         <p>Thanks for signing up! Please click the link below to verify your email:</p>
@@ -86,7 +108,7 @@ export async function POST(req) {
         <p>${verifyUrl}</p>
         <p>If you didn't create an account, you can ignore this email.</p>
       `;
-      await sendEmail(email, "Verify your email", html);
+      await sendEmail(email, "Verify your email", defaultHtml);
     }
         
 

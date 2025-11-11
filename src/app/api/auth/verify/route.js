@@ -34,6 +34,7 @@ export async function GET(req) {
     user.isVerified = true;
     user.verificationToken = null; // Clear the token after verification
     await user.save();
+    
 
     return NextResponse.redirect(new URL(`/payment?uid=${user._id}`, req.url));
 
