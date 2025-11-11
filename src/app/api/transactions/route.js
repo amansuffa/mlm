@@ -1,49 +1,3 @@
-// import { NextResponse } from "next/server";
-// import { Transaction } from "@/models/Transaction";
-// import { User } from "@/models/User";
-// import { auth } from "@/auth";
-// import { connectDB } from "@/lib/mongodb";
-
-// export async function GET() {
-//   await connectDB();
-//   const session = await auth();
-
-//   if (!session) {
-//     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-//   }
-
-//   const userId = session.user.id;
-//   const role = session.user.role;
-
-//   let transactions;
-
-//   if (role === "admin") {
-//     transactions = await Transaction.find({})
-//       .populate("fromUser", "name email username")
-//       .populate("toUser", "name email username")
-//       .sort({ createdAt: -1 });
-//   } else {
-//     const downlineUsers = await User.find({ referredBy: userId }).select("_id");
-//     const downlineIds = downlineUsers.map(u => u._id);
-
-//     transactions = await Transaction.find({
-//       $or: [
-//         { fromUser: userId },
-//         { toUser: userId },
-//         { fromUser: { $in: downlineIds } },
-//         { toUser: { $in: downlineIds } }
-//       ]
-//     })
-//     .populate("fromUser", "name email username")
-//     .populate("toUser", "name email username")
-//     .sort({ createdAt: -1 });
-//   }
-
-//   return NextResponse.json(transactions);
-// }
-
-
-
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Transaction } from "@/models/Transaction";
@@ -57,7 +11,8 @@ import { parseTemplate } from "@/lib/parseTemplate";
 export async function GET() {
   await connectDB();
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const userId = session.user.id;
   const role = session.user.role;
@@ -85,7 +40,8 @@ export async function GET() {
 export async function POST(req) {
   await connectDB();
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const body = await req.json();
@@ -104,7 +60,10 @@ export async function POST(req) {
 
       const sponsor = await User.findOne({ username: user.referredBy });
       if (!sponsor) {
-        return NextResponse.json({ error: "Sponsor not found" }, { status: 404 });
+        return NextResponse.json(
+          { error: "Sponsor not found" },
+          { status: 404 }
+        );
       }
 
       // Check if sponsor's first sale is locked
@@ -166,22 +125,86 @@ export async function POST(req) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const template = await EmailTemplate.findOne({
+    // Find email receiver
+    const sponsor = await User.findOne({ username: user.referredBy });
+    const sponsorUpline = sponsor ? await User.findOne({ username: sponsor.referredBy }) : null;
+    const admin = await User.findOne({ role: "admin" });
+    // Find email templates
+    const userTemplate = await EmailTemplate.findOne({
       type: "user_membership_fee_paid",
     });
-    if (!template) {
-      return NextResponse.json(
-        { error: "Template not found" },
-        { status: 404 }
-      );
+    const sponsorTemplate = await EmailTemplate.findOne({
+      type: "sponsor_confirm_payment",
+    });
+    const adminTemplate = await EmailTemplate.findOne({
+      type: "admin_membership_payment_sent",
+    });
+    const sponsorUplineTemplate = await EmailTemplate.findOne({
+      type: "sponsor_of_sponsor_confirm_payment",
+    });
+    const sponsorUplinePassupTemplate = await EmailTemplate.findOne({
+      type: "sponsor_of_sponsor_passed_up_sale",
+    });
+    const paidTo = await User.findById(finalReceiver);
+    const templateData = {
+      MemberFirstName: user.firstName || user.name,
+      MemberName: user.name,
+      MemberEmail: user.email,
+      MemberUsername: user.username,
+      SponsorName: sponsor?.name || "N/A",
+      SponsorFirstName: sponsor?.firstName || "N/A",
+      SponsorEmail: sponsor?.email || "N/A",
+      SponsorUplineFirstName:
+        sponsorUpline?.firstName || sponsorUpline?.name || "N/A",
+      LoginLink: `${process.env.NEXTAUTH_URL}/login`,
+      PaymentDate: new Date().toLocaleDateString(),
+      PaidTo: paidTo?.name || paidTo?.firstName || "N/A",
+    };
+
+    // Send email to user
+    if (userTemplate) {
+      const userHtml = parseTemplate(userTemplate.body, templateData);
+      await sendEmail(user.email, userTemplate.subject, userHtml);
     }
 
-    const html = parseTemplate(template.body, {
-      FirstName: user.name,
-    });
+    // Send email to sponsor
+    if (sponsor && sponsor.hasFirstSale) {
+      if (sponsorTemplate) {
+        const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+        await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+      }
+    }
+    // Send email to admin
+    if (adminTemplate && admin) {
+      const adminHtml = parseTemplate(adminTemplate.body, templateData);
+      await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+    }
 
-    await sendEmail(user.email, template.subject, html);
-
+    // Send email to sponsor's sponsor if applicable
+    if (sponsor && !sponsor.hasFirstSale) {
+      if (sponsorUplineTemplate && sponsorUpline) {
+        const sponsorUplineHtml = parseTemplate(
+          sponsorUplineTemplate.body,
+          templateData
+        );
+        await sendEmail(
+          sponsorUpline.email,
+          sponsorUplineTemplate.subject,
+          sponsorUplineHtml
+        );
+      }
+      if (sponsorUplinePassupTemplate && sponsorUpline) {
+        const sponsorUplineHtml = parseTemplate(
+          sponsorUplinePassupTemplate.body,
+          templateData
+        );
+        await sendEmail(
+          sponsorUpline.email,
+          sponsorUplinePassupTemplate.subject,
+          sponsorUplineHtml
+        );
+      }
+    }
     return NextResponse.json({ success: true, data: newTx });
   } catch (err) {
     console.error("Error creating transaction:", err);
@@ -191,4 +214,3 @@ export async function POST(req) {
     );
   }
 }
-
