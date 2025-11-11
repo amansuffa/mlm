@@ -56,27 +56,48 @@ export async function PATCH(req, context) {
 
     const sponsor = await User.findOne({ username: user.referredBy });
 
+    const sponsorUpline = sponsor
+      ? await User.findOne({ username: sponsor.referredBy })
+      : null;
+
+          const admin = await User.findOne({ role: "admin" });
+      
+
     // Update user payment flags only if approved
     if (action === "approve") {
       if (tx.type === "admin") {
         user.adminFeePaid = true;
-        const template = await EmailTemplate.findOne({
+
+        const userTemplate = await EmailTemplate.findOne({
           type: "user_admin_fee_paid",
         });
-        if (!template) {
-          return NextResponse.json(
-            { error: "Template not found" },
-            { status: 404 }
-          );
-        }
-
-        const html = parseTemplate(template.body, {
-          FirstName: user.name,
-          LoginLink: `${process.env.NEXTAUTH_URL}/login`,
-          SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
+        const sponsorTemplate = await EmailTemplate.findOne({
+          type: "sponsor_referral_admin_fee_paid",
         });
 
-        await sendEmail(user.email, template.subject, html);
+        const templateData = {
+          MemberFirstName: user.firstName || user.name,
+          MemberName: user.name,
+          MemberEmail: user.email,
+          MemberUsername: user.username,
+          SponsorName: sponsor?.name || "N/A",
+          SponsorFirstName: sponsor?.firstName || "N/A",
+          SponsorEmail: sponsor?.email || "N/A",
+          LoginLink: `${process.env.NEXTAUTH_URL}/login`,
+          SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
+        };
+
+        // Send email to user
+        if (userTemplate) {
+          const userHtml = parseTemplate(userTemplate.body, templateData);
+          await sendEmail(user.email, userTemplate.subject, userHtml);
+        }
+
+        // Send email to sponsor
+        if (sponsorTemplate && sponsor) {
+          const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+          await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+        }
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
 
@@ -151,7 +172,7 @@ export async function PATCH(req, context) {
             sponsor.hasFirstSale = true;
           }
           // Unlock sponsor's first sale (if it was locked)
-          if (sponsor.firstSaleLocked){
+          if (sponsor.firstSaleLocked) {
             sponsor.firstSaleLocked = false;
             // sponsor.firstSaleLockedBy = null;
             sponsor.firstSaleLockedAt = null;
@@ -159,22 +180,75 @@ export async function PATCH(req, context) {
           await sponsor.save();
         }
 
-        const template = await EmailTemplate.findOne({
-          type: "user_membership_activated",
-        });
-        if (!template) {
-          return NextResponse.json(
-            { error: "Template not found" },
-            { status: 404 }
-          );
-        }
+    const userTemplate = await EmailTemplate.findOne({
+      type: "user_membership_activated",
+    });
+    const sponsorTemplate = await EmailTemplate.findOne({
+      type: "sponsor_activated_downline",
+    });
+    const adminTemplate = await EmailTemplate.findOne({
+      type: "admin_member_activated",
+    });
+    const sponsorUplineTemplate = await EmailTemplate.findOne({
+      type: "sponsor_of_sponsor_member_activated",
+    });
+   
+    const paidTo = distributionResult?.recipient;
+    const activatedBy = distributionResult?.distributionType === "direct" ? sponsor?.username : sponsorUpline?.username || "N/A";
+    console.log("Paid To:", paidTo);
+    const templateData = {
+      MemberFirstName: user.firstName || user.name,
+      MemberName: user.name,
+      MemberEmail: user.email,
+      MemberUsername: user.username,
+      SponsorName: sponsor?.name || "N/A",
+      SponsorFirstName: sponsor?.firstName || "N/A",
+      SponsorEmail: sponsor?.email || "N/A",
+      SponsorUplineFirstName:
+        sponsorUpline?.firstName || sponsorUpline?.name || "N/A",
+      LoginLink: `${process.env.NEXTAUTH_URL}/login`,
+      PaymentDate: new Date().toLocaleDateString(),
+      PaidTo: paidTo?.name || paidTo?.firstName || "N/A",
+      ActivatedBy : activatedBy,
+      ActivationDate : new Date().toLocaleDateString(),
+    };
 
-        const html = parseTemplate(template.body, {
-          FirstName: user.name,
-          LoginLink: `${process.env.NEXTAUTH_URL}/login`,
-        });
+    // Send email to user
+    if (userTemplate) {
+      const userHtml = parseTemplate(userTemplate.body, templateData);
+      await sendEmail(user.email, userTemplate.subject, userHtml);
+    }
 
-        await sendEmail(user.email, template.subject, html);
+    // Send email to sponsor
+    if (distributionResult?.distributionType === "direct") {
+      if (sponsorTemplate && sponsor) {
+        const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+        await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+      }
+    }
+    // Send email to admin
+    if (adminTemplate && admin) {
+      const adminHtml = parseTemplate(adminTemplate.body, templateData);
+      await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+    }
+
+    // Send email to sponsor's sponsor if applicable
+    if (distributionResult?.distributionType === "pass_up") {
+      if (sponsorUplineTemplate && sponsorUpline) {
+        const sponsorUplineHtml = parseTemplate(
+          sponsorUplineTemplate.body,
+          templateData
+        );
+        await sendEmail(
+          sponsorUpline.email,
+          sponsorUplineTemplate.subject,
+          sponsorUplineHtml
+        );
+      }
+    }
+
+
+        
       }
     } else {
       // If rejected, set payment flag to false
