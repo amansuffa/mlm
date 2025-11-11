@@ -151,9 +151,9 @@ export async function PATCH(req, context) {
             sponsor.hasFirstSale = true;
           }
           // Unlock sponsor's first sale (if it was locked)
-          if (sponsor.firstSaleLocked) {
+          if (sponsor.firstSaleLocked){
             sponsor.firstSaleLocked = false;
-            sponsor.firstSaleLockedBy = null;
+            // sponsor.firstSaleLockedBy = null;
             sponsor.firstSaleLockedAt = null;
           }
           await sponsor.save();

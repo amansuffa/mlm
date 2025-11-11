@@ -151,7 +151,9 @@ export default function DownlinePage() {
       <circle
         r={16}
         fill={
-          nodeDatum.referral_type === "blue"
+          nodeDatum.referral_type === "purple"
+            ? "url(#purpleGradient)"
+            : nodeDatum.referral_type === "blue"
             ? "url(#blueGradient)"
             : nodeDatum.referral_type === "green"
             ? "url(#greenGradient)"
@@ -396,6 +398,10 @@ export default function DownlinePage() {
               <linearGradient id="redGradient" x1="0" y1="0" x2="1" y2="1">
                 <stop stopColor="#EF4444" offset="0%" />
                 <stop stopColor="#7F1D1D" offset="100%" />
+              </linearGradient>
+              <linearGradient id="purpleGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop stopColor="#8B5CF6" offset="0%" />
+                <stop stopColor="#5B21B6" offset="100%" />
               </linearGradient>
             </defs>
           </svg>

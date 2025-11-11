@@ -45,22 +45,23 @@ export default function DownlineTree() {
   };
 
   const getNodeColor = (nodeDatum) => {
-    console.log("Node data:", nodeDatum);
-    
-    // Use referral_type from API if available
+    // Root user is always blue
     if (nodeDatum.referral_type === "blue") {
       return "url(#blueGradient)";
-    } else if (nodeDatum.referral_type === "green") {
+    }
+    // Direct sales are green
+    else if (nodeDatum.referral_type === "green") {
       return "url(#greenGradient)";
-    } else if (nodeDatum.referral_type === "red") {
+    }
+    // Other referrals (passup/qualifying) are red
+    else if (nodeDatum.referral_type === "red") {
       return "url(#redGradient)";
     }
-    
-    // Fallback logic
-    if (nodeDatum.name === "You" || nodeDatum.isRoot) {
-      return "url(#blueGradient)";
+    else if (nodeDatum.referral_type === "purple") {
+      return "url(#purpleGradient)";
     }
     
+    // Default fallback
     return "url(#greenGradient)";
   };
 

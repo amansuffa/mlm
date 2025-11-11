@@ -41,44 +41,53 @@ export async function GET() {
           }
         }
       }
-
-      // Add passup sales (red)
-      // if (user.passupSales && user.passupSales.length > 0) {
-      //   for (const passupSale of user.passupSales) {
-      //     if (passupSale.status === "fully_active") {
-      //       const childNode = await buildTree(passupSale, new Set(visited));
-      //       if (childNode) {
-      //         childNode.referral_type = "red";
-      //         children.push(childNode);
-      //       }
-      //     }
-      //   }
-      // }
-
-      // Add other fully active referrals (blue)
-      const otherReferrals = await User.find({
-        referredBy: user.username,
-        status: "fully_active",
-        _id: { 
-          $nin: [
-            ...(user.directSales || []).map(ds => ds._id),
-            ...(user.passupSales || []).map(ps => ps._id)
-          ]
-        }
-      });
-
-      for (const referral of otherReferrals) {
-        const childNode = await buildTree(referral, new Set(visited));
-        if (childNode) {
-          childNode.referral_type = "red";
-          children.push(childNode);
+      if (user.passupSales && user.passupSales.length > 0) {
+        for (const passupSale of user.passupSales) {
+          if (passupSale.status === "fully_active") {
+            const childNode = await buildTree(passupSale, new Set(visited));
+            if (childNode) {
+              childNode.referral_type = "red";
+              children.push(childNode);
+            }
+          }
         }
       }
+
+      // Add first sales (blue)
+      if (user.hasFirstSale && user.firstSaleLockedBy) {
+        const firstSale = await User.findById(user.firstSaleLockedBy).populate("name username status");
+            const childNode = await buildTree(firstSale, new Set(visited));
+            if (childNode) {
+              childNode.referral_type = "blue";
+              children.push(childNode);
+            }
+       
+      }
+
+      // Add other fully active referrals (blue)
+      // const otherReferrals = await User.find({
+      //   referredBy: user.username,
+      //   status: "fully_active",
+      //   _id: { 
+      //     $nin: [
+      //       ...(user.directSales || []).map(ds => ds._id),
+      //       ...(user.passupSales || []).map(ps => ps._id)
+      //     ]
+      //   }
+      // });
+
+      // for (const referral of otherReferrals) {
+      //   const childNode = await buildTree(referral, new Set(visited));
+      //   if (childNode) {
+      //     childNode.referral_type = "red";
+      //     children.push(childNode);
+      //   }
+      // }
 
       return {
         name: user.name || user.username,
         username: user.username,
-        referral_type: user._id.toString() === session.user.id ? "blue" : "blue",
+        referral_type: user._id.toString() === session.user.id ? "purple" : "blue",
         children: children.length > 0 ? children : undefined
       };
     };
