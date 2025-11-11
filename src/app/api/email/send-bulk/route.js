@@ -91,7 +91,7 @@ export async function POST(req) {
         : "";
 
       const html = parseTemplate(template.body, {
-        FirstName: user.name, //yehn first name add krna h abi name kiya h
+        MemberFirstName: user.name, //yehn first name add krna h abi name kiya h
         MemberFullName: `${user.firstName} ${user.lastName}`,
         MemberEmail: user.email,
         MemberUsername: user.username,

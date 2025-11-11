@@ -102,7 +102,7 @@ The following member has confirmed sending their membership payment to their spo
 • Amount: $500<br>
 • Payment Date: {{PaymentDate}}<br>
 • Paid To: {{PaidTo}}<br>
-• Original Sponsor: {{OriginalSponsor}}<br><br>
+• Original Sponsor: {{SponsorName}}<br><br>
 Waiting for sponsor confirmation to activate membership.<br><br>
 Regards,<br>
 PASH.CLUB System<br><br>
@@ -125,7 +125,7 @@ The following member’s payment has been confirmed by their sponsor, and their 
 • Username: {{MemberUsername}}<br>
 • Activated By: {{ActivatedBy}}<br>
 • Paid To: {{PaidTo}}<br>
-• Original Sponsor: {{OriginalSponsor}}<br>
+• Original Sponsor: {{SponsorName}}<br>
 • Activation Date: {{ActivationDate}}<br><br>
 The member now has full access to PASH.CLUB benefits and affiliate system.<br><br>
 Regards,<br>
@@ -280,11 +280,11 @@ ${disclaimer}
       category: "User",
       subject: "Your First Sale is In! Here’s What Happens Next… 💸",
       body: `
-    Hi {{MemberFirstName}},<br><br>
+    Hi {{FirstName}},<br><br>
     🎉 Congratulations! You just made your first sale with PASH.CLUB – that’s a huge milestone!<br><br>
-    👤 New Member Name: {{NewMemberName}}<br>
-    📩 Email: {{NewMemberEmail}}<br>
-    👤 Username: {{NewMemberUsername}}<br><br>
+    👤 New Member Name: {{MemberName}}<br>
+    📩 Email: {{MemberEmail}}<br>
+    👤 Username: {{MemberUsername}}<br><br>
     As per our powerful 1-Up Compensation Plan, this first sale is automatically passed up to your sponsor.<br><br>
     But here’s the exciting part:<br>
     ✅ Starting from your 2nd sale onward, every $500 payment goes directly to YOU<br>
@@ -304,11 +304,11 @@ ${disclaimer}
       category: "User",
       subject: "💰 You Just Earned Another $500 – Keep It Coming!",
       body: `
-    Congratulations {{MemberFirstName}}! 🎉<br><br>
+    Congratulations {{FirstName}}! 🎉<br><br>
     You just made a $500 commission from your PASH.CLUB system. 💸<br><br>
-    👤 New Member Name: {{NewMemberName}}<br>
-    📩 Email: {{NewMemberEmail}}<br>
-    👤 Username: {{NewMemberUsername}}<br><br>
+    👤 New Member Name: {{MemberName}}<br>
+    📩 Email: {{MemberEmail}}<br>
+    👤 Username: {{MemberUsername}}<br><br>
     🔥 This is where the magic begins — each new member in your downline will pass up their 1st sale to you.<br>
     And the best part? There’s no limit to how many times this can happen.<br><br>
     👉 Keep sharing your link<br>
@@ -330,18 +330,18 @@ ${disclaimer}
       category: "Sponsor",
       subject: "🎉 You Got a New Referral – They Just Signed Up!",
       body: `
-    Hi {{SponsorFirstName}},<br><br>
+    Hi {{FirstName}},<br><br>
     Good news – your team is working, and the system is rewarding you! 🎉<br><br>
     🔥 A member in your downline just made their first $500 qualifying sale, and guess what?<br>
     👉 That sale has been passed up to <strong>YOU</strong>, as per the 1-Up Compensation Plan!<br><br>
     💸 You just earned $500 directly<br>
-    👥 Downline Member Name: {{OriginalSponsorName}}<br>
-    📩 Downline Member Email: {{OriginalSponsorEmail}}<br>
+    👥 Downline Member Name: {{SponsorName}}<br>
+    📩 Downline Member Email: {{SponsorEmail}}<br>
     📥 Passed-Up Sale: 1st Sale<br>
     ✅ Paid: Directly to You<br><br>
-    👤 New Passed-Up Member Name: {{NewMemberName}}<br>
-    📩 Passed-Up Member Email: {{NewMemberEmail}}<br>
-    👤 Passed-Up Member Username: {{NewMemberUsername}}<br><br>
+    👤 New Passed-Up Member Name: {{MemberName}}<br>
+    📩 Passed-Up Member Email: {{MemberEmail}}<br>
+    👤 Passed-Up Member Username: {{MemberUsername}}<br><br>
     This is the power of leverage in action. Even if you didn’t refer them directly, the structure is working in your favor.<br><br>
     Keep building and helping your team succeed – because every time they win, you win too 💯<br><br>
     🔗 <a href="{{LoginLink}}">Log in to check your earnings</a><br><br>
@@ -358,18 +358,18 @@ ${disclaimer}
       category: "Sponsor",
       subject: "🛠️ Your Referral Just Paid the Admin Fee!",
       body: `
-          Hi {{SponsorFirstName}},<br><br>
+          Hi {{FirstName}},<br><br>
     Good news – your team is working, and the system is rewarding you! 🎉<br><br>
     🔥 A member in your downline just made their first $500 qualifying sale, and guess what?<br>
     👉 That sale has been passed up to <strong>YOU</strong>, as per the 1-Up Compensation Plan!<br><br>
     💸 You just earned $500 directly<br>
-    👥 Downline Member Name: {{OriginalSponsorName}}<br>
-    📩 Downline Member Email: {{OriginalSponsorEmail}}<br>
+    👥 Downline Member Name: {{SponsorName}}<br>
+    📩 Downline Member Email: {{SponsorEmail}}<br>
     📥 Passed-Up Sale: 1st Sale<br>
     ✅ Paid: Directly to You<br><br>
-    👤 New Passed-Up Member Name: {{NewMemberName}}<br>
-    📩 Passed-Up Member Email: {{NewMemberEmail}}<br>
-    👤 Passed-Up Member Username: {{NewMemberUsername}}<br><br>
+    👤 New Passed-Up Member Name: {{MemberName}}<br>
+    📩 Passed-Up Member Email: {{MemberEmail}}<br>
+    👤 Passed-Up Member Username: {{MemberUsername}}<br><br>
     This is the power of leverage in action. Even if you didn’t refer them directly, the structure is working in your favor.<br><br>
     Keep building and helping your team succeed – because every time they win, you win too 💯<br><br>
     🔗 <a href="{{LoginLink}}">Log in to check your earnings</a><br><br>
@@ -401,7 +401,7 @@ ${disclaimer}
       subject: "🎊 You’ve Successfully Activated Your New Downline Member",
       body: `
         Congratulations {{SponsorName}}! 🎉<br><br>
-        You’ve confirmed {{NewMemberName}}’s payment — they’re now active under your team!<br><br>
+        You’ve confirmed {{MemberName}}’s payment — they’re now active under your team!<br><br>
         Team PASH.CLUB<br>www.PASH.club<br><br>
         ${disclaimer}
       `,
@@ -409,37 +409,25 @@ ${disclaimer}
     },
 
     // ====================== 🧬 SPONSOR OF SPONSOR ======================
-    {
-      name: "Sponsor of Sponsor - Passed Up Sale",
-      type: "sponsor_of_sponsor_passed_sale",
-      category: "Sponsor of Sponsor",
-      subject: "💰 A Downline Member Just Made a Sale – You Got Paid!",
-      body: `
-        Hi {{SponsorName}},<br><br>
-        A member in your downline made their first sale – it’s passed up to YOU! 💸<br><br>
-        Team PASH.CLUB<br>www.PASH.club<br><br>
-        ${disclaimer}
-      `,
-      isDefault: true,
-    },
+
     {
       name: "Sponsor of Sponsor - Passed-Up Sale Notification",
       type: "sponsor_of_sponsor_passed_up_sale",
       category: "Sponsor of Sponsor",
       subject: "💰 A Downline Member Just Made a Sale – You Got Paid!",
       body: `
-    Hi {{SponsorFirstName}},<br><br>
+    Hi {{FirstName}},<br><br>
     Good news – your team is working, and the system is rewarding you! 🎉<br><br>
     🔥 A member in your downline just made their first $500 qualifying sale, and guess what?<br>
     👉 That sale has been passed up to YOU, as per the 1-Up Compensation Plan!<br><br>
     💸 You just earned $500 directly<br>
-    👥 Downline Member Name: {{OriginalSponsorName}}<br>
-    👥 Downline Member Email: {{OriginalSponsorEmail}}<br><br>
+    👥 Downline Member Name: {{SponsorName}}<br>
+    👥 Downline Member Email: {{SponsorEmail}}<br><br>
     📥 Passed-Up Sale: 1st Sale<br>
     ✅ Paid: Directly to You<br><br>
-    👤 New Passed-Up Member Name: {{NewMemberName}}<br>
-    📩 Passed-Up Member Email: {{NewMemberEmail}}<br>
-    👤 Passed-Up Member Username: {{NewMemberUsername}}<br><br>
+    👤 New Passed-Up Member Name: {{MemberName}}<br>
+    📩 Passed-Up Member Email: {{MemberEmail}}<br>
+    👤 Passed-Up Member Username: {{MemberUsername}}<br><br>
     This is the power of leverage in action. Even if you didn’t refer them directly, the structure is working in your favor.<br><br>
     Keep building and helping your team succeed – because every time they win, you win too 💯<br><br>
     🔗 Log in to check your earnings » <a href="{{LoginLink}}">{{LoginLink}}</a><br><br>
@@ -457,12 +445,12 @@ ${disclaimer}
       category: "Sponsor of Sponsor",
       subject: "⚡ Confirm Payment – $500 Received… 💸",
       body: `
-    Hi {{SponsorFirstName}},<br><br>
+    Hi {{FirstName}},<br><br>
     A passed-up member in your downline has just sent you their $500 membership fee. 🎉<br><br>
-    👤 New Passed-Up Downline Member Name: {{NewMemberName}}<br>
-    📩 Email: {{NewMemberEmail}}<br>
-    👤 Username: {{NewMemberUsername}}<br>
-    👤 Original Sponsor Name: {{OriginalSponsorName}}<br><br>
+    👤 New Passed-Up Downline Member Name: {{MemberName}}<br>
+    📩 Email: {{MemberEmail}}<br>
+    👤 Username: {{MemberUsername}}<br>
+    👤 Original Sponsor Name: {{SponsorName}}<br><br>
     👉 Please log in to your back office and confirm once you have received the payment:<br>
     🔗 <a href="{{LoginLink}}">{{LoginLink}}</a><br><br>
     ⚠️ Note: Their membership will remain pending until you approve the payment. Once confirmed, their account will be activated immediately.<br><br>
@@ -481,12 +469,12 @@ ${disclaimer}
       subject:
         "🎊 You’ve Successfully Activated Your New Passed-Up Downline Member",
       body: `
-    Congratulations {{SponsorFirstName}}! 🎉<br><br>
+    Congratulations {{FirstName}}! 🎉<br><br>
     You have successfully confirmed the $500 payment from your new passed-up downline member and their PASH.CLUB membership is now active! ✅<br><br>
-    👤 New Passed-Up Downline Member Name: {{NewMemberName}}<br>
-    📩 Email: {{NewMemberEmail}}<br>
-    👤 Username: {{NewMemberUsername}}<br>
-    👤 Original Sponsor Name: {{OriginalSponsorName}}<br><br>
+    👤 New Passed-Up Downline Member Name: {{MemberName}}<br>
+    📩 Email: {{MemberEmail}}<br>
+    👤 Username: {{MemberUsername}}<br>
+    👤 Original Sponsor Name: {{SponsorName}}<br><br>
     This means:<br>
     • They’re now a fully active member under your team<br>
     • They can start promoting and earning unlimited $500 payments<br>

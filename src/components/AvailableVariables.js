@@ -8,7 +8,7 @@ const AvailableVariables = () => {
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
               <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
-                {"{{FirstName}}"}
+                {"{{MemberFirstName}}"}
               </code>
               <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
                 {"{{MemberFullName}}"}
