@@ -180,8 +180,21 @@ export async function PATCH(req, context) {
           await sponsor.save();
         }
 
+        // Refetch user data to get updated directSales and other fields after fee distribution
+        const updatedUser = await User.findById(tx.fromUser);
+        const updatedSponsor = await User.findOne({ username: updatedUser.referredBy });
+        const updatedSponsorUpline = updatedSponsor
+          ? await User.findOne({ username: updatedSponsor.referredBy })
+          : null;
+
     const userTemplate = await EmailTemplate.findOne({
       type: "user_membership_activated",
+    });
+    const userPassupTemplate = await EmailTemplate.findOne({
+      type: "user_first_sale_passed_up",
+    });
+    const userSecondSaleTemplate = await EmailTemplate.findOne({
+      type: "user_new_sale_earned",
     });
     const sponsorTemplate = await EmailTemplate.findOne({
       type: "sponsor_activated_downline",
@@ -197,15 +210,15 @@ export async function PATCH(req, context) {
     const activatedBy = distributionResult?.distributionType === "direct" ? sponsor?.username : sponsorUpline?.username || "N/A";
     console.log("Paid To:", paidTo);
     const templateData = {
-      MemberFirstName: user.firstName || user.name,
-      MemberName: user.name,
-      MemberEmail: user.email,
-      MemberUsername: user.username,
-      SponsorName: sponsor?.name || "N/A",
-      SponsorFirstName: sponsor?.firstName || "N/A",
-      SponsorEmail: sponsor?.email || "N/A",
+      MemberFirstName: updatedUser.firstName || updatedUser.name,
+      MemberName: updatedUser.name,
+      MemberEmail: updatedUser.email,
+      MemberUsername: updatedUser.username,
+      SponsorName: updatedSponsor?.name || "N/A",
+      SponsorFirstName: updatedSponsor?.firstName || "N/A",
+      SponsorEmail: updatedSponsor?.email || "N/A",
       SponsorUplineFirstName:
-        sponsorUpline?.firstName || sponsorUpline?.name || "N/A",
+        updatedSponsorUpline?.firstName || updatedSponsorUpline?.name || "N/A",
       LoginLink: `${process.env.NEXTAUTH_URL}/login`,
       PaymentDate: new Date().toLocaleDateString(),
       PaidTo: paidTo?.name || paidTo?.firstName || "N/A",
@@ -216,14 +229,18 @@ export async function PATCH(req, context) {
     // Send email to user
     if (userTemplate) {
       const userHtml = parseTemplate(userTemplate.body, templateData);
-      await sendEmail(user.email, userTemplate.subject, userHtml);
+      await sendEmail(updatedUser.email, userTemplate.subject, userHtml);
+    }
+    if (userSecondSaleTemplate && updatedUser.hasFirstSale && updatedUser.directSales && updatedUser.directSales.length === 1) {
+      const userHtml = parseTemplate(userSecondSaleTemplate.body, templateData);
+      await sendEmail(updatedUser.email, userSecondSaleTemplate.subject, userHtml);
     }
 
     // Send email to sponsor
     if (distributionResult?.distributionType === "direct") {
-      if (sponsorTemplate && sponsor) {
+      if (sponsorTemplate && updatedSponsor) {
         const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
-        await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+        await sendEmail(updatedSponsor.email, sponsorTemplate.subject, sponsorHtml);
       }
     }
     // Send email to admin
@@ -234,19 +251,39 @@ export async function PATCH(req, context) {
 
     // Send email to sponsor's sponsor if applicable
     if (distributionResult?.distributionType === "pass_up") {
-      if (sponsorUplineTemplate && sponsorUpline) {
+      if (sponsorUplineTemplate && updatedSponsorUpline) {
         const sponsorUplineHtml = parseTemplate(
           sponsorUplineTemplate.body,
           templateData
         );
         await sendEmail(
-          sponsorUpline.email,
+          updatedSponsorUpline.email,
           sponsorUplineTemplate.subject,
           sponsorUplineHtml
         );
       }
+       if (userPassupTemplate) {
+      const userHtml = parseTemplate(userPassupTemplate.body, templateData);
+      await sendEmail(updatedUser.email, userPassupTemplate.subject, userHtml);
+    }
     }
 
+    // Schedule delayed email for action plan (5 hours after activation)
+    setTimeout(async () => {
+      try {
+        const actionPlanTemplate = await EmailTemplate.findOne({
+          type: "user_action_plan",
+        });
+        
+        if (actionPlanTemplate) {
+          const actionPlanHtml = parseTemplate(actionPlanTemplate.body, templateData);
+          await sendEmail(updatedUser.email, actionPlanTemplate.subject, actionPlanHtml);
+          console.log(`✅ Action plan email sent to ${updatedUser.username} after 5 hours`);
+        }
+      } catch (error) {
+        console.error("Error sending delayed action plan email:", error);
+      }
+    }, 5 * 60 * 60 * 1000); // 5 hours in milliseconds
 
         
       }
