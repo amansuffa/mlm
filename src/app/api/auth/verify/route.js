@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { sendEmail } from "@/lib/sendEmail";
+import { EmailTemplate } from "@/models/EmailTemplate";
+import { parseTemplate } from "@/lib/parseTemplate";
 
 export async function GET(req) {
   try {
@@ -34,7 +37,25 @@ export async function GET(req) {
     user.isVerified = true;
     user.verificationToken = null; // Clear the token after verification
     await user.save();
-    
+
+    const userTemplate = await EmailTemplate.findOne({ type: "user_welcome" });
+    const sponsor = await User.findOne({ username: user.referredBy });
+        const adminFeeLink = `${process.env.NEXTAUTH_URL}/payment?uid=${user._id}`;
+
+        const templateData = {
+          MemberFirstName: user.firstName || user.name,
+          MemberName: user.name,
+          MemberEmail: user.email,
+          MemberUsername: user.username,
+          SponsorName: sponsor?.name || 'N/A',
+          AdminFeeLink: adminFeeLink
+        };
+        
+        // Send email to user
+        if (userTemplate) {
+          const userHtml = parseTemplate(userTemplate.body, templateData);
+          await sendEmail(user.email, userTemplate.subject, userHtml);
+        }
 
     return NextResponse.redirect(new URL(`/payment?uid=${user._id}`, req.url));
 
