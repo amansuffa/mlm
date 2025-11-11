@@ -20,12 +20,18 @@ export async function GET(request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    let query = { status: "pending" };
+    let query;
 
-    // If admin, show admin fee transactions
+    // If admin, show both admin fee transactions AND membership transactions where admin is receiver
     // If regular user, show membership transactions where they are the receiver (sponsor)
     if (user.role === "admin") {
-      query.type = "admin";
+      query = {
+        status: "pending",
+        $or: [
+          { type: "admin" },
+          { type: "membership", toUser: userId }
+        ]
+      };
     } else {
       query = {
         status: "pending",

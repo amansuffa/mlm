@@ -44,7 +44,7 @@ export default function ConfirmPaymentsPage() {
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
-            <h1 className="text-3xl font-bold text-white">✅ Confirm Payments</h1>
+            <h1 className="text-3xl font-bold text-white">⏳ Pending Payments</h1>
             <p className="text-blue-100 mt-2">Review and approve pending transactions</p>
           </div>
 
