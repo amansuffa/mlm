@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Transaction } from "@/models/Transaction";
 import { User } from "@/models/User";
-import { auth } from "@/auth";
+import { sendEmail } from "@/lib/sendEmail";
+import { EmailTemplate } from "@/models/EmailTemplate";
+import { parseTemplate } from "@/lib/parseTemplate";
 
 export async function POST(req) {
   await connectDB();
-  // const session = await auth();
-  // if (!session)
-  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+ 
 
   try {
     const body = await req.json();
@@ -60,6 +60,30 @@ export async function POST(req) {
     //   message: `New payment of $${amount} received from ${session.user.name}`,
     //   link: `/transactions`,
     // });
+
+      // Find email receiver
+          const user = await User.findOne({ _id: sender });
+          const sponsor = await User.findOne({ username: user.referredBy });
+          const admin = adminUser;
+          // Find email templates
+          const userTemplate = await EmailTemplate.findOne({
+            type: "user_admin_fee_paid",
+          });
+      
+    
+          const templateData = {
+            MemberName: user.name,
+            MemberEmail: user.email,
+            MemberUsername: user.username,
+            SponsorName: sponsor?.name || "N/A",
+          };
+    
+    
+          // Send email to admin
+          if (adminTemplate && admin) {
+            const adminHtml = parseTemplate(adminTemplate.body, templateData);
+            await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+          }
 
     return NextResponse.json({ success: true, data: newTx });
   } catch (err) {
