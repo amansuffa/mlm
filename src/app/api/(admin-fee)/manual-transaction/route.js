@@ -66,13 +66,15 @@ export async function POST(req) {
           const sponsor = await User.findOne({ username: user.referredBy });
           const admin = adminUser;
           // Find email templates
-          const userTemplate = await EmailTemplate.findOne({
-            type: "user_admin_fee_paid",
+        
+          const adminTemplate = await EmailTemplate.findOne({
+            type: "admin_fee_paid_manual",
           });
       
     
           const templateData = {
-            MemberName: user.name,
+            MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
+            MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
             MemberEmail: user.email,
             MemberUsername: user.username,
             SponsorName: sponsor?.name || "N/A",
@@ -81,8 +83,12 @@ export async function POST(req) {
     
           // Send email to admin
           if (adminTemplate && admin) {
-            const adminHtml = parseTemplate(adminTemplate.body, templateData);
-            await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+            try {
+              const adminHtml = parseTemplate(adminTemplate.body, templateData);
+              await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+            } catch (error) {
+              console.error("❌ Failed to send admin email:", error);
+            }
           }
 
     return NextResponse.json({ success: true, data: newTx });

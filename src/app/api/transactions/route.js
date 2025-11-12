@@ -147,15 +147,15 @@ export async function POST(req) {
     });
     const paidTo = await User.findById(finalReceiver);
     const templateData = {
-      MemberFirstName: user.firstName || user.name,
-      MemberName: user.name,
+      MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
+      MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
       MemberEmail: user.email,
       MemberUsername: user.username,
-      SponsorName: sponsor?.name || "N/A",
-      SponsorFirstName: sponsor?.firstName || "N/A",
+      SponsorName: sponsor?.name || `${sponsor?.firstName || ''} ${sponsor?.lastName || ''}`.trim() || "N/A",
+      SponsorFirstName: sponsor?.firstName || sponsor?.name?.split(' ')[0] || "N/A",
       SponsorEmail: sponsor?.email || "N/A",
       SponsorUplineFirstName:
-        sponsorUpline?.firstName || sponsorUpline?.name || "N/A",
+        sponsorUpline?.firstName || sponsorUpline?.name?.split(' ')[0] || "N/A",
       LoginLink: `${process.env.NEXTAUTH_URL}/login`,
       PaymentDate: new Date().toLocaleDateString(),
       PaidTo: paidTo?.name || paidTo?.firstName || "N/A",

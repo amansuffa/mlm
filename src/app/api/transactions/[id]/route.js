@@ -76,12 +76,12 @@ export async function PATCH(req, context) {
         });
 
         const templateData = {
-          MemberFirstName: user.firstName || user.name,
-          MemberName: user.name,
+          MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
+          MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
           MemberEmail: user.email,
           MemberUsername: user.username,
-          SponsorName: sponsor?.name || "N/A",
-          SponsorFirstName: sponsor?.firstName || "N/A",
+          SponsorName: sponsor?.name || `${sponsor?.firstName || ''} ${sponsor?.lastName || ''}`.trim() || "N/A",
+          SponsorFirstName: sponsor?.firstName || sponsor?.name?.split(' ')[0] || "N/A",
           SponsorEmail: sponsor?.email || "N/A",
           LoginLink: `${process.env.NEXTAUTH_URL}/login`,
           SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
@@ -220,15 +220,15 @@ export async function PATCH(req, context) {
     const activatedBy = distributionResult?.distributionType === "direct" ? sponsor?.username : sponsorUpline?.username || "N/A";
     console.log("Paid To:", paidTo);
     const templateData = {
-      MemberFirstName: updatedUser.firstName || updatedUser.name,
-      MemberName: updatedUser.name,
+      MemberFirstName: updatedUser.firstName || updatedUser.name?.split(' ')[0] || 'Member',
+      MemberName: updatedUser.name || `${updatedUser.firstName || ''} ${updatedUser.lastName || ''}`.trim() || updatedUser.username,
       MemberEmail: updatedUser.email,
       MemberUsername: updatedUser.username,
-      SponsorName: updatedSponsor?.name || "N/A",
-      SponsorFirstName: updatedSponsor?.firstName || "N/A",
+      SponsorName: updatedSponsor?.name || `${updatedSponsor?.firstName || ''} ${updatedSponsor?.lastName || ''}`.trim() || "N/A",
+      SponsorFirstName: updatedSponsor?.firstName || updatedSponsor?.name?.split(' ')[0] || "N/A",
       SponsorEmail: updatedSponsor?.email || "N/A",
       SponsorUplineFirstName:
-        updatedSponsorUpline?.firstName || updatedSponsorUpline?.name || "N/A",
+        updatedSponsorUpline?.firstName || updatedSponsorUpline?.name?.split(' ')[0] || "N/A",
       LoginLink: `${process.env.NEXTAUTH_URL}/login`,
       PaymentDate: new Date().toLocaleDateString(),
       PaidTo: paidTo?.name || paidTo?.firstName || "N/A",
@@ -246,13 +246,13 @@ export async function PATCH(req, context) {
         console.error(`❌ Failed to send membership activation email to ${updatedUser.email}:`, error);
       }
     }
-    if (userSecondSaleTemplate && updatedUser.hasFirstSale && updatedUser.directSales && updatedUser.directSales.length === 1) {
+    if (userSecondSaleTemplate && updatedSponsor.hasFirstSale && updatedSponsor.directSales && updatedSponsor.directSales.length === 1) {
       try {
         const userHtml = parseTemplate(userSecondSaleTemplate.body, templateData);
-        await sendEmail(updatedUser.email, userSecondSaleTemplate.subject, userHtml);
-        console.log(`✅ Second sale email sent to ${updatedUser.email}`);
+        await sendEmail(updatedSponsor.email, userSecondSaleTemplate.subject, userHtml);
+        console.log(`✅ Second sale email sent to ${updatedSponsor.email}`);
       } catch (error) {
-        console.error(`❌ Failed to send second sale email to ${updatedUser.email}:`, error);
+        console.error(`❌ Failed to send second sale email to ${updatedSponsor.email}:`, error);
       }
     }
 
@@ -300,10 +300,10 @@ export async function PATCH(req, context) {
        if (userPassupTemplate) {
         try {
           const userHtml = parseTemplate(userPassupTemplate.body, templateData);
-          await sendEmail(updatedUser.email, userPassupTemplate.subject, userHtml);
-          console.log(`✅ User passup email sent to ${updatedUser.email}`);
+          await sendEmail(updatedSponsor.email, userPassupTemplate.subject, userHtml);
+          console.log(`✅ User passup email sent to ${updatedSponsor.email}`);
         } catch (error) {
-          console.error(`❌ Failed to send user passup email to ${updatedUser.email}:`, error);
+          console.error(`❌ Failed to send user passup email to ${updatedSponsor.email}:`, error);
         }
       }
     }

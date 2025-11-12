@@ -33,12 +33,12 @@ export async function POST(request) {
       });
 
       const templateData = {
-        MemberFirstName: user.firstName || user.name,
-        MemberName: user.name,
+        MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
+        MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
         MemberEmail: user.email,
         MemberUsername: user.username,
-        SponsorName: sponsor?.name || "N/A",
-        SponsorFirstName: sponsor?.firstName || "N/A",
+        SponsorName: sponsor?.name || `${sponsor?.firstName || ''} ${sponsor?.lastName || ''}`.trim() || "N/A",
+        SponsorFirstName: sponsor?.firstName || sponsor?.name?.split(' ')[0] || "N/A",
         LoginLink: `${process.env.NEXTAUTH_URL}/login`,
         SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
       };

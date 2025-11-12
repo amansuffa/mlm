@@ -43,8 +43,8 @@ export async function GET(req) {
         const adminFeeLink = `${process.env.NEXTAUTH_URL}/payment?uid=${user._id}`;
 
         const templateData = {
-          MemberFirstName: user.firstName || user.name,
-          MemberName: user.name,
+          MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
+          MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
           MemberEmail: user.email,
           MemberUsername: user.username,
           SponsorName: sponsor?.name || 'N/A',
