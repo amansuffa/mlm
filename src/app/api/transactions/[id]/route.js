@@ -268,22 +268,22 @@ export async function PATCH(req, context) {
     }
     }
 
-    // Schedule delayed email for action plan (5 hours after activation)
-    setTimeout(async () => {
-      try {
-        const actionPlanTemplate = await EmailTemplate.findOne({
-          type: "user_action_plan",
-        });
-        
-        if (actionPlanTemplate) {
-          const actionPlanHtml = parseTemplate(actionPlanTemplate.body, templateData);
-          await sendEmail(updatedUser.email, actionPlanTemplate.subject, actionPlanHtml);
-          console.log(`✅ Action plan email sent to ${updatedUser.username} after 5 hours`);
-        }
-      } catch (error) {
-        console.error("Error sending delayed action plan email:", error);
-      }
-    }, 5 * 60 * 60 * 1000); // 5 hours in milliseconds
+    // TODO: Schedule delayed email for action plan (5 hours after activation)
+    // setTimeout(async () => {
+    //   try {
+    //     const actionPlanTemplate = await EmailTemplate.findOne({
+    //       type: "user_action_plan",
+    //     });
+    //     
+    //     if (actionPlanTemplate) {
+    //       const actionPlanHtml = parseTemplate(actionPlanTemplate.body, templateData);
+    //       await sendEmail(updatedUser.email, actionPlanTemplate.subject, actionPlanHtml);
+    //       console.log(`✅ Action plan email sent to ${updatedUser.username} after 5 hours`);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error sending delayed action plan email:", error);
+    //   }
+    // }, 5 * 60 * 60 * 1000); // 5 hours in milliseconds
 
         
       }
