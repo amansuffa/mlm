@@ -217,7 +217,7 @@ export default function Login() {
           </div>
         </motion.div>
       </div>
-      <Toaster position="top-right" />
+
     </div>
   );
 }

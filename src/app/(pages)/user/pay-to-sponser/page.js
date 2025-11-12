@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function PayToSponsorPage() {
   const [payments, setPayments] = useState([]);
@@ -179,7 +180,7 @@ export default function PayToSponsorPage() {
 
   const handleSubmitPayment = async () => {
     if (!method || !image) {
-      alert("Please upload screenshot and select payment method.");
+      toast.error("Please upload screenshot and select payment method.");
       return;
     }
 
@@ -189,7 +190,7 @@ export default function PayToSponsorPage() {
       try {
         imageUrl = await uploadImage(image);
       } catch (error) {
-        alert("Failed to upload image. Please try again.");
+        toast.error("Failed to upload image. Please try again.");
         setLoading(false);
         return;
       }
@@ -219,17 +220,17 @@ export default function PayToSponsorPage() {
             p.id === selectedPayment.id ? { ...p, status: "Pending" } : p
           )
         );
-        alert("✅ Payment submitted successfully!");
+        toast.success("Payment submitted successfully!");
         // Reset form
         setMethod("");
         setNote("");
         setImage(null);
       } else {
-        alert("❌ " + (data.message || "Failed to submit payment."));
+        toast.error(data.message || "Failed to submit payment.");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error submitting payment. Please try again.");
+      toast.error("Error submitting payment. Please try again.");
     } finally {
       setLoading(false);
     }

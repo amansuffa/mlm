@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function TransactionDetailsPage() {
   const [transaction, setTransaction] = useState(null);
@@ -36,7 +37,7 @@ export default function TransactionDetailsPage() {
     setLoading(false);
 
     if (data.success) {
-      alert(`Transaction ${action}ed successfully`);
+      toast.success(`Transaction ${action}ed successfully`);
       // Redirect back to the appropriate page
       if (from === 'confirm-payments') {
         router.push('/confirm-payments');
@@ -44,7 +45,7 @@ export default function TransactionDetailsPage() {
         router.push('/transactions');
       }
     } else {
-      alert(data.error || "Failed to update transaction");
+      toast.error(data.error || "Failed to update transaction");
     }
   };
 

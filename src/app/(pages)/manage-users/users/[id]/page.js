@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function UserDetailsPage() {
   const { id } = useParams();
@@ -8,7 +9,7 @@ export default function UserDetailsPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+
 
   // Fetch user data on page load
   useEffect(() => {
@@ -17,9 +18,9 @@ export default function UserDetailsPage() {
         const res = await fetch(`/api/admin/users/${id}`);
         const data = await res.json();
         if (!data.error) setUser(data);
-        else setMessage(data.error);
+        else toast.error(data.error);
       } catch (err) {
-        setMessage("Failed to load user data");
+        toast.error("Failed to load user data");
       } finally {
         setLoading(false);
       }
@@ -30,7 +31,6 @@ export default function UserDetailsPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setSaving(true);
-    setMessage("");
 
     try {
       const res = await fetch(`/api/admin/users/${id}`, {
@@ -44,12 +44,12 @@ export default function UserDetailsPage() {
       const data = await res.json();
       if (res.ok) {
         setUser(data.user);
-        setMessage("✅ User updated successfully!");
+        toast.success("User updated successfully!");
       } else {
-        setMessage(data.error || "Failed to update user");
+        toast.error(data.error || "Failed to update user");
       }
     } catch (err) {
-      setMessage("Error updating user");
+      toast.error("Error updating user");
     } finally {
       setSaving(false);
     }
@@ -86,7 +86,7 @@ export default function UserDetailsPage() {
             </svg>
           </div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">User Not Found</h3>
-          <p className="text-gray-600 mb-6">{message}</p>
+          <p className="text-gray-600 mb-6">User not found</p>
           <button
             onClick={() => router.push("/manage-users")}
             className="bg-[#8200DB] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#6E11B0] transition-all duration-300"
@@ -127,15 +127,7 @@ export default function UserDetailsPage() {
         {/* User Information Card */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
           <div className="p-6">
-            {message && (
-              <div className={`mb-6 p-4 rounded-xl text-center ${
-                message.includes("✅") 
-                  ? "bg-green-50 text-green-700 border border-green-200" 
-                  : "bg-red-50 text-red-700 border border-red-200"
-              }`}>
-                <p className="font-medium">{message}</p>
-              </div>
-            )}
+
 
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

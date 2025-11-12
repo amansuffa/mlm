@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
@@ -32,10 +33,10 @@ export default function TransactionsPage() {
     setLoading(false);
 
     if (data.success) {
-      alert(`Transaction ${action}ed successfully`);
+      toast.success(`Transaction ${action}ed successfully`);
       fetchData();
     } else {
-      alert("Failed to update transaction");
+      toast.error("Failed to update transaction");
     }
   };
 

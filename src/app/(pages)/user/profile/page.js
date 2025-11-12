@@ -86,7 +86,7 @@ export default function ProfilePage() {
       }
     } catch (err) {
       console.error("Save error:", err);
-      alert("Error updating profile");
+      toast.error("Error updating profile");
     } finally {
       setLoading(false);
     }
