@@ -85,29 +85,40 @@ export async function POST(req) {
         { status: 404 }
       );
 
+    let successCount = 0;
+    let errorCount = 0;
+    
     for (const user of users) {
-      const verifyUrl = user.verificationToken
-        ? `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${user.verificationToken}`
-        : "";
+      try {
+        const verifyUrl = user.verificationToken
+          ? `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${user.verificationToken}`
+          : "";
 
-      const html = parseTemplate(template.body, {
-        MemberFirstName: user.name, //yehn first name add krna h abi name kiya h
-        MemberFullName: `${user.firstName} ${user.lastName}`,
-        MemberEmail: user.email,
-        MemberUsername: user.username,
-        SponsorName: user.referredBy || "", //yahn abi usernam store ho rha h ise object me convert kr k uska name fetch krna h
-        LoginLink: `${process.env.NEXTAUTH_URL}/login`,
-        AdminFeeLink: `${process.env.NEXTAUTH_URL}/payment/?uid=${user._id}`,
-        SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
-        ConfirmEmailLink: verifyUrl,
-      });
+        const html = parseTemplate(template.body, {
+          MemberFirstName: user.name, //yehn first name add krna h abi name kiya h
+          MemberFullName: `${user.firstName} ${user.lastName}`,
+          MemberEmail: user.email,
+          MemberUsername: user.username,
+          SponsorName: user.referredBy || "", //yahn abi usernam store ho rha h ise object me convert kr k uska name fetch krna h
+          LoginLink: `${process.env.NEXTAUTH_URL}/login`,
+          AdminFeeLink: `${process.env.NEXTAUTH_URL}/payment/?uid=${user._id}`,
+          SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
+          ConfirmEmailLink: verifyUrl,
+        });
 
-      await sendEmail(user.email, template.subject, html);
+        await sendEmail(user.email, template.subject, html);
+        console.log(`✅ Bulk email sent to ${user.email}`);
+        successCount++;
+      } catch (emailError) {
+        console.error(`❌ Failed to send bulk email to ${user.email}:`, emailError);
+        errorCount++;
+      }
     }
 
     return NextResponse.json({
       success: true,
-      message: `Emails sent to ${users.length} users.`,
+      message: `Bulk email completed: ${successCount} sent, ${errorCount} failed.`,
+      details: { successCount, errorCount, totalUsers: users.length }
     });
   } catch (error) {
     console.error(error);

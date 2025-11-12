@@ -163,46 +163,72 @@ export async function POST(req) {
 
     // Send email to user
     if (userTemplate) {
-      const userHtml = parseTemplate(userTemplate.body, templateData);
-      await sendEmail(user.email, userTemplate.subject, userHtml);
+      try {
+        const userHtml = parseTemplate(userTemplate.body, templateData);
+        await sendEmail(user.email, userTemplate.subject, userHtml);
+        console.log(`✅ User email sent to ${user.email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send user email to ${user.email}:`, error);
+      }
     }
 
     // Send email to sponsor
     if (sponsor && sponsor.hasFirstSale) {
       if (sponsorTemplate) {
-        const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
-        await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+        try {
+          const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+          await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+          console.log(`✅ Sponsor email sent to ${sponsor.email}`);
+        } catch (error) {
+          console.error(`❌ Failed to send sponsor email to ${sponsor.email}:`, error);
+        }
       }
     }
+    
     // Send email to admin
     if (adminTemplate && admin) {
-      const adminHtml = parseTemplate(adminTemplate.body, templateData);
-      await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+      try {
+        const adminHtml = parseTemplate(adminTemplate.body, templateData);
+        await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+        console.log(`✅ Admin email sent to ${admin.email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send admin email to ${admin.email}:`, error);
+      }
     }
 
     // Send email to sponsor's sponsor if applicable
     if (sponsor && !sponsor.hasFirstSale) {
       if (sponsorUplineTemplate && sponsorUpline) {
-        const sponsorUplineHtml = parseTemplate(
-          sponsorUplineTemplate.body,
-          templateData
-        );
-        await sendEmail(
-          sponsorUpline.email,
-          sponsorUplineTemplate.subject,
-          sponsorUplineHtml
-        );
+        try {
+          const sponsorUplineHtml = parseTemplate(
+            sponsorUplineTemplate.body,
+            templateData
+          );
+          await sendEmail(
+            sponsorUpline.email,
+            sponsorUplineTemplate.subject,
+            sponsorUplineHtml
+          );
+          console.log(`✅ Sponsor upline email sent to ${sponsorUpline.email}`);
+        } catch (error) {
+          console.error(`❌ Failed to send sponsor upline email to ${sponsorUpline.email}:`, error);
+        }
       }
       if (sponsorUplinePassupTemplate && sponsorUpline) {
-        const sponsorUplineHtml = parseTemplate(
-          sponsorUplinePassupTemplate.body,
-          templateData
-        );
-        await sendEmail(
-          sponsorUpline.email,
-          sponsorUplinePassupTemplate.subject,
-          sponsorUplineHtml
-        );
+        try {
+          const sponsorUplineHtml = parseTemplate(
+            sponsorUplinePassupTemplate.body,
+            templateData
+          );
+          await sendEmail(
+            sponsorUpline.email,
+            sponsorUplinePassupTemplate.subject,
+            sponsorUplineHtml
+          );
+          console.log(`✅ Sponsor upline passup email sent to ${sponsorUpline.email}`);
+        } catch (error) {
+          console.error(`❌ Failed to send sponsor upline passup email to ${sponsorUpline.email}:`, error);
+        }
       }
     }
     return NextResponse.json({ success: true, data: newTx });

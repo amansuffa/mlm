@@ -89,14 +89,24 @@ export async function PATCH(req, context) {
 
         // Send email to user
         if (userTemplate) {
-          const userHtml = parseTemplate(userTemplate.body, templateData);
-          await sendEmail(user.email, userTemplate.subject, userHtml);
+          try {
+            const userHtml = parseTemplate(userTemplate.body, templateData);
+            await sendEmail(user.email, userTemplate.subject, userHtml);
+            console.log(`✅ Admin fee user email sent to ${user.email}`);
+          } catch (error) {
+            console.error(`❌ Failed to send admin fee user email to ${user.email}:`, error);
+          }
         }
 
         // Send email to sponsor
         if (sponsorTemplate && sponsor) {
-          const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
-          await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+          try {
+            const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+            await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+            console.log(`✅ Admin fee sponsor email sent to ${sponsor.email}`);
+          } catch (error) {
+            console.error(`❌ Failed to send admin fee sponsor email to ${sponsor.email}:`, error);
+          }
         }
       } else if (tx.type === "membership") {
         user.membershipFeePaid = true;
@@ -228,44 +238,74 @@ export async function PATCH(req, context) {
 
     // Send email to user
     if (userTemplate) {
-      const userHtml = parseTemplate(userTemplate.body, templateData);
-      await sendEmail(updatedUser.email, userTemplate.subject, userHtml);
+      try {
+        const userHtml = parseTemplate(userTemplate.body, templateData);
+        await sendEmail(updatedUser.email, userTemplate.subject, userHtml);
+        console.log(`✅ Membership activation email sent to ${updatedUser.email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send membership activation email to ${updatedUser.email}:`, error);
+      }
     }
     if (userSecondSaleTemplate && updatedUser.hasFirstSale && updatedUser.directSales && updatedUser.directSales.length === 1) {
-      const userHtml = parseTemplate(userSecondSaleTemplate.body, templateData);
-      await sendEmail(updatedUser.email, userSecondSaleTemplate.subject, userHtml);
+      try {
+        const userHtml = parseTemplate(userSecondSaleTemplate.body, templateData);
+        await sendEmail(updatedUser.email, userSecondSaleTemplate.subject, userHtml);
+        console.log(`✅ Second sale email sent to ${updatedUser.email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send second sale email to ${updatedUser.email}:`, error);
+      }
     }
 
     // Send email to sponsor
     if (distributionResult?.distributionType === "direct") {
       if (sponsorTemplate && updatedSponsor) {
-        const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
-        await sendEmail(updatedSponsor.email, sponsorTemplate.subject, sponsorHtml);
+        try {
+          const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+          await sendEmail(updatedSponsor.email, sponsorTemplate.subject, sponsorHtml);
+          console.log(`✅ Sponsor activation email sent to ${updatedSponsor.email}`);
+        } catch (error) {
+          console.error(`❌ Failed to send sponsor activation email to ${updatedSponsor.email}:`, error);
+        }
       }
     }
     // Send email to admin
     if (adminTemplate && admin) {
-      const adminHtml = parseTemplate(adminTemplate.body, templateData);
-      await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+      try {
+        const adminHtml = parseTemplate(adminTemplate.body, templateData);
+        await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+        console.log(`✅ Admin activation email sent to ${admin.email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send admin activation email to ${admin.email}:`, error);
+      }
     }
 
     // Send email to sponsor's sponsor if applicable
     if (distributionResult?.distributionType === "pass_up") {
       if (sponsorUplineTemplate && updatedSponsorUpline) {
-        const sponsorUplineHtml = parseTemplate(
-          sponsorUplineTemplate.body,
-          templateData
-        );
-        await sendEmail(
-          updatedSponsorUpline.email,
-          sponsorUplineTemplate.subject,
-          sponsorUplineHtml
-        );
+        try {
+          const sponsorUplineHtml = parseTemplate(
+            sponsorUplineTemplate.body,
+            templateData
+          );
+          await sendEmail(
+            updatedSponsorUpline.email,
+            sponsorUplineTemplate.subject,
+            sponsorUplineHtml
+          );
+          console.log(`✅ Sponsor upline activation email sent to ${updatedSponsorUpline.email}`);
+        } catch (error) {
+          console.error(`❌ Failed to send sponsor upline activation email to ${updatedSponsorUpline.email}:`, error);
+        }
       }
        if (userPassupTemplate) {
-      const userHtml = parseTemplate(userPassupTemplate.body, templateData);
-      await sendEmail(updatedUser.email, userPassupTemplate.subject, userHtml);
-    }
+        try {
+          const userHtml = parseTemplate(userPassupTemplate.body, templateData);
+          await sendEmail(updatedUser.email, userPassupTemplate.subject, userHtml);
+          console.log(`✅ User passup email sent to ${updatedUser.email}`);
+        } catch (error) {
+          console.error(`❌ Failed to send user passup email to ${updatedUser.email}:`, error);
+        }
+      }
     }
 
     // TODO: Schedule delayed email for action plan (5 hours after activation)

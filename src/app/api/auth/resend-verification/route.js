@@ -71,11 +71,17 @@ export async function POST(req) {
       `;
     }
 
-    await sendEmail(
-      email,
-      template?.subject || "Verify Your Email Address",
-      html
-    );
+    try {
+      await sendEmail(
+        email,
+        template?.subject || "Verify Your Email Address",
+        html
+      );
+      console.log(`✅ Resend verification email sent to ${email}`);
+    } catch (emailError) {
+      console.error(`❌ Failed to resend verification email to ${email}:`, emailError);
+      throw emailError;
+    }
 
     return NextResponse.json({
       message: "Verification email sent successfully",

@@ -81,34 +81,54 @@ export async function POST(req) {
     
     // Send email to user
     if (userTemplate) {
-      const userHtml = parseTemplate(userTemplate.body, templateData);
-      await sendEmail(email, userTemplate.subject, userHtml);
+      try {
+        const userHtml = parseTemplate(userTemplate.body, templateData);
+        await sendEmail(email, userTemplate.subject, userHtml);
+        console.log(`✅ Signup verification email sent to ${email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send signup verification email to ${email}:`, error);
+      }
     }
     
     // Send email to sponsor
     if (sponsorTemplate && sponsor) {
-      const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
-      await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+      try {
+        const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
+        await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+        console.log(`✅ New referral email sent to sponsor ${sponsor.email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send new referral email to sponsor ${sponsor.email}:`, error);
+      }
     }
     
     // Send email to admin
     if (adminTemplate && admin) {
-      const adminHtml = parseTemplate(adminTemplate.body, templateData);
-      await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+      try {
+        const adminHtml = parseTemplate(adminTemplate.body, templateData);
+        await sendEmail(admin.email, adminTemplate.subject, adminHtml);
+        console.log(`✅ New signup email sent to admin ${admin.email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send new signup email to admin ${admin.email}:`, error);
+      }
     }
     
     // Fallback if no user template exists
     if (!userTemplate) {
-      const defaultHtml = `
-        <h2>Verify Your Email</h2>
-        <p>Hi ${name},</p>
-        <p>Thanks for signing up! Please click the link below to verify your email:</p>
-        <a href="${verifyUrl}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email</a>
-        <p>Or copy and paste this link in your browser:</p>
-        <p>${verifyUrl}</p>
-        <p>If you didn't create an account, you can ignore this email.</p>
-      `;
-      await sendEmail(email, "Verify your email", defaultHtml);
+      try {
+        const defaultHtml = `
+          <h2>Verify Your Email</h2>
+          <p>Hi ${name},</p>
+          <p>Thanks for signing up! Please click the link below to verify your email:</p>
+          <a href="${verifyUrl}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email</a>
+          <p>Or copy and paste this link in your browser:</p>
+          <p>${verifyUrl}</p>
+          <p>If you didn't create an account, you can ignore this email.</p>
+        `;
+        await sendEmail(email, "Verify your email", defaultHtml);
+        console.log(`✅ Default verification email sent to ${email}`);
+      } catch (error) {
+        console.error(`❌ Failed to send default verification email to ${email}:`, error);
+      }
     }
         
 
