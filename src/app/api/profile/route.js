@@ -36,6 +36,15 @@ export async function PUT(req) {
     const body = await req.json();
     console.log("Received update data:", body);
 
+    // Check for banned countries
+    const bannedCountries = ["Pakistan", "Somalia", "Sudan", "Democratic Republic of Congo", "Yemen"];
+    if (body.address?.country && bannedCountries.includes(body.address.country)) {
+      return NextResponse.json(
+        { error: "Profile updates not available for your country due to regulatory restrictions" },
+        { status: 400 }
+      );
+    }
+
     // Build update object safely
     const updateFields = {
       name: body.name || "",

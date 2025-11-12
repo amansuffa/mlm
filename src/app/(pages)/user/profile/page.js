@@ -20,6 +20,14 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  const allowedCountries = [
+    "Afghanistan", "Albania", "Algeria", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Belarus", "Belgium", "Bolivia", "Bosnia and Herzegovina", "Brazil", "Bulgaria", "Cambodia", "Canada", "Chile", "China", "Colombia", "Croatia", "Czech Republic", "Denmark", "Ecuador", "Egypt", "Estonia", "Ethiopia", "Finland", "France", "Georgia", "Germany", "Ghana", "Greece", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Latvia", "Lebanon", "Lithuania", "Luxembourg", "Malaysia", "Mexico", "Morocco", "Netherlands", "New Zealand", "Nigeria", "Norway", "Oman", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "Serbia", "Singapore", "Slovakia", "Slovenia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland", "Thailand", "Turkey", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Venezuela", "Vietnam"
+  ];
+
+  const countryCodes = [
+    { country: "Afghanistan", code: "+93" }, { country: "Albania", code: "+355" }, { country: "Algeria", code: "+213" }, { country: "Argentina", code: "+54" }, { country: "Armenia", code: "+374" }, { country: "Australia", code: "+61" }, { country: "Austria", code: "+43" }, { country: "Azerbaijan", code: "+994" }, { country: "Bahrain", code: "+973" }, { country: "Bangladesh", code: "+880" }, { country: "Belarus", code: "+375" }, { country: "Belgium", code: "+32" }, { country: "Bolivia", code: "+591" }, { country: "Bosnia and Herzegovina", code: "+387" }, { country: "Brazil", code: "+55" }, { country: "Bulgaria", code: "+359" }, { country: "Cambodia", code: "+855" }, { country: "Canada", code: "+1" }, { country: "Chile", code: "+56" }, { country: "China", code: "+86" }, { country: "Colombia", code: "+57" }, { country: "Croatia", code: "+385" }, { country: "Czech Republic", code: "+420" }, { country: "Denmark", code: "+45" }, { country: "Ecuador", code: "+593" }, { country: "Egypt", code: "+20" }, { country: "Estonia", code: "+372" }, { country: "Ethiopia", code: "+251" }, { country: "Finland", code: "+358" }, { country: "France", code: "+33" }, { country: "Georgia", code: "+995" }, { country: "Germany", code: "+49" }, { country: "Ghana", code: "+233" }, { country: "Greece", code: "+30" }, { country: "Hungary", code: "+36" }, { country: "Iceland", code: "+354" }, { country: "India", code: "+91" }, { country: "Indonesia", code: "+62" }, { country: "Iran", code: "+98" }, { country: "Iraq", code: "+964" }, { country: "Ireland", code: "+353" }, { country: "Israel", code: "+972" }, { country: "Italy", code: "+39" }, { country: "Japan", code: "+81" }, { country: "Jordan", code: "+962" }, { country: "Kazakhstan", code: "+7" }, { country: "Kenya", code: "+254" }, { country: "Kuwait", code: "+965" }, { country: "Latvia", code: "+371" }, { country: "Lebanon", code: "+961" }, { country: "Lithuania", code: "+370" }, { country: "Luxembourg", code: "+352" }, { country: "Malaysia", code: "+60" }, { country: "Mexico", code: "+52" }, { country: "Morocco", code: "+212" }, { country: "Netherlands", code: "+31" }, { country: "New Zealand", code: "+64" }, { country: "Nigeria", code: "+234" }, { country: "Norway", code: "+47" }, { country: "Oman", code: "+968" }, { country: "Peru", code: "+51" }, { country: "Philippines", code: "+63" }, { country: "Poland", code: "+48" }, { country: "Portugal", code: "+351" }, { country: "Qatar", code: "+974" }, { country: "Romania", code: "+40" }, { country: "Russia", code: "+7" }, { country: "Saudi Arabia", code: "+966" }, { country: "Serbia", code: "+381" }, { country: "Singapore", code: "+65" }, { country: "Slovakia", code: "+421" }, { country: "Slovenia", code: "+386" }, { country: "South Africa", code: "+27" }, { country: "South Korea", code: "+82" }, { country: "Spain", code: "+34" }, { country: "Sri Lanka", code: "+94" }, { country: "Sweden", code: "+46" }, { country: "Switzerland", code: "+41" }, { country: "Thailand", code: "+66" }, { country: "Turkey", code: "+90" }, { country: "Ukraine", code: "+380" }, { country: "United Arab Emirates", code: "+971" }, { country: "United Kingdom", code: "+44" }, { country: "United States", code: "+1" }, { country: "Uruguay", code: "+598" }, { country: "Venezuela", code: "+58" }, { country: "Vietnam", code: "+84" }
+  ];
+
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -401,8 +409,7 @@ export default function ProfilePage() {
                           Country Code
                         </label>
                         {isEditing ? (
-                          <input
-                            type="text"
+                          <select
                             value={formData.phone.countryCode}
                             onChange={(e) =>
                               handleInputChange(
@@ -410,9 +417,15 @@ export default function ProfilePage() {
                                 e.target.value
                               )
                             }
-                            placeholder="+1"
                             className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
-                          />
+                          >
+                            <option value="">Select Code</option>
+                            {countryCodes.map((item) => (
+                              <option key={item.code} value={item.code}>
+                                {item.code} ({item.country})
+                              </option>
+                            ))}
+                          </select>
                         ) : (
                           <div className="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white">
                             <p className="text-gray-800">
@@ -462,17 +475,37 @@ export default function ProfilePage() {
                             {label}
                           </label>
                           {isEditing ? (
-                            <input
-                              type="text"
-                              value={formData.address[key]}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  `address.${key}`,
-                                  e.target.value
-                                )
-                              }
-                              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
-                            />
+                            key === 'country' ? (
+                              <select
+                                value={formData.address[key]}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    `address.${key}`,
+                                    e.target.value
+                                  )
+                                }
+                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                              >
+                                <option value="">Select Country</option>
+                                {allowedCountries.map((country) => (
+                                  <option key={country} value={country}>
+                                    {country}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <input
+                                type="text"
+                                value={formData.address[key]}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    `address.${key}`,
+                                    e.target.value
+                                  )
+                                }
+                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                              />
+                            )
                           ) : (
                             <div className="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white">
                               <p className="text-gray-800">
