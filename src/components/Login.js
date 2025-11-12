@@ -139,7 +139,7 @@ export default function Login() {
                 <motion.div variants={itemVariants}>
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">Login to Your Account</h2>
                   <p className="text-gray-600 mb-8">
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <Link href="/signup" className="text-[#8200DB] font-semibold hover:underline transition-all duration-300">
                       Sign up here
                     </Link>

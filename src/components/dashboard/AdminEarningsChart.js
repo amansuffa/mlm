@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   BarChart,
   Bar,
@@ -36,7 +36,7 @@ export default function EarningsChart() {
   const userId = session?.user?.id;
   const isAdmin = session?.user?.role === "admin";
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!userId || !isAdmin) return;
     
     const params = new URLSearchParams({
@@ -57,11 +57,11 @@ export default function EarningsChart() {
     const json = await res.json();
     setData(json.data || []);
     setTotal(json.total || 0);
-  };
+  }, [userId, period, isAdmin, from, to]);
 
   useEffect(() => {
     if (isAdmin) fetchData();
-  }, [userId, period, isAdmin, from, to]);
+  }, [isAdmin, fetchData]);
 
   if (!isAdmin) return null;
 

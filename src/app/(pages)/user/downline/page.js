@@ -1,7 +1,28 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import Tree from "react-d3-tree";
+
+const flattenTree = (node, level) => {
+  const result = [];
+  if (node) {
+    result.push({
+      name: node.name,
+      username: node.username,
+      level: level,
+      type: node.referral_type,
+      typeLabel: node.referral_type === "green" ? "Direct Sale" : 
+                node.referral_type === "red" ? "Passup Sale" : "Other Referral"
+    });
+    
+    if (node.children) {
+      node.children.forEach(child => {
+        result.push(...flattenTree(child, level + 1));
+      });
+    }
+  }
+  return result;
+};
 
 export default function DownlinePage() {
   const treeContainer = useRef(null);
@@ -40,7 +61,7 @@ export default function DownlinePage() {
     }
   }, [viewMode]);
 
-  const fetchTreeData = async () => {
+  const fetchTreeData = useCallback(async () => {
     try {
       const response = await fetch("/api/dashboard/downline-tree");
       const result = await response.json();
@@ -109,7 +130,7 @@ export default function DownlinePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchTableData = async () => {
     try {
@@ -124,26 +145,7 @@ export default function DownlinePage() {
     }
   };
 
-  const flattenTree = (node, level) => {
-    const result = [];
-    if (node) {
-      result.push({
-        name: node.name,
-        username: node.username,
-        level: level,
-        type: node.referral_type,
-        typeLabel: node.referral_type === "green" ? "Direct Sale" : 
-                  node.referral_type === "red" ? "Passup Sale" : "Other Referral"
-      });
-      
-      if (node.children) {
-        node.children.forEach(child => {
-          result.push(...flattenTree(child, level + 1));
-        });
-      }
-    }
-    return result;
-  };
+
 
   const renderCustomNode = ({ nodeDatum, toggleNode }) => (
     <g onClick={toggleNode} style={{ cursor: "pointer" }}>

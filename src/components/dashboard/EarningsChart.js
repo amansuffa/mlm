@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   LineChart,
   Line,
@@ -21,7 +21,7 @@ export default function EarningsChart() {
   const [isCustomRange, setIsCustomRange] = useState(false);
   
   const userId = session?.user?.id; 
-  const fetchEarnings = async () => {
+  const fetchEarnings = useCallback(async () => {
     try {
       const params = { userId };
       if (from && to) {
@@ -48,11 +48,11 @@ export default function EarningsChart() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [userId, from, to, period]);
 
   useEffect(() => {
     if (userId) fetchEarnings();
-  }, [userId, period]);
+  }, [userId, fetchEarnings]);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg">

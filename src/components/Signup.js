@@ -384,7 +384,7 @@ export default function Signup() {
                       required
                       className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Username can't be changed</p>
+                    <p className="text-xs text-gray-500 mt-1">Username can&apos;t be changed</p>
                   </div>
 
                   {/* Important Information */}
@@ -398,7 +398,7 @@ export default function Signup() {
                     <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                       <h3 className="font-bold text-red-800 mb-2">⚠️ Important Reminder:</h3>
                       <ul className="space-y-1 text-sm text-red-700">
-                        <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account – <a href="https://wise.com/invite/irhc/ranaa156" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Click Here</a>.</li>
+                        <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account &ndash; <a href="https://wise.com/invite/irhc/ranaa156" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Click Here</a>.</li>
                         <li>• In addition to the admin fee, you will also need to pay the $500 membership fee directly to your sponsor to fully activate your account and access the system.</li>
                         <li>• If you are not prepared to make these payments, please do not create an account at this time.</li>
                         <li>• Due to local regulatory restrictions, PASH.CLUB does not provide services or accept registrations from residents of Pakistan, Somalia, Sudan, the Democratic Republic of Congo, and Yemen. By proceeding, you confirm that you are not a resident of these countries.</li>
@@ -407,7 +407,7 @@ export default function Signup() {
 
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                       <p className="text-sm text-green-800 font-medium">
-                        ✅ Once your payments are confirmed, your account will be activated and you'll gain full access to the PASH.CLUB system.
+                        ✅ Once your payments are confirmed, your account will be activated and you&apos;ll gain full access to the PASH.CLUB system.
                       </p>
                     </div>
                   </div>
@@ -433,7 +433,7 @@ export default function Signup() {
                         onChange={(e) => setCaptchaVerified(e.target.checked)}
                         className="w-4 h-4 text-[#8200DB] border-gray-300 rounded focus:ring-[#8200DB]"
                       />
-                      <span className="text-sm text-gray-700">I'm not a robot</span>
+                      <span className="text-sm text-gray-700">I&apos;m not a robot</span>
                     </div>
                   </div>
                 </div>
