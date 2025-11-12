@@ -273,6 +273,31 @@ export default function Signup() {
               <p className="mt-1 text-xs text-gray-500">Username can't be changed</p>
             </div>
 
+            {/* Important Information Sections */}
+            <div className="space-y-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                <p className="text-sm mb-4">
+                  <strong>Important:</strong> To ensure our emails are delivered to your inbox, please add (info@pash.club) to your address book/contacts list.
+                </p>
+              </div>
+
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                <h3 className="font-bold text-red-800 mb-3">⚠️ Important Reminder:</h3>
+                <ul className="space-y-2 text-sm text-red-700">
+                  <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account – <a href="https://wise.com/invite/irhc/ranaa156" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">Click Here</a>.</li>
+                  <li>• In addition to the admin fee, you will also need to pay the $500 membership fee directly to your sponsor to fully activate your account and access the system.</li>
+                  <li>• If you are not prepared to make these payments, please do not create an account at this time.</li>
+                  <li>• Due to local regulatory restrictions, PASH.CLUB does not provide services or accept registrations from residents of Pakistan, Somalia, Sudan, the Democratic Republic of Congo, and Yemen. By proceeding, you confirm that you are not a resident of these countries.</li>
+                </ul>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+                <p className="text-sm text-green-800">
+                  <strong>✅ Once your payments are confirmed, your account will be activated and you'll gain full access to the PASH.CLUB system.</strong>
+                </p>
+              </div>
+            </div>
+
             {/* Terms Checkbox */}
             <div className="flex items-start">
               <input
@@ -319,30 +344,7 @@ export default function Signup() {
           </div>
         </div>
 
-        {/* Important Information */}
-        <div className="mt-8 space-y-6">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-            <p className="text-sm mb-4">
-              <strong>Important:</strong> To ensure our emails are delivered to your inbox, please add (info@pash.club) to your address book/contacts list.
-            </p>
-          </div>
 
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 className="font-bold text-red-800 mb-3">⚠️ Important Reminder:</h3>
-            <ul className="space-y-2 text-sm text-red-700">
-              <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account – <a href="https://wise.com/invite/irhc/ranaa156" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">Click Here</a>.</li>
-              <li>• In addition to the admin fee, you will also need to pay the $500 membership fee directly to your sponsor to fully activate your account and access the system.</li>
-              <li>• If you are not prepared to make these payments, please do not create an account at this time.</li>
-              <li>• Due to local regulatory restrictions, PASH.CLUB does not provide services or accept registrations from residents of Pakistan, Somalia, Sudan, the Democratic Republic of Congo, and Yemen. By proceeding, you confirm that you are not a resident of these countries.</li>
-            </ul>
-          </div>
-
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <p className="text-sm text-green-800">
-              <strong>✅ Once your payments are confirmed, your account will be activated and you'll gain full access to the PASH.CLUB system.</strong>
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
