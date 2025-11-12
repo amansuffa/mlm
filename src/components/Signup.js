@@ -130,7 +130,7 @@ export default function Signup() {
           <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl shadow-xl overflow-hidden mb-6">
             <div className="px-8 py-8">
               <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4 animate-slide-down">
-                🚀 Welcome to PASH.CLUB
+                Welcome to PASH.CLUB
               </h1>
               <p className="text-blue-100 text-lg animate-slide-up">
                 Start your journey to financial freedom

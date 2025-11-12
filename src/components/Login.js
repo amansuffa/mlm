@@ -32,126 +32,191 @@ export default function Login() {
     }
   }
 
-  const typewriterText = (text, delayOffset = 0) =>
-    text.split("").map((char, i) => (
-      <motion.span
-        key={i}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: i * 0.07 + delayOffset }}
-      >
-        {char}
-      </motion.span>
-    ));
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const formVariants = {
+    hidden: { opacity: 0, x: 50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-purple-200 to-purple-200 px-6 py-10">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl flex flex-col md:flex-row overflow-hidden w-full max-w-4xl min-h-[550px]"
-      >
-        {/* Left side */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header Section */}
         <motion.div
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="md:w-1/2 flex flex-col items-center justify-center text-white p-8 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/employee-working-marketing-setting.jpg')",
-          }}
-        ></motion.div>
-
-        {/* Right side */}
-        <motion.div
-          initial={{ x: 50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="md:w-1/2 flex flex-col justify-center p-10"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
         >
-          <div className="w-full flex justify-center p-4 rounded-xl">
-            <h1 className="text-4xl font-extrabold mb-2 text-center text-purple-700">
-              {typewriterText("Welcome Back 👋")}
-            </h1>
+          <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl shadow-xl overflow-hidden">
+            <div className="px-8 py-8">
+              <div className="flex flex-col items-center text-center">
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className="text-3xl lg:text-4xl font-bold text-white mb-2"
+                >
+                  Welcome Back to PASH.CLUB
+                </motion.h1>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                  className="text-blue-100 text-lg"
+                >
+                  Sign in to access your account and continue your journey
+                </motion.p>
+              </div>
+            </div>
           </div>
-
-          <motion.h2
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-3xl font-bold text-center text-purple-700 mb-4"
-          >
-            {typewriterText("Login", 0.5)}
-          </motion.h2>
-
-          <p className="text-sm text-center text-gray-700 mb-6">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/signup"
-              className="font-semibold text-fuchsia-800 hover:underline"
-            >
-              Sign up
-            </Link>
-          </p>
-
-
-
-          <motion.form
-            onSubmit={handleSubmit}
-            className="space-y-5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.8 }}
-          >
-            <div>
-              <label className="block text-sm font-medium text-gray-800">
-                Email
-              </label>
-              <input
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 mt-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-400 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-800">
-                Password
-              </label>
-              <input
-                name="password"
-                type="password"
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 mt-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-400 focus:outline-none"
-                required
-              />
-            </div>
-
-            <motion.button
-              whileHover={!loading ? { scale: 1.05 } : {}}
-              whileTap={!loading ? { scale: 0.95 } : {}}
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 flex items-center justify-center bg-gradient-to-r from-purple-600 to-fuchsia-800 text-white font-semibold rounded-xl shadow-lg transition ${
-                loading ? "opacity-70 cursor-not-allowed" : "hover:opacity-90"
-              }`}
-            >
-              {loading ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                  className="h-5 w-5 border-2 border-white border-t-transparent rounded-full"
-                />
-              ) : (
-                "Login"
-              )}
-            </motion.button>
-          </motion.form>
         </motion.div>
-      </motion.div>
+
+        {/* Login Form Card */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="bg-white rounded-2xl shadow-xl overflow-hidden"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Left Side - Image */}
+            <motion.div
+              variants={imageVariants}
+              className="bg-cover bg-center min-h-[400px] lg:min-h-[500px]"
+              style={{
+                backgroundImage: "url('/employee-working-marketing-setting.jpg')",
+              }}
+            />
+
+            {/* Right Side - Login Form */}
+            <motion.div
+              variants={formVariants}
+              className="p-8 lg:p-12"
+            >
+              <div className="max-w-md mx-auto">
+                <motion.div variants={itemVariants}>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-2">Login to Your Account</h2>
+                  <p className="text-gray-600 mb-8">
+                    Don't have an account?{" "}
+                    <Link href="/signup" className="text-[#8200DB] font-semibold hover:underline transition-all duration-300">
+                      Sign up here
+                    </Link>
+                  </p>
+                </motion.div>
+
+                <motion.form 
+                  onSubmit={handleSubmit} 
+                  className="space-y-6"
+                  variants={containerVariants}
+                >
+                  <motion.div variants={itemVariants} className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">Email Address *</label>
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      name="email"
+                      type="email"
+                      required
+                      placeholder="Enter your email"
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                    />
+                  </motion.div>
+
+                  <motion.div variants={itemVariants} className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">Password *</label>
+                    <motion.input
+                      whileFocus={{ scale: 1.02 }}
+                      name="password"
+                      type="password"
+                      required
+                      placeholder="Enter your password"
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                    />
+                  </motion.div>
+
+                  <motion.div variants={itemVariants} className="flex items-center justify-between">
+                    <Link href="/forgot-password" className="text-sm text-[#8200DB] hover:underline transition-all duration-300">
+                      Forgot password?
+                    </Link>
+                  </motion.div>
+
+                  <motion.button
+                    variants={itemVariants}
+                    whileHover={!loading ? { scale: 1.02, boxShadow: "0 10px 25px -5px rgba(130, 0, 219, 0.3)" } : {}}
+                    whileTap={!loading ? { scale: 0.98 } : {}}
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl font-semibold hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    {loading ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        className="h-5 w-5 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      "Sign In"
+                    )}
+                  </motion.button>
+                </motion.form>
+
+                <motion.div
+                  variants={itemVariants}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200"
+                >
+                  <p className="text-xs text-gray-600 text-center">
+                    Your information is securely encrypted and protected
+                  </p>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
       <Toaster position="top-right" />
     </div>
   );
