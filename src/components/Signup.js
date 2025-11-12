@@ -90,7 +90,7 @@ export default function Signup() {
 
       const res = await axios.post("/api/signup", data);
       if (res.status === 201) {
-        router.push("/payment");
+        router.push("/check-email");
       }
     } catch (err) {
       toast.error(err.response?.data?.error || "Something went wrong");
