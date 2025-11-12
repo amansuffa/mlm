@@ -10,8 +10,8 @@ export async function doLogin(formData) {
       redirect: false,
     });
     return response;
-  } catch (err) {
-    throw new Error(err);
+  } catch (error) {
+    return { error: error.cause?.err?.message || error.cause?.message || error.message || "Login failed" };
   }
 }
 

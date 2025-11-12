@@ -5,34 +5,30 @@ import { doLogin } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { getSession } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Login() {
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
-    try {
-      const formData = new FormData(e.currentTarget);
-      const res = await doLogin(formData);
+    const formData = new FormData(e.currentTarget);
+    const res = await doLogin(formData);
 
-      if (res?.error) {
-        setError(res.error);
-        setLoading(false);
-      } else {
-        const session = await getSession();
-        console.log("Session after login:", session?.user);
-
-         if (session?.user) {
-          router.push("/dashboard");
-        }
-      }
-    } catch (err) {
-      setError("Check Credentials");
+    if (res?.error) {
+      toast.error(res.error);
       setLoading(false);
+    } else {
+      const session = await getSession();
+      if (session?.user) {
+        toast.success("Login successful!");
+        router.push("/dashboard");
+      } else {
+        toast.error("Login failed");
+        setLoading(false);
+      }
     }
   }
 
@@ -99,15 +95,7 @@ export default function Login() {
             </Link>
           </p>
 
-          {error && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mb-4 text-center text-sm text-red-500"
-            >
-              {error}
-            </motion.p>
-          )}
+
 
           <motion.form
             onSubmit={handleSubmit}
@@ -164,6 +152,7 @@ export default function Login() {
           </motion.form>
         </motion.div>
       </motion.div>
+      <Toaster position="top-right" />
     </div>
   );
 }
