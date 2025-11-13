@@ -84,12 +84,6 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       icon: <FaUserCog />,
       roles: ["admin"],
     },
-    {
-      href: "/manage-plans",
-      label: "Manage Plans",
-      icon: <FaHospitalUser />,
-      roles: ["admin"],
-    },
   ];
 
   // ✅ Filter logic: show link if
