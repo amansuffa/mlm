@@ -68,7 +68,7 @@ export default function EmailTemplatesPage() {
               onClick={() => toast.dismiss(t.id)}
               className="px-3 py-1 rounded text-sm"
               style={{
-                backgroundColor: 'var(--cardsec)',
+                backgroundColor: 'var(--cardSecondary)',
                 color: 'var(--text)'
               }}
             >
@@ -151,10 +151,8 @@ export default function EmailTemplatesPage() {
         {/* Header Section */}
         <div className="mb-8">
           <div 
-            className="rounded-2xl shadow-xl overflow-hidden"
-            style={{ 
-              background: `linear-gradient(135deg, var(--primary), var(--secondary))`
-            }}
+            className="header rounded-2xl shadow-xl overflow-hidden"
+        
           >
             <div className="px-8 py-8">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -249,12 +247,8 @@ export default function EmailTemplatesPage() {
                   placeholder="Search templates..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2"
-                  style={{ 
-                    backgroundColor: `var(--cardsec)`,
-                    border: `2px solid var(--border)`,
-                    color: 'var(--text)'
-                  }}
+                  className="card-secondary w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2"
+                 
                 />
                 <svg
                   className="absolute left-3 top-3.5 w-5 h-5"
@@ -277,12 +271,7 @@ export default function EmailTemplatesPage() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
-                style={{ 
-                  backgroundColor: 'var(--cardsec)',
-                  border: '2px solid var(--border)',
-                  color: 'var(--text)'
-                }}
+                className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
               >
                 {templateTypes.map((type) => (
                   <option key={type} value={type}>
@@ -297,11 +286,7 @@ export default function EmailTemplatesPage() {
         {/* Templates Table */}
         {loading ? (
           <div 
-            className="rounded-xl shadow-lg p-12 text-center"
-            style={{ 
-              backgroundColor: 'var(--card)',
-              border: `1px solid var(--border)`
-            }}
+            className="card rounded-xl shadow-lg p-12 text-center"
           >
             <div 
               className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto"
@@ -357,16 +342,13 @@ export default function EmailTemplatesPage() {
           </div>
         ) : (
           <div 
-            className="rounded-xl shadow-lg overflow-hidden"
-            style={{ 
-              backgroundColor: 'var(--card)',
-              border: `1px solid var(--border)`
-            }}
+            className="card rounded-xl shadow-lg overflow-hidden"
+            
           >
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr style={{ backgroundColor: `var(--cardsec)` }}>
+                  <tr style={{ backgroundColor: `var(--cardSecondary)` }}>
                     <th className="text-left py-4 px-6 font-semibold">Name</th>
                     <th className="text-left py-4 px-6 font-semibold">Type</th>
                     <th className="text-left py-4 px-6 font-semibold">Subject</th>
@@ -408,7 +390,7 @@ export default function EmailTemplatesPage() {
                           <button
                             onClick={() => handleBulkSend(template)}
                             className="p-2 transition-all duration-200 hover:opacity-70 flex items-center justify-center"
-                            style={{ color: 'var(--primary)' }}
+                            style={{ color: 'var(--accent)' }}
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
@@ -417,7 +399,7 @@ export default function EmailTemplatesPage() {
                           <button
                             onClick={() => handleEditTemplate(template._id)}
                             className="p-2 transition-all duration-200 hover:opacity-70 flex items-center justify-center"
-                            style={{ color: 'var(--primary)' }}
+                            style={{ color: 'var(--accent)' }}
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -441,9 +423,9 @@ export default function EmailTemplatesPage() {
     onClick={() => setShowBulkModal(false)}
   >
     <div
-      className="bg-[var(--card)] rounded-xl shadow-2xl p-6 w-full max-w-md relative"
+      className="card rounded-xl shadow-2xl p-6 w-full max-w-md relative"
       onClick={(e) => e.stopPropagation()}
-      style={{ border: "1px solid var(--border)" }}
+  
     >
       <h3
         className="text-xl font-semibold mb-4"
@@ -459,12 +441,7 @@ export default function EmailTemplatesPage() {
       <select
         value={userCategory}
         onChange={(e) => setUserCategory(e.target.value)}
-        className="w-full rounded-lg px-4 py-3 mb-6 focus:outline-none border-2"
-        style={{
-          backgroundColor: "var(--cardsec)",
-          borderColor: "var(--border)",
-          color: "var(--text)",
-        }}
+        className="card-secondary w-full rounded-lg px-4 py-3 mb-6 focus:outline-none border-2"
       >
         <option value="">Select User Category</option>
         {userCategories.map((cat) => (
@@ -479,7 +456,7 @@ export default function EmailTemplatesPage() {
           onClick={() => setShowBulkModal(false)}
           className="px-4 py-2 rounded-lg"
           style={{
-            backgroundColor: "var(--cardsec)",
+            backgroundColor: "var(--cardSecondary)",
             color: "var(--text)",
           }}
         >
@@ -487,11 +464,7 @@ export default function EmailTemplatesPage() {
         </button>
         <button
           onClick={sendBulkEmail}
-          className="px-5 py-2 rounded-lg font-semibold transition-all"
-          style={{
-            background: `linear-gradient(135deg, var(--primary), var(--secondary))`,
-            color: "white",
-          }}
+          className="button px-5 py-2 rounded-lg font-semibold transition-all"
         >
           Send Now
         </button>

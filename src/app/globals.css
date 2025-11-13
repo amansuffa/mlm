@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .hero {
-    min-height: calc(100vh - 68px);
+  min-height: calc(100vh - 68px);
 }
 
 button {
@@ -34,10 +34,9 @@ body {
   background-color: var(--custom-bg-color);
 } */
 
-
 /* ******************************************** */
 
- :root {
+/* :root {
       --primary: #B8860B;
       --secondary: #DAA520;
       --accent: #FFD700;
@@ -57,11 +56,79 @@ body {
       --cardsec:#374151;
       --text: #F3F4F6;
       --border: #4B5563;
-    }
+    } */
+/* :root {
+  --primary: #6c5ce7;
+  --secondary: #574aba;
+  --accent: #ffd700;
+  --background: #f5f6fa;
+  --card: #ffffff;
+  --cardSecondary: #f9fafb;
+  --text: #222222;
+  --textSecondary: #555555;
+  --border: #e5e5e5;
+  --success: #2ecc71;
+  --error: #e74c3c;
+}
+.dark {
+  --primary: #7a6ce5;
+  --secondary: #6155ba;
+  --accent: #eac54f;
+  --background: #0e0e14;
+  --card: #1a1a25;
+  --cardSecondary: #333349;
+  --text: #f3f3f3;
+  --textSecondary: #aaaaaa;
+  --border: #333333;
+  --success: #27ae60;
+  --error: #c0392b;
+} */
 
+:root {
+ --primary: #7b61ff;    
+  --secondary: #4c1d95;
+  --accent: #B8860B;        /* Gold accent */
+  --background: #f9fafb;    /* Light gray background */
+  --card: #ffffff;
+  --cardSecondary: #f9fafb;
+  --text: #111827;
+  --textSecondary: #4b5563;
+  --border: #e5e7eb;
+  --buttonBg: linear-gradient(to right, #B8860B 0%, #DAA520 100%);
+}
+
+.dark {
+  --primary: #a78bfa;       /* Soft lavender */
+  --secondary: #6d28d9;     /* Deep royal purple */
+  --accent: #fcd34d;        /* Warm gold accent */
+  --background: #0f0f17;    /* Deep black-blue */
+  --card: #1a1a25;
+  --cardSecondary: #29293b;
+  --text: #f3f4f6;
+  --textSecondary: #9ca3af;
+  --border: #333333;
+  --buttonBg: linear-gradient(to right, #fcd34d 0%, #b89a38 100%);
+}
+
+.button{
+  background: var(--buttonBg);
+  color: white;
+}
+.header{
+  background: linear-gradient(135deg, var(--primary), var(--secondary));  
+}
+.card{
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+.card-secondary{
+  background-color: var(--cardSecondary);
+  border: 2px solid var(--border);  
+  color: var(--textSecondary);
+}
 
 body {
   background-color: var(--background);
   color: var(--text);
-    transition: background-color 0.3s ease, color 0.3s ease;
-} 
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

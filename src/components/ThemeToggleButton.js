@@ -9,7 +9,7 @@ const ThemeToggleButton = () => {
             {/* Sun Icon - Light Theme */}
             <svg 
               className={`w-4 h-4 transition-opacity duration-200 ${
-                theme === 'light' ? 'text-[var(--secondary)] opacity-100' : 'text-gray-400 opacity-50'
+                theme === 'light' ? 'text-[var(--accent)] opacity-100' : 'text-gray-400 opacity-50'
               }`} 
               fill="currentColor" 
               viewBox="0 0 20 20"
@@ -22,7 +22,7 @@ const ThemeToggleButton = () => {
               onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
               aria-label="Toggle theme"
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 dark:focus:ring-yellow-400 focus:ring-offset-2 ${
-                theme === 'dark' ? 'bg-[var(--secondary)]' : 'bg-gray-300'
+                theme === 'dark' ? 'bg-[var(--primary)]' : 'bg-gray-300'
               }`}
             >
               <span
@@ -35,7 +35,7 @@ const ThemeToggleButton = () => {
             {/* Moon Icon - Dark Theme */}
             <svg 
               className={`w-4 h-4 transition-opacity duration-200 ${
-                theme === 'dark' ? 'text-[var(--secondary)] opacity-100' : 'text-gray-400 opacity-50'
+                theme === 'dark' ? 'text-[var(--accent)] opacity-100' : 'text-gray-400 opacity-50'
               }`} 
               fill="currentColor" 
               viewBox="0 0 20 20"
