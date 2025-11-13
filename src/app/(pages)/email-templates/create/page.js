@@ -110,29 +110,45 @@ export default function CreateEmailTemplate() {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden">
-        {/* Professional Header */}
-        <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">
-                Create Email Template
-              </h1>
-              <p className="text-blue-100 mt-2">
-                Design professional email templates for your MLM communications
-              </p>
-            </div>
-            <div className="bg-white/20 rounded-lg px-4 py-2">
-              <span className="text-white text-sm font-medium">
-                Template Builder
-              </span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div 
+            className="rounded-2xl shadow-xl overflow-hidden"
+            style={{ 
+              background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+            }}
+          >
+            <div className="px-8 py-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+              <div className="mb-6 lg:mb-0">
+                <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                  Create Email Template
+                </h1>
+                <p className="text-white text-opacity-90 text-lg">
+                  Design professional email templates for your MLM communications
+                </p>
+              </div>
+              <div className="bg-white/20 rounded-lg px-4 py-2">
+                <span className="text-white text-sm font-medium">
+                  Template Builder
+                </span>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
         {error && (
-          <div className="mx-8 mt-6 bg-red-50 border border-red-200 rounded-xl p-4">
-            <p className="text-red-700 flex items-center">
+          <div 
+            className="rounded-xl p-4 mb-6"
+            style={{
+              backgroundColor: 'var(--error)',
+              opacity: '0.1',
+              border: `1px solid var(--error)`
+            }}
+          >
+            <p className="flex items-center" style={{ color: 'var(--error)' }}>
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -151,16 +167,31 @@ export default function CreateEmailTemplate() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+        <div 
+          className="rounded-xl shadow-lg p-8 space-y-8"
+          style={{
+            backgroundColor: 'var(--card)',
+            border: `1px solid var(--border)`
+          }}
+        >
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Template Name & Type */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Template Name *
               </label>
               <input
                 type="text"
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  border: `2px solid var(--border)`,
+                  color: 'var(--text)',
+                  '--tw-ring-color': 'var(--accent)'
+                }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                 placeholder="Welcome Email Template"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -169,13 +200,21 @@ export default function CreateEmailTemplate() {
             </div>
 
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Template Category *
               </label>
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  border: `2px solid var(--border)`,
+                  color: 'var(--text)',
+                  '--tw-ring-color': 'var(--accent)'
+                }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                 required
               >
                 <option value="">Select Template Category</option>
@@ -193,12 +232,20 @@ export default function CreateEmailTemplate() {
 
           {/* Email Subject */}
           <div className="space-y-3">
-            <label className="block text-lg font-semibold text-gray-800">
+            <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
               Email Subject *
             </label>
             <input
               type="text"
-              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+              style={{
+                backgroundColor: 'var(--cardSecondary)',
+                border: `2px solid var(--border)`,
+                color: 'var(--text)',
+                '--tw-ring-color': 'var(--accent)'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
               placeholder="Welcome to Our MLM Family! 🎉"
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
@@ -212,21 +259,22 @@ export default function CreateEmailTemplate() {
           {/* Email Body Editor */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Email Body *
               </label>
               <div className="flex items-center space-x-3">
                 <button
                   type="button"
                   onClick={insertSmallText}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-[#8200DB] hover:bg-[#6E11B0] text-white rounded-lg text-xs font-medium transition-colors shadow-sm"
+                  className="button flex items-center gap-1 px-3 py-1.5 text-white rounded-lg text-xs font-medium transition-all duration-300 shadow-sm"
+          
                 >
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
                   </svg>
                   Small Text
                 </button>
-                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <div className="flex items-center space-x-2 text-sm" style={{ color: 'var(--textSecondary)' }}>
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -246,9 +294,10 @@ export default function CreateEmailTemplate() {
             </div>
             <div
               data-color-mode="light"
-              className="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm"
+              className="rounded-xl overflow-hidden shadow-sm"
+              style={{ border: `2px solid var(--border)` }}
             >
-              <MDEditor
+              <MDEditor 
                 value={form.body}
                 onChange={handleEditorChange}
                 height={400}
@@ -258,7 +307,7 @@ export default function CreateEmailTemplate() {
                 }}
               />
             </div>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mt-2">
+            <div className="flex flex-wrap items-center gap-4 text-sm mt-2" style={{ color: 'var(--textSecondary)' }}>
               <span># Headings</span>
               <span>**Bold**</span>
               <span>*Italic*</span>
@@ -271,10 +320,16 @@ export default function CreateEmailTemplate() {
 
           {/* Real-time Preview Section */}
           <div className="space-y-3">
-            <label className="block text-lg font-semibold text-gray-800">
+            <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
               Live Preview
             </label>
-            <div className="border-2 border-gray-200 rounded-xl p-6 bg-white min-h-[200px]">
+            <div 
+              className="rounded-xl p-6 min-h-[200px]"
+              style={{
+                backgroundColor: 'var(--cardSecondary)',
+                border: `2px solid var(--border)`
+              }}
+            >
               {form.body ? (
                 <div 
                   className="email-preview prose max-w-none"
@@ -288,7 +343,7 @@ export default function CreateEmailTemplate() {
                   }}
                 />
               ) : (
-                <div className="text-gray-400 text-center py-8">
+                <div className="text-center py-8" style={{ color: 'var(--textSecondary)' }}>
                   <svg
                     className="w-12 h-12 mx-auto mb-2"
                     fill="none"
@@ -312,11 +367,17 @@ export default function CreateEmailTemplate() {
           {/* HTML Output Preview (Optional) */}
           {form.body && (
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 HTML Output (What gets stored)
               </label>
-              <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
-                <code className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+              <div 
+                className="rounded-xl p-4"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  border: `2px solid var(--border)`
+                }}
+              >
+                <code className="text-sm whitespace-pre-wrap break-words" style={{ color: 'var(--textSecondary)' }}>
                   {convertToHtml(form.body)}
                 </code>
               </div>
@@ -324,11 +385,16 @@ export default function CreateEmailTemplate() {
           )}
 
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-8 border-t border-gray-200">
+          <div className="flex justify-between items-center pt-8" style={{ borderTop: `1px solid var(--border)` }}>
             <button
               type="button"
               onClick={() => router.push("/email-templates")}
-              className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
+              className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
+              style={{
+                backgroundColor: 'var(--cardSecondary)',
+                color: 'var(--text)',
+                border: `2px solid var(--border)`
+              }}
             >
               ← Back to Templates
             </button>
@@ -337,7 +403,12 @@ export default function CreateEmailTemplate() {
               <button
                 type="button"
                 onClick={() => setForm({ name: "", type: "", category: "", subject: "", body: "" })}
-                className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
+                className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  color: 'var(--text)',
+                  border: `2px solid var(--border)`
+                }}
               >
                 Clear Form
               </button>
@@ -345,7 +416,19 @@ export default function CreateEmailTemplate() {
               <button
                 type="submit"
                 disabled={loading || !form.body}
-                className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="button px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+               
+                onMouseEnter={(e) => {
+                  if (!loading && form.body) {
+             ;
+                    e.target.style.background = 'var(--buttonBg)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading && form.body) {
+                    e.target.style.background = `var(--buttonBg)`;
+                  }
+                }}
               >
                 {loading ? (
                   <>
@@ -378,6 +461,7 @@ export default function CreateEmailTemplate() {
           </div>
         </form>
       </div>
+    </div>
     </div>
   );
 }

@@ -2,40 +2,109 @@ import React from 'react'
 
 const AvailableVariables = () => {
   return (
-<div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-blue-800 mb-3">
+<div 
+            className="rounded-xl p-4 sm:p-6"
+            style={{
+              backgroundColor: 'var(--cardSecondary)',
+              border: `1px solid var(--border)`
+            }}
+          >
+            <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--text)' }}>
               Available Variables
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 text-xs sm:text-sm">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{MemberFirstName}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{MemberFullName}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{MemberUsername}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{SponsorName}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{MemberEmail}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{LoginLink}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{AdminFeeLink}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{SponsorPaymentLink}}"}
               </code>
-              <code className="bg-white border border-blue-200 rounded-lg px-3 py-2 text-blue-700">
+              <code 
+                className="rounded-lg px-2 sm:px-3 py-2 font-mono break-all"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`,
+                  color: 'var(--accent)'
+                }}
+              >
                 {"{{ConfirmEmailLink}}"}
               </code>
             </div>
-            <p className="text-blue-600 text-sm mt-3">
+            <p className="text-xs sm:text-sm mt-3" style={{ color: 'var(--textSecondary)' }}>
               Use these variables in your template. They will be replaced with actual values when sending emails.
             </p>
           </div>  )

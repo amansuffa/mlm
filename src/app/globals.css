@@ -107,12 +107,13 @@ body {
   --text: #f3f4f6;
   --textSecondary: #9ca3af;
   --border: #333333;
-  --buttonBg: linear-gradient(to right, #fcd34d 0%, #b89a38 100%);
+  --buttonBg: linear-gradient(to right, #c2a23a 0%, #b89a38 100%);
 }
 
 .button{
   background: var(--buttonBg);
   color: white;
+  &:hover{filter: brightness(0.9)}
 }
 .header{
   background: linear-gradient(135deg, var(--primary), var(--secondary));  
@@ -131,4 +132,45 @@ body {
   background-color: var(--background);
   color: var(--text);
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+
+/* MD Editor Dark Mode */
+.dark .w-md-editor {
+  background-color: var(--card) !important;
+  color: #f3f4f6 !important;
+}
+.dark .w-md-editor-text-textarea,
+.dark .w-md-editor-text {
+  background-color: var(--card) !important;
+  color: #f3f4f6 !important;
+
+}
+.dark .w-md-editor-preview  {
+  background-color: var(--card) !important;
+  color: #f3f4f6 !important;
+
+}
+.dark .w-md-editor-toolbar {
+  background-color: var(--cardSecondary) !important;
+  border-bottom: 1px solid #4b5563 !important;
+}
+.dark .w-md-editor-toolbar button {
+  color: #f3f4f6 !important;
+}
+.dark .w-md-editor-toolbar button:hover {
+  background-color: var(--card) !important;
+}
+.dark .w-md-editor-preview p,
+.dark .w-md-editor-preview div,
+.dark .w-md-editor-preview span,
+.dark .w-md-editor-preview h1,
+.dark .w-md-editor-preview h2,
+.dark .w-md-editor-preview h3,
+.dark .w-md-editor-preview h4,
+.dark .w-md-editor-preview h5,
+.dark .w-md-editor-preview h6 {
+  color: var(--text) !important;
+  background-color: var(--card) !important;
 }
