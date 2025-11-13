@@ -66,8 +66,6 @@ export default function EditEmailTemplate() {
     // Convert horizontal rules ---
     html = html.replace(/^---$/gm, '<hr style="border: none; border-top: 1px solid #ccc; margin: 1.5rem 0;">');
 
-
-
     // Replace newlines with <br/>
     html = html.replace(/\n/g, '<br>');
     
@@ -179,10 +177,7 @@ export default function EditEmailTemplate() {
   };
 
   // Check if form has changes
-  const hasChanges = form.body !== originalBody || 
-                    form.name !== form.name || 
-                    form.category !== form.category || 
-                    form.subject !== form.subject;
+  const hasChanges = form.body !== originalBody;
 
   if (fetchLoading) {
     return (
@@ -197,38 +192,57 @@ export default function EditEmailTemplate() {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden">
-        {/* Professional Header */}
-        <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">
-                Edit Email Template
-              </h1>
-              <p className="text-blue-100 mt-2">
-                Update and refine your email template
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              {hasChanges && (
-                <div className="bg-yellow-500/20 rounded-lg px-3 py-1">
-                  <span className="text-yellow-200 text-sm font-medium">
-                    Unsaved Changes
-                  </span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div 
+            className="rounded-2xl shadow-xl overflow-hidden"
+            style={{ 
+              background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+            }}
+          >
+            <div className="px-8 py-8">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div className="mb-6 lg:mb-0">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                    Edit Email Template
+                  </h1>
+                  <p className="text-white text-opacity-90 text-lg">
+                    Update and refine your email template
+                  </p>
                 </div>
-              )}
-              <div className="bg-white/20 rounded-lg px-4 py-2">
-                <span className="text-white text-sm font-medium">
-                  Editing Mode
-                </span>
+                <div className="flex items-center space-x-3">
+                  {hasChanges && (
+                    <div 
+                      className="rounded-lg px-3 py-1"
+                      style={{ backgroundColor: 'var(--accent)', opacity: '0.3' }}
+                    >
+                      <span className="text-white text-sm font-medium">
+                        Unsaved Changes
+                      </span>
+                    </div>
+                  )}
+                  <div className="bg-white/20 rounded-lg px-4 py-2">
+                    <span className="text-white text-sm font-medium">
+                      Template Editor
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="mx-8 mt-6 bg-red-50 border border-red-200 rounded-xl p-4">
-            <p className="text-red-700 flex items-center">
+          <div 
+            className="rounded-xl p-4 mb-6"
+            style={{
+              backgroundColor: 'var(--error)',
+              opacity: '0.1',
+              border: `1px solid var(--error)`
+            }}
+          >
+            <p className="flex items-center" style={{ color: 'var(--error)' }}>
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -247,244 +261,300 @@ export default function EditEmailTemplate() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-8">
-          {/* Template Name & Type */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div 
+          className="rounded-xl shadow-lg p-8 space-y-8"
+          style={{
+            backgroundColor: 'var(--card)',
+            border: `1px solid var(--border)`
+          }}
+        >
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Template Name & Category */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
+                  Template Name *
+                </label>
+                <input
+                  type="text"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                  style={{
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `2px solid var(--border)`,
+                    color: 'var(--text)',
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                  placeholder="Welcome Email Template"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
+                  Template Category *
+                </label>
+                <select
+                  value={form.category}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                  style={{
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `2px solid var(--border)`,
+                    color: 'var(--text)',
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                  required
+                >
+                  <option value="">Select Template Category</option>
+                  <option value="Admin">Admin</option>
+                  <option value="User">User</option>
+                  <option value="Sponsor">Sponsor</option>
+                  <option value="Promotion">Promotion</option>
+                  <option value="System">System</option>
+                  <option value="Sponsor of Sponsor">Sponsor of Sponsor</option>
+                  <option value="Leads">Leads</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Email Subject */}
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
-                Template Name *
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
+                Email Subject *
               </label>
               <input
                 type="text"
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
-                placeholder="Welcome Email Template"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  border: `2px solid var(--border)`,
+                  color: 'var(--text)',
+                  '--tw-ring-color': 'var(--accent)'
+                }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                placeholder="Welcome to Our MLM Family! 🎉"
+                value={form.subject}
+                onChange={(e) => setForm({ ...form, subject: e.target.value })}
                 required
               />
             </div>
 
+            {/* Available Variables */}
+            <AvailableVariables/>
+
+            {/* Email Body Editor */}
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
-                Template Category *
-              </label>
-              <select
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
-                required
-              >
-                <option value="">Select Template Category</option>
-                <option value="Admin">Admin</option>
-                <option value="User">User</option>
-                <option value="Sponsor">Sponsor</option>
-                <option value="Promotion">Promotion</option>
-                <option value="System">System</option>
-                <option value="Sponsor of Sponsor">Sponsor of Sponsor</option>
-                <option value="Leads">Leads</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Email Subject */}
-          <div className="space-y-3">
-            <label className="block text-lg font-semibold text-gray-800">
-              Email Subject *
-            </label>
-            <input
-              type="text"
-              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
-              placeholder="Welcome to Our MLM Family! 🎉"
-              value={form.subject}
-              onChange={(e) => setForm({ ...form, subject: e.target.value })}
-              required
-            />
-          </div>
-
-          {/* Available Variables */}
-         <AvailableVariables/>
-
-          {/* Email Body Editor */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="block text-lg font-semibold text-gray-800">
-                Email Body *
-              </label>
-              <div className="flex items-center space-x-3">
-                <button
-                  type="button"
-                  onClick={insertSmallText}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-[#8200DB] hover:bg-[#6E11B0] text-white rounded-lg text-xs font-medium transition-colors shadow-sm"
-                >
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
-                  </svg>
-                  Small Text
-                </button>
-                <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+              <div className="flex items-center justify-between">
+                <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
+                  Email Body *
+                </label>
+                <div className="flex items-center space-x-3">
+                  <button
+                    type="button"
+                    onClick={insertSmallText}
+                    className="button flex items-center gap-1 px-3 py-1.5 text-white rounded-lg text-xs font-medium transition-all duration-300 shadow-sm"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    ></path>
-                  </svg>
-                  <span>Markdown & HTML Supported</span>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                    </svg>
+                    Small Text
+                  </button>
+                  <div className="flex items-center space-x-2 text-sm" style={{ color: 'var(--textSecondary)' }}>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      ></path>
+                    </svg>
+                    <span>Markdown & HTML Supported</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              data-color-mode="light"
-              className="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm"
-            >
-              <MDEditor
-                value={form.body}
-                onChange={handleEditorChange}
-                height={400}
-                preview="edit"
-                textareaProps={{
-                  placeholder: "Write your email content here...\n\nPress Enter for new lines\nUse **bold** for emphasis\nAdd variables like {{FirstName}}"
-                }}
-              />
-            </div>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mt-2">
-              <span># Headings</span>
-              <span>**Bold**</span>
-              <span>*Italic*</span>
-              <span>- Lists</span>
-              <span>[Links](url)</span>
-              <span>&lt;small&gt; tag</span>
-              <span>HTML allowed</span>
-            </div>
-          </div>
-
-          {/* Real-time Preview Section */}
-          <div className="space-y-3">
-            <label className="block text-lg font-semibold text-gray-800">
-              Live Preview
-            </label>
-            <div className="border-2 border-gray-200 rounded-xl p-6 bg-white min-h-[200px]">
-              {form.body ? (
-                <div 
-                  className="email-preview prose max-w-none"
-                  style={{ 
-                    whiteSpace: 'pre-wrap',
-                    fontFamily: 'Arial, sans-serif',
-                    lineHeight: '1.6'
-                  }}
-                  dangerouslySetInnerHTML={{ 
-                    __html: convertToHtml(form.body) 
+              <div
+                data-color-mode="light"
+                className="rounded-xl overflow-hidden shadow-sm"
+                style={{ border: `2px solid var(--border)` }}
+              >
+                <MDEditor 
+                  value={form.body}
+                  onChange={handleEditorChange}
+                  height={400}
+                  preview="edit"
+                  textareaProps={{
+                    placeholder: "Write your email content here...\n\nPress Enter for new lines\nUse **bold** for emphasis\nAdd variables like {{MemberFirstName}}"
                   }}
                 />
-              ) : (
-                <div className="text-gray-400 text-center py-8">
-                  <svg
-                    className="w-12 h-12 mx-auto mb-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    ></path>
-                  </svg>
-                  <p>Start typing above to see the preview here</p>
-                  <p className="text-sm mt-1">Enter key will create line breaks in the final email</p>
-                </div>
-              )}
+              </div>
+              <div className="flex flex-wrap items-center gap-4 text-sm mt-2" style={{ color: 'var(--textSecondary)' }}>
+                <span># Headings</span>
+                <span>**Bold**</span>
+                <span>*Italic*</span>
+                <span>- Lists</span>
+                <span>[Links](url)</span>
+                <span>&lt;small&gt; tag</span>
+                <span>HTML allowed</span>
+              </div>
             </div>
-          </div>
 
-          {/* HTML Output Preview (Optional) */}
-          {form.body && (
+            {/* Real-time Preview Section */}
             <div className="space-y-3">
-              <details className="border-2 border-gray-200 rounded-xl overflow-hidden">
-                <summary className="bg-gray-50 px-6 py-4 cursor-pointer font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
+                Live Preview
+              </label>
+              <div 
+                className="rounded-xl p-6 min-h-[200px]"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  border: `2px solid var(--border)`
+                }}
+              >
+                {form.body ? (
+                  <div 
+                    className="email-preview prose max-w-none"
+                    style={{ 
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: 'Arial, sans-serif',
+                      lineHeight: '1.6'
+                    }}
+                    dangerouslySetInnerHTML={{ 
+                      __html: convertToHtml(form.body) 
+                    }}
+                  />
+                ) : (
+                  <div className="text-center py-8" style={{ color: 'var(--textSecondary)' }}>
+                    <svg
+                      className="w-12 h-12 mx-auto mb-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      ></path>
+                    </svg>
+                    <p>Start typing above to see the preview here</p>
+                    <p className="text-sm mt-1">Enter key will create line breaks in the final email</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* HTML Output Preview (Optional) */}
+            {form.body && (
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                   HTML Output (What gets stored)
-                </summary>
-                <div className="p-4 bg-white">
-                  <code className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+                </label>
+                <div 
+                  className="rounded-xl p-4"
+                  style={{
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `2px solid var(--border)`
+                  }}
+                >
+                  <code className="text-sm whitespace-pre-wrap break-words" style={{ color: 'var(--textSecondary)' }}>
                     {convertToHtml(form.body)}
                   </code>
                 </div>
-              </details>
-            </div>
-          )}
+              </div>
+            )}
 
-          {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-8 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={() => router.push("/email-templates")}
-              className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
-            >
-              ← Back to Templates
-            </button>
-
-            <div className="flex space-x-4">
+            {/* Action Buttons */}
+            <div className="flex justify-between items-center pt-8" style={{ borderTop: `1px solid var(--border)` }}>
               <button
                 type="button"
-                onClick={() => {
-                  setForm({
-                    name: form.name,
-                    type: form.type,
-                    category: form.category,
-                    subject: form.subject,
-                    body: originalBody
-                  });
-                  toast.success("Changes reverted");
+                onClick={() => router.push("/email-templates")}
+                className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  color: 'var(--text)',
+                  border: `2px solid var(--border)`
                 }}
-                disabled={!hasChanges}
-                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Revert Changes
+                ← Back to Templates
               </button>
 
-              <button
-                type="submit"
-                disabled={loading || !form.body || !hasChanges}
-                className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-              >
-                {loading ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Updating...
-                  </>
-                ) : (
-                  "Update Template"
-                )}
-              </button>
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm({ name: "", type: "", category: "", subject: "", body: "" });
+                    setOriginalBody("");
+                  }}
+                  className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
+                  style={{
+                    backgroundColor: 'var(--cardSecondary)',
+                    color: 'var(--text)',
+                    border: `2px solid var(--border)`
+                  }}
+                >
+                  Reset Form
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={loading || !form.body}
+                  className="button px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                  onMouseEnter={(e) => {
+                    if (!loading && form.body) {
+                      e.target.style.background = 'var(--buttonBg)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!loading && form.body) {
+                      e.target.style.background = `var(--buttonBg)`;
+                    }
+                  }}
+                >
+                  {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Updating...
+                    </>
+                  ) : (
+                    "Update Template"
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

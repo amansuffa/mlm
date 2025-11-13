@@ -170,7 +170,9 @@ body {
 .dark .w-md-editor-preview h3,
 .dark .w-md-editor-preview h4,
 .dark .w-md-editor-preview h5,
-.dark .w-md-editor-preview h6 {
+.dark .w-md-editor-preview h6,
+.dark .w-md-editor-preview pre,
+.dark .w-md-editor-preview code{
   color: var(--text) !important;
   background-color: var(--card) !important;
 }
