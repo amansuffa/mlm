@@ -4,7 +4,7 @@ import Link from "next/link";
 import { doLogin } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { getSession } from "next-auth/react";
+
 import toast, { Toaster } from "react-hot-toast";
 
 export default function Login() {
@@ -22,14 +22,8 @@ export default function Login() {
       toast.error(res.error);
       setLoading(false);
     } else {
-      const session = await getSession();
-      if (session?.user) {
-        toast.success("Login successful!");
-        router.push("/dashboard");
-      } else {
-        toast.error("Login failed");
-        setLoading(false);
-      }
+      toast.success("Login successful!");
+      router.push("/dashboard");
     }
   }
 
