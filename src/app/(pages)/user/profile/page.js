@@ -157,14 +157,19 @@ export default function ProfilePage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl shadow-xl overflow-hidden">
+          <div 
+            className="rounded-2xl shadow-xl overflow-hidden"
+            style={{ 
+              background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+            }}
+          >
             <div className="px-8 py-8">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div className="mb-6 lg:mb-0">
                   <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
                     My Profile
                   </h1>
-                  <p className="text-blue-100 text-lg">
+                  <p className="text-white text-opacity-90 text-lg">
                     Manage your complete profile information
                   </p>
                 </div>
@@ -173,12 +178,14 @@ export default function ProfilePage() {
                     isEditing ? handleSave() : setIsEditing(true)
                   }
                   disabled={loading}
-                  className="bg-white text-[#8200DB] px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50"
+                  className="bg-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50"
+                  style={{ color: 'var(--primary)' }}
                 >
                   {loading ? (
                     <>
                       <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-[#8200DB]"
+                        className="animate-spin -ml-1 mr-2 h-4 w-4"
+                        style={{ color: 'var(--primary)' }}
                         fill="none"
                         viewBox="0 0 24 24"
                       >
@@ -225,14 +232,26 @@ export default function ProfilePage() {
         </div>
 
         {/* Profile Content */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div 
+          className="rounded-xl shadow-lg overflow-hidden"
+          style={{
+            backgroundColor: 'var(--card)',
+            border: `1px solid var(--border)`
+          }}
+        >
           <div className="p-8">
             {user ? (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Profile Sidebar */}
                 <div className="flex flex-col items-center text-center">
                   <div className="relative mb-6">
-                    <div className="w-40 h-40 rounded-full bg-gradient-to-r from-[#8200DB] to-[#6E11B0] flex items-center justify-center text-4xl font-bold text-white shadow-xl overflow-hidden border-4 border-white">
+                    <div 
+                      className="w-40 h-40 rounded-full flex items-center justify-center text-4xl font-bold text-white shadow-xl overflow-hidden border-4"
+                      style={{
+                        background: `linear-gradient(135deg, var(--primary), var(--secondary))`,
+                        borderColor: 'var(--card)'
+                      }}
+                    >
                       {formData.profilePicture || user.profilePicture ? (
                         <Image
                           src={formData.profilePicture || user.profilePicture}
@@ -246,7 +265,10 @@ export default function ProfilePage() {
                       )}
                     </div>
                     {isEditing && (
-                      <label className="absolute bottom-4 right-4 bg-[#8200DB] text-white p-3 rounded-full cursor-pointer hover:bg-[#6E11B0] transition-all duration-300 shadow-lg">
+                      <label 
+                        className="absolute bottom-4 right-4 text-white p-3 rounded-full cursor-pointer transition-all duration-300 shadow-lg"
+                        style={{ backgroundColor: 'var(--accent)' }}
+                      >
                         {uploading ? (
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                         ) : (
@@ -275,23 +297,32 @@ export default function ProfilePage() {
                     )}
                   </div>
 
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text)' }}>
                     {displayName}
                   </h2>
-                  <p className="text-gray-600 mb-4">{user.email}</p>
+                  <p className="mb-4" style={{ color: 'var(--textSecondary)' }}>{user.email}</p>
 
                   <div className="w-full space-y-4">
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 font-medium">
+                    <div 
+                      className="rounded-xl p-4"
+                      style={{ backgroundColor: 'var(--cardSecondary)' }}
+                    >
+                      <p className="text-sm font-medium" style={{ color: 'var(--textSecondary)' }}>
                         Account Role
                       </p>
-                      <span className="inline-block px-3 py-1 bg-[#8200DB] bg-opacity-10 text-white rounded-full text-sm font-semibold mt-1">
+                      <span 
+                        className="button inline-block px-3 py-1 text-white rounded-full text-sm font-semibold mt-1"
+          
+                      >
                         {user.role === "admin" ? "Administrator" : "Member"}
                       </span>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 font-medium">
+                    <div 
+                      className="rounded-xl p-4"
+                      style={{ backgroundColor: 'var(--cardSecondary)' }}
+                    >
+                      <p className="text-sm font-medium" style={{ color: 'var(--textSecondary)' }}>
                         Account Status
                       </p>
                       <span
@@ -315,20 +346,26 @@ export default function ProfilePage() {
                       </span>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 font-medium">
+                    <div 
+                      className="rounded-xl p-4"
+                      style={{ backgroundColor: 'var(--cardSecondary)' }}
+                    >
+                      <p className="text-sm font-medium" style={{ color: 'var(--textSecondary)' }}>
                         Referral ID
                       </p>
-                      <p className="font-semibold text-gray-800 text-lg">
+                      <p className="font-semibold text-lg" style={{ color: 'var(--text)' }}>
                         {user.username}
                       </p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 font-medium">
+                    <div 
+                      className="rounded-xl p-4"
+                      style={{ backgroundColor: 'var(--cardSecondary)' }}
+                    >
+                      <p className="text-sm font-medium" style={{ color: 'var(--textSecondary)' }}>
                         Member Since
                       </p>
-                      <p className="font-semibold text-gray-800">
+                      <p className="font-semibold" style={{ color: 'var(--text)' }}>
                         {user.createdAt
                           ? new Date(user.createdAt).toLocaleDateString(
                               "en-US",
@@ -347,8 +384,17 @@ export default function ProfilePage() {
                 {/* Main Profile Content */}
                 <div className="lg:col-span-2 space-y-8">
                   {/* Personal Information */}
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-3">
+                  <div 
+                    className="rounded-xl p-6"
+                    style={{ backgroundColor: 'var(--cardSecondary)' }}
+                  >
+                    <h3 
+                      className="text-xl font-semibold mb-6 pb-3"
+                      style={{ 
+                        color: 'var(--text)',
+                        borderBottom: `1px solid var(--border)`
+                      }}
+                    >
                       Personal Information
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -367,10 +413,10 @@ export default function ProfilePage() {
                         { key: "name", label: "Display Name", required: false },
                       ].map(({ key, label, required }) => (
                         <div key={key} className="space-y-2">
-                          <label className="block text-sm font-medium text-gray-700">
+                          <label className="block text-sm font-medium" style={{ color: 'var(--text)' }}>
                             {label}{" "}
                             {required && (
-                              <span className="text-red-500">*</span>
+                              <span style={{ color: 'var(--error)' }}>*</span>
                             )}
                           </label>
                           {isEditing ? (
@@ -380,11 +426,25 @@ export default function ProfilePage() {
                               onChange={(e) =>
                                 handleInputChange(key, e.target.value)
                               }
-                              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                              style={{
+                                backgroundColor: 'var(--card)',
+                                border: `2px solid var(--border)`,
+                                color: 'var(--text)',
+                                '--tw-ring-color': 'var(--accent)'
+                              }}
+                              onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                              onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                             />
                           ) : (
-                            <div className="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white">
-                              <p className="text-gray-800">
+                            <div 
+                              className="rounded-xl px-4 py-3"
+                              style={{
+                                backgroundColor: 'var(--card)',
+                                border: `2px solid var(--border)`
+                              }}
+                            >
+                              <p style={{ color: 'var(--text)' }}>
                                 {user[key] || "Not provided"}
                               </p>
                             </div>
@@ -395,13 +455,22 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Contact Information */}
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-3">
+                  <div 
+                    className="rounded-xl p-6"
+                    style={{ backgroundColor: 'var(--cardSecondary)' }}
+                  >
+                    <h3 
+                      className="text-xl font-semibold mb-6 pb-3"
+                      style={{ 
+                        color: 'var(--text)',
+                        borderBottom: `1px solid var(--border)`
+                      }}
+                    >
                       Contact Information
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium" style={{ color: 'var(--text)' }}>
                           Country Code
                         </label>
                         {isEditing ? (
@@ -413,7 +482,15 @@ export default function ProfilePage() {
                                 e.target.value
                               )
                             }
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                            className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                            style={{
+                              backgroundColor: 'var(--card)',
+                              border: `2px solid var(--border)`,
+                              color: 'var(--text)',
+                              '--tw-ring-color': 'var(--accent)'
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                            onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                           >
                             <option value="">Select Code</option>
                             {countryCodes.map((item) => (
@@ -423,15 +500,21 @@ export default function ProfilePage() {
                             ))}
                           </select>
                         ) : (
-                          <div className="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white">
-                            <p className="text-gray-800">
+                          <div 
+                            className="rounded-xl px-4 py-3"
+                            style={{
+                              backgroundColor: 'var(--card)',
+                              border: `2px solid var(--border)`
+                            }}
+                          >
+                            <p style={{ color: 'var(--text)' }}>
                               {user.phone?.countryCode || "Not provided"}
                             </p>
                           </div>
                         )}
                       </div>
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium" style={{ color: 'var(--text)' }}>
                           Phone Number
                         </label>
                         {isEditing ? (
@@ -442,11 +525,25 @@ export default function ProfilePage() {
                               handleInputChange("phone.number", e.target.value)
                             }
                             placeholder="1234567890"
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                            className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                            style={{
+                              backgroundColor: 'var(--card)',
+                              border: `2px solid var(--border)`,
+                              color: 'var(--text)',
+                              '--tw-ring-color': 'var(--accent)'
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                            onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                           />
                         ) : (
-                          <div className="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white">
-                            <p className="text-gray-800">
+                          <div 
+                            className="rounded-xl px-4 py-3"
+                            style={{
+                              backgroundColor: 'var(--card)',
+                              border: `2px solid var(--border)`
+                            }}
+                          >
+                            <p style={{ color: 'var(--text)' }}>
                               {user.phone?.number || "Not provided"}
                             </p>
                           </div>
@@ -456,8 +553,17 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Address Information */}
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-3">
+                  <div 
+                    className="rounded-xl p-6"
+                    style={{ backgroundColor: 'var(--cardSecondary)' }}
+                  >
+                    <h3 
+                      className="text-xl font-semibold mb-6 pb-3"
+                      style={{ 
+                        color: 'var(--text)',
+                        borderBottom: `1px solid var(--border)`
+                      }}
+                    >
                       Address Information
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -467,7 +573,7 @@ export default function ProfilePage() {
                         { key: "city", label: "City" },
                       ].map(({ key, label }) => (
                         <div key={key} className="space-y-2">
-                          <label className="block text-sm font-medium text-gray-700">
+                          <label className="block text-sm font-medium" style={{ color: 'var(--text)' }}>
                             {label}
                           </label>
                           {isEditing ? (
@@ -480,7 +586,15 @@ export default function ProfilePage() {
                                     e.target.value
                                   )
                                 }
-                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                                style={{
+                                  backgroundColor: 'var(--card)',
+                                  border: `2px solid var(--border)`,
+                                  color: 'var(--text)',
+                                  '--tw-ring-color': 'var(--accent)'
+                                }}
+                                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                               >
                                 <option value="">Select Country</option>
                                 {allowedCountries.map((country) => (
@@ -499,12 +613,26 @@ export default function ProfilePage() {
                                     e.target.value
                                   )
                                 }
-                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                                style={{
+                                  backgroundColor: 'var(--card)',
+                                  border: `2px solid var(--border)`,
+                                  color: 'var(--text)',
+                                  '--tw-ring-color': 'var(--accent)'
+                                }}
+                                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                               />
                             )
                           ) : (
-                            <div className="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white">
-                              <p className="text-gray-800">
+                            <div 
+                              className="rounded-xl px-4 py-3"
+                              style={{
+                                backgroundColor: 'var(--card)',
+                                border: `2px solid var(--border)`
+                              }}
+                            >
+                              <p style={{ color: 'var(--text)' }}>
                                 {user.address?.[key] || "Not provided"}
                               </p>
                             </div>
@@ -515,8 +643,17 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Social Media */}
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-3">
+                  <div 
+                    className="rounded-xl p-6"
+                    style={{ backgroundColor: 'var(--cardSecondary)' }}
+                  >
+                    <h3 
+                      className="text-xl font-semibold mb-6 pb-3"
+                      style={{ 
+                        color: 'var(--text)',
+                        borderBottom: `1px solid var(--border)`
+                      }}
+                    >
                       Social Media
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -543,7 +680,7 @@ export default function ProfilePage() {
                         },
                       ].map(({ key, label, placeholder }) => (
                         <div key={key} className="space-y-2">
-                          <label className="block text-sm font-medium text-gray-700">
+                          <label className="block text-sm font-medium" style={{ color: 'var(--text)' }}>
                             {label}
                           </label>
                           {isEditing ? (
@@ -557,11 +694,25 @@ export default function ProfilePage() {
                                 )
                               }
                               placeholder={placeholder}
-                              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                              style={{
+                                backgroundColor: 'var(--card)',
+                                border: `2px solid var(--border)`,
+                                color: 'var(--text)',
+                                '--tw-ring-color': 'var(--accent)'
+                              }}
+                              onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                              onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                             />
                           ) : (
-                            <div className="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white">
-                              <p className="text-gray-800 break-all">
+                            <div 
+                              className="rounded-xl px-4 py-3"
+                              style={{
+                                backgroundColor: 'var(--card)',
+                                border: `2px solid var(--border)`
+                              }}
+                            >
+                              <p className="break-all" style={{ color: 'var(--text)' }}>
                                 {user.socialMedia?.[key] || "Not provided"}
                               </p>
                             </div>
@@ -572,20 +723,28 @@ export default function ProfilePage() {
                   </div>
 
                   {isEditing && (
-                    <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <div 
+                      className="flex justify-end space-x-4 pt-6"
+                      style={{ borderTop: `1px solid var(--border)` }}
+                    >
                       <button
                         onClick={() => {
                           setIsEditing(false);
                           fetchProfile();
                         }}
-                        className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
+                        className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
+                        style={{
+                          backgroundColor: 'var(--cardSecondary)',
+                          color: 'var(--text)',
+                          border: `2px solid var(--border)`
+                        }}
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleSave}
                         disabled={loading}
-                        className="bg-[#8200DB] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#6E11B0] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50"
+                        className="button text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50"
                       >
                         {loading ? (
                           <>
@@ -620,8 +779,11 @@ export default function ProfilePage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#8200DB] mx-auto"></div>
-                <p className="text-gray-600 mt-4 text-lg">Loading profile...</p>
+                <div 
+                  className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto"
+                  style={{ borderColor: 'var(--primary)' }}
+                ></div>
+                <p className="mt-4 text-lg" style={{ color: 'var(--textSecondary)' }}>Loading profile...</p>
               </div>
             )}
           </div>
