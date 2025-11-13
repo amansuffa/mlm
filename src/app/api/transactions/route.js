@@ -8,18 +8,32 @@ import { sendEmail } from "@/lib/sendEmail";
 import { parseTemplate } from "@/lib/parseTemplate";
 
 // ✅ Get All Transactions
-export async function GET() {
+export async function GET(req) {
   await connectDB();
   const session = await auth();
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { searchParams } = new URL(req.url);
+  const queryUserId = searchParams.get('userId');
+  const queryType = searchParams.get('type');
 
   const userId = session.user.id;
   const role = session.user.role;
 
   let transactions;
 
-  if (role === "admin") {
+  // Handle specific queries for admin fee status check
+  if (queryUserId && queryType) {
+    // Allow checking admin fee status for specific user
+    transactions = await Transaction.find({
+      fromUser: queryUserId,
+      type: queryType
+    })
+      .populate("fromUser", "name username email")
+      .populate("toUser", "name username email")
+      .sort({ createdAt: -1 });
+  } else if (role === "admin") {
     transactions = await Transaction.find({})
       .populate("fromUser", "name username email")
       .populate("toUser", "name username email")

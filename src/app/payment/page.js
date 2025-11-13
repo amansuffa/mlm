@@ -1,8 +1,9 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 function PaymentForm() {
   const router = useRouter();
@@ -12,6 +13,8 @@ function PaymentForm() {
   const [paymentProof, setPaymentProof] = useState(null);
   const [proofPreview, setProofPreview] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [adminFeeStatus, setAdminFeeStatus] = useState(null);
+  const [checkingStatus, setCheckingStatus] = useState(true);
   const [formData, setFormData] = useState({
     completeName: "",
     registeredEmail: "",
@@ -24,6 +27,31 @@ function PaymentForm() {
   const adminFeeAmount = 50;
   const searchParams = useSearchParams();
   const userId = searchParams.get("uid");
+
+  // Check existing admin fee transaction status
+  useEffect(() => {
+    const checkAdminFeeStatus = async () => {
+      if (!userId) return;
+      
+      try {
+        const res = await fetch(`/api/transactions?userId=${userId}&type=admin`);
+        const data = await res.json();
+        
+        if (data && data.length > 0) {
+          const adminTransaction = data.find(tx => tx.type === 'admin');
+          if (adminTransaction) {
+            setAdminFeeStatus(adminTransaction.status);
+          }
+        }
+      } catch (error) {
+        console.error('Error checking admin fee status:', error);
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+
+    checkAdminFeeStatus();
+  }, [userId]);
 
   const cryptoOptions = [
     {
@@ -90,8 +118,18 @@ function PaymentForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (adminFeeStatus === 'pending') {
+      toast.error('Admin fee payment is already pending approval');
+      return;
+    }
+
+    if (adminFeeStatus === 'completed') {
+      toast.error('Admin fee has already been paid');
+      return;
+    }
+
     if (!isPaymentReady()) {
-      alert("Please complete the payment setup before proceeding");
+      toast.error("Please complete the payment setup before proceeding");
       return;
     }
 
@@ -240,7 +278,7 @@ function PaymentForm() {
                   First Step
                 </h1>
                 <p className="text-xl text-gray-600 mb-2 max-w-2xl mx-auto leading-relaxed">
-                  Final step to activate your account and access all features
+                  First step to activate your account
                 </p>
                 <div className="w-24 h-1 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-full mx-auto mt-4"></div>
               </div>
@@ -321,27 +359,75 @@ function PaymentForm() {
                 Registered
               </span>
             </div>
-            <div className="w-16 h-1 bg-[#8200DB]"></div>
+            <div className={`w-16 h-1 ${adminFeeStatus === 'completed' ? 'bg-green-500' : 'bg-[#8200DB]'}`}></div>
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-[#8200DB] text-white rounded-full flex items-center justify-center font-bold">
-                2
+              <div className={`w-12 h-12 text-white rounded-full flex items-center justify-center font-bold ${
+                adminFeeStatus === 'completed' ? 'bg-green-500' : 'bg-[#8200DB]'
+              }`}>
+                {adminFeeStatus === 'completed' ? '✓' : '2'}
               </div>
-              <span className="text-sm font-medium text-[#8200DB] mt-2">
+              <span className={`text-sm font-medium mt-2 ${
+                adminFeeStatus === 'completed' ? 'text-green-500' : 'text-[#8200DB]'
+              }`}>
                 Admin Fee
               </span>
             </div>
-            <div className="w-16 h-1 bg-gray-300"></div>
+            <div className={`w-16 h-1 ${adminFeeStatus === 'completed' ? 'bg-[#8200DB]' : 'bg-gray-300'}`}></div>
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center font-bold">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${
+                adminFeeStatus === 'completed' ? 'bg-[#8200DB] text-white' : 'bg-gray-300 text-gray-500'
+              }`}>
                 3
               </div>
-              <span className="text-sm font-medium text-gray-500 mt-2">
+              <span className={`text-sm font-medium mt-2 ${
+                adminFeeStatus === 'completed' ? 'text-[#8200DB]' : 'text-gray-500'
+              }`}>
                 Continue
               </span>
             </div>
           </div>
         </div>
 
+        {/* Admin Fee Status Display */}
+        {checkingStatus ? (
+          <div className="mx-4 mb-8">
+            <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8200DB] mx-auto mb-4"></div>
+              <p className="text-gray-600">Checking payment status...</p>
+            </div>
+          </div>
+        ) : adminFeeStatus === 'pending' ? (
+          <div className="mx-4 mb-8">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl shadow-lg p-6 text-center">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-yellow-800 mb-2">Payment Pending</h3>
+              <p className="text-yellow-700">Your admin fee payment is currently being reviewed. Please wait for approval.</p>
+            </div>
+          </div>
+        ) : adminFeeStatus === 'completed' ? (
+          <div className="mx-4 mb-8">
+            <div className="bg-green-50 border border-green-200 rounded-2xl shadow-lg p-6 text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-green-800 mb-2">Payment Completed</h3>
+              <p className="text-green-700 mb-4">Your admin fee has been successfully paid and approved.</p>
+              <button
+                onClick={() => router.push('/login')}
+                className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Continue to Login
+              </button>
+            </div>
+          </div>
+        ) : (
+        <>
         {/* Payment Method Selection */}
         <div className="mx-4 mb-8">
           <div className="bg-white rounded-2xl shadow-lg p-6">
@@ -471,7 +557,7 @@ function PaymentForm() {
         </div>
 
         {/* Payment Form Content */}
-        {selectedMethod && (
+        {selectedMethod && !adminFeeStatus && (
           <div className="mx-4 mb-8">
             <div className="bg-white rounded-2xl shadow-lg p-6">
               {selectedMethod === "crypto" && (
@@ -920,8 +1006,11 @@ function PaymentForm() {
             </div>
           </div>
         )}
-
+        </>
+        )}
+        
         {/* Action Buttons */}
+        {!adminFeeStatus && !checkingStatus && (
         <div className="flex justify-center mt-8 mx-4">
           <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-2xl">
             <div className="text-center space-y-4">
@@ -991,6 +1080,7 @@ function PaymentForm() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
