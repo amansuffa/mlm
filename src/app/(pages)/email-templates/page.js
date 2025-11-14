@@ -247,7 +247,12 @@ export default function EmailTemplatesPage() {
                   placeholder="Search templates..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="card-secondary w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2"
+                   onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                  className="card-secondary w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1"
+                  style={{
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
                  
                 />
                 <svg
@@ -271,7 +276,12 @@ export default function EmailTemplatesPage() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
+                 onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-1"
+                style={{
+                  '--tw-ring-color': 'var(--accent)'
+                }}
               >
                 {templateTypes.map((type) => (
                   <option key={type} value={type}>
@@ -441,7 +451,12 @@ export default function EmailTemplatesPage() {
       <select
         value={userCategory}
         onChange={(e) => setUserCategory(e.target.value)}
-        className="card-secondary w-full rounded-lg px-4 py-3 mb-6 focus:outline-none border-2"
+         onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+        className="card-secondary w-full rounded-lg px-4 py-3 mb-6 focus:outline-none focus:ring-2 border-2"
+        style={{
+          '--tw-ring-color': 'var(--accent)'
+        }}
       >
         <option value="">Select User Category</option>
         {userCategories.map((cat) => (

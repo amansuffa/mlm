@@ -183,7 +183,7 @@ export default function CreateEmailTemplate() {
               </label>
               <input
                 type="text"
-                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                 style={{
                   backgroundColor: 'var(--cardSecondary)',
                   border: `2px solid var(--border)`,
@@ -206,7 +206,7 @@ export default function CreateEmailTemplate() {
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                 style={{
                   backgroundColor: 'var(--cardSecondary)',
                   border: `2px solid var(--border)`,
@@ -237,7 +237,7 @@ export default function CreateEmailTemplate() {
             </label>
             <input
               type="text"
-              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
               style={{
                 backgroundColor: 'var(--cardSecondary)',
                 border: `2px solid var(--border)`,

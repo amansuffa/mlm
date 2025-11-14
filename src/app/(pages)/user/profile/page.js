@@ -426,7 +426,7 @@ export default function ProfilePage() {
                               onChange={(e) =>
                                 handleInputChange(key, e.target.value)
                               }
-                              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                               style={{
                                 backgroundColor: 'var(--card)',
                                 border: `2px solid var(--border)`,
@@ -482,7 +482,7 @@ export default function ProfilePage() {
                                 e.target.value
                               )
                             }
-                            className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                            className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                             style={{
                               backgroundColor: 'var(--card)',
                               border: `2px solid var(--border)`,
@@ -525,7 +525,7 @@ export default function ProfilePage() {
                               handleInputChange("phone.number", e.target.value)
                             }
                             placeholder="1234567890"
-                            className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                            className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                             style={{
                               backgroundColor: 'var(--card)',
                               border: `2px solid var(--border)`,
@@ -586,7 +586,7 @@ export default function ProfilePage() {
                                     e.target.value
                                   )
                                 }
-                                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                                 style={{
                                   backgroundColor: 'var(--card)',
                                   border: `2px solid var(--border)`,
@@ -613,7 +613,7 @@ export default function ProfilePage() {
                                     e.target.value
                                   )
                                 }
-                                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                                 style={{
                                   backgroundColor: 'var(--card)',
                                   border: `2px solid var(--border)`,
@@ -694,7 +694,7 @@ export default function ProfilePage() {
                                 )
                               }
                               placeholder={placeholder}
-                              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                               style={{
                                 backgroundColor: 'var(--card)',
                                 border: `2px solid var(--border)`,
