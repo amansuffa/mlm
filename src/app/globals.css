@@ -115,12 +115,18 @@ body {
   color: white;
   &:hover{filter: brightness(0.9)}
 }
+.button-secondary{
+background: linear-gradient(135deg, var(--primary), var(--secondary));  
+color: white;
+  &:hover{filter: brightness(0.9)}
+}
 .header{
   background: linear-gradient(135deg, var(--primary), var(--secondary));  
 }
 .card{
   background-color: var(--card);
   border: 1px solid var(--border);
+  color: var(--text);
 }
 .card-secondary{
   background-color: var(--cardSecondary);

@@ -10,8 +10,14 @@ import { parseTemplate } from "@/lib/parseTemplate";
 
 export async function POST(req) {
   try {
-    const { email, password, firstName, middleName, lastName, username, sponsorUsername, countryCode, phoneNumber, city, province, country } = await req.json();
+    const { email, password, firstName, middleName, lastName, username, sponsorUsername, countryCode, phoneNumber, city, province, country, checkEmail } = await req.json();
     await connectDB();
+
+    // Email availability check endpoint
+    if (checkEmail) {
+      const existingUser = await User.findOne({ email });
+      return NextResponse.json({ available: !existingUser });
+    }
 
     // Check for banned countries
     const bannedCountries = ["Pakistan", "Somalia", "Sudan", "Democratic Republic of Congo", "Yemen"];

@@ -100,7 +100,7 @@ export default function Signup() {
     }
   }
 
-  const validateStep = (step) => {
+  const validateStep = async (step) => {
     if (step === 1) {
       if (!formData.firstName || !formData.lastName || !formData.email) {
         toast.error('Please fill in all required fields before proceeding');
@@ -110,6 +110,17 @@ export default function Signup() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
         toast.error('Please enter a valid email address');
+        return false;
+      }
+      
+      try {
+        const res = await axios.post('/api/signup', { email: formData.email, checkEmail: true });
+        if (!res.data.available) {
+          toast.error('Email is already registered');
+          return false;
+        }
+      } catch (err) {
+        toast.error('Error checking email availability');
         return false;
       }
       
@@ -126,8 +137,8 @@ export default function Signup() {
     return true;
   };
 
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
+  const nextStep = async () => {
+    if (await validateStep(currentStep)) {
       setCurrentStep(prev => Math.min(prev + 1, 3));
     }
   };
@@ -137,11 +148,11 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+    <div className="min-h-screen bg-[var(--background)] py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Animated Header */}
         <div className="text-center mb-8 animate-fade-in">
-          <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl shadow-xl overflow-hidden mb-6">
+          <div className="header rounded-2xl shadow-xl overflow-hidden mb-6">
             <div className="px-8 py-8">
               <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4 animate-slide-down">
                 Welcome to PASH.CLUB
@@ -159,7 +170,7 @@ export default function Signup() {
                 <div key={step} className="flex items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300 ${
                     step === currentStep 
-                      ? 'bg-[#8200DB] text-white scale-110 shadow-lg' 
+                      ? 'bg-[var(--primary)] text-white scale-110 shadow-lg' 
                       : step < currentStep 
                       ? 'bg-green-500 text-white' 
                       : 'bg-gray-300 text-gray-600'
@@ -178,7 +189,7 @@ export default function Signup() {
         </div>
 
         {/* Registration Form */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
+        <div className="card rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
           <div className="p-8">
 
 
@@ -196,66 +207,81 @@ export default function Signup() {
                       <li>Payments can be made via crypto (USDT -BSC Network) and Wise/Bank Transfer.</li>
                     </ul>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Personal Information</h2>
+                  <h2 className="text-2xl font-bold text-[var(--text)] mb-6">Personal Information</h2>
                   
                   
                   {/* Sponsor Username */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Sponsor Username</label>
+                    <label className="block text-sm font-medium text-[var(--textSecondary)]">Sponsor Username</label>
                     <input
                       type="text"
                       value={sponsorUsername}
+                       onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                      style={{ "--tw-ring-color": "var(--primary)" }}
                       readOnly
-                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600 transition-all duration-300"
+                      className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                     />
                   </div>
 
                   {/* Name Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">First Name *</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">First Name *</label>
                       <input
                         name="firstName"
                         type="text"
                         value={formData.firstName}
                         onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                         required
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Middle Name</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">Middle Name</label>
                       <input
                         name="middleName"
                         type="text"
                         value={formData.middleName}
                         onChange={(e) => setFormData({...formData, middleName: e.target.value})}
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Last Name *</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">Last Name *</label>
                       <input
                         name="lastName"
                         type="text"
                         value={formData.lastName}
                         onChange={(e) => setFormData({...formData, lastName: e.target.value})}
                         required
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       />
                     </div>
                   </div>
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Email *</label>
+                    <label className="block text-sm font-medium text-[var(--textSecondary)]">Email *</label>
                     <input
                       name="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       required
-                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                      className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                      onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                      onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                      style={{ "--tw-ring-color": "var(--primary)" }}
                     />
                   </div>
                 </div>
@@ -264,18 +290,21 @@ export default function Signup() {
               {/* Step 2: Contact & Location */}
               {currentStep === 2 && (
                 <div className="space-y-6 animate-slide-in-right">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Contact & Location</h2>
+                  <h2 className="text-2xl font-bold text-[var(--text)] mb-6">Contact & Location</h2>
                   
                   {/* Phone */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Country Code *</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">Country Code *</label>
                       <select
                         name="countryCode"
                         value={formData.countryCode}
                         onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
                         required
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       >
                         <option value="">Select Code</option>
                         {countryCodes.map((item, index) => (
@@ -286,7 +315,7 @@ export default function Signup() {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Phone Number *</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">Phone Number *</label>
                       <input
                         name="phoneNumber"
                         type="tel"
@@ -294,7 +323,10 @@ export default function Signup() {
                         onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
                         required
                         placeholder="(555) 123-4567"
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       />
                     </div>
                   </div>
@@ -302,35 +334,44 @@ export default function Signup() {
                   {/* Location */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">City *</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">City *</label>
                       <input
                         name="city"
                         type="text"
                         value={formData.city}
                         onChange={(e) => setFormData({...formData, city: e.target.value})}
                         required
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Province *</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">Province *</label>
                       <input
                         name="province"
                         type="text"
                         value={formData.province}
                         onChange={(e) => setFormData({...formData, province: e.target.value})}
                         required
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Country *</label>
+                      <label className="block text-sm font-medium text-[var(--textSecondary)]">Country *</label>
                       <select
                         name="country"
                         value={formData.country}
                         onChange={(e) => setFormData({...formData, country: e.target.value})}
                         required
-                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
+                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={{ "--tw-ring-color": "var(--primary)" }}
                       >
                         <option value="">Select Country</option>
                         {allowedCountries.map((country) => (
@@ -347,22 +388,25 @@ export default function Signup() {
               {/* Step 3: Account Security */}
               {currentStep === 3 && (
                 <div className="space-y-6 animate-slide-in-right">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Account Security</h2>
+                  <h2 className="text-2xl font-bold text-[var(--text)] mb-6">Account Security</h2>
                   
                   {/* Password */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Password *</label>
+                    <label className="block text-sm font-medium text-[var(--textSecondary)]">Password *</label>
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={handlePasswordChange}
                         required
-                        className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 transition-all duration-300 ${
+                        className={`card-secondary w-full rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 transition-all duration-300 ${
                           password && !passwordValid 
                             ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' 
-                            : 'border-gray-200 focus:border-[#8200DB] focus:ring-[#8200DB]/20'
+                            : ''
                         }`}
+                        onFocus={(e) => !passwordValid && password ? null : (e.target.style.borderColor = "var(--primary)")}
+                        onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                        style={password && !passwordValid ? {} : { "--tw-ring-color": "var(--primary)" }}
                       />
                       <button
                         type="button"
@@ -381,8 +425,8 @@ export default function Signup() {
                         )}
                       </button>
                     </div>
-                    <div className="mt-4 p-4 bg-gray-50 rounded-xl">
-                      <p className="font-medium text-gray-700 mb-3">Password Requirements:</p>
+                    <div className="mt-4 p-4 card-secondary rounded-xl">
+                      <p className="font-medium text-[var(--text)] mb-3">Password Requirements:</p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                         {[
                           { test: (pwd) => /[a-z]/.test(pwd), text: "1 lowercase character" },
@@ -396,7 +440,7 @@ export default function Signup() {
                             <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
                               password && req.test(password) ? 'bg-green-500' : 'bg-gray-300'
                             }`}></div>
-                            <span className={password && req.test(password) ? 'text-green-600' : 'text-gray-500'}>
+                            <span className={password && req.test(password) ? 'text-green-600' : 'text-[var(--textSecondary)]'}>
                               {req.text}
                             </span>
                           </div>
@@ -407,16 +451,19 @@ export default function Signup() {
 
                   {/* Username */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Choose Username *</label>
+                    <label className="block text-sm font-medium text-[var(--textSecondary)]">Choose Username *</label>
                     <input
                       name="username"
                       type="text"
                       value={formData.username}
                       onChange={(e) => setFormData({...formData, username: e.target.value})}
                       required
-                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                      className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                      onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                      onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                      style={{ "--tw-ring-color": "var(--primary)" }}
                     />
-                    <p className="text-xs text-gray-500 mt-1">Username can&apos;t be changed</p>
+                    <p className="text-xs text-[var(--textSecondary)] mt-1">Username can&apos;t be changed</p>
                   </div>
 
                   {/* Important Information */}
@@ -451,9 +498,9 @@ export default function Signup() {
                         type="checkbox"
                         checked={agreedToTerms}
                         onChange={(e) => setAgreedToTerms(e.target.checked)}
-                        className="mt-1 w-4 h-4 text-[#8200DB] border-gray-300 rounded focus:ring-[#8200DB]"
+                        className="mt-1 w-4 h-4 text-[var(--primary)] border-gray-300 rounded focus:ring-[var(--primary)]"
                       />
-                      <label className="text-sm text-gray-700">
+                      <label className="text-sm text-[var(--text)]">
                         I agree to the privacy, Terms, affiliate and payment policies *
                       </label>
                     </div>
@@ -463,21 +510,21 @@ export default function Signup() {
                         type="checkbox"
                         checked={captchaVerified}
                         onChange={(e) => setCaptchaVerified(e.target.checked)}
-                        className="w-4 h-4 text-[#8200DB] border-gray-300 rounded focus:ring-[#8200DB]"
+                        className="w-4 h-4 text-[var(--primary)] border-gray-300 rounded focus:ring-[var(--primary)]"
                       />
-                      <span className="text-sm text-gray-700">I&apos;m not a robot</span>
+                      <span className="text-sm text-[var(--text)]">I&apos;m not a robot</span>
                     </div>
                   </div>
                 </div>
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6 border-gray-200">
+              <div className="flex justify-between pt-6 border-[var(--border)]">
                 {currentStep > 1 ? (
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
+                    className="px-8 py-3 border-2 border-[var(--border)] text-[var(--text)] rounded-xl hover:bg-[var(--cardSecondary)] hover:border-gray-400 transition-all duration-300 font-semibold"
                   >
                     ← Previous
                   </button>
@@ -489,7 +536,7 @@ export default function Signup() {
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+                    className="button-secondary px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
                   >
                     Next Step →
                   </button>
@@ -497,7 +544,7 @@ export default function Signup() {
                   <button
                     type="submit"
                     disabled={loading || !passwordValid || !agreedToTerms || !captchaVerified}
-                    className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    className="button-secondary px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                   >
                     {loading ? (
                       <>
@@ -530,10 +577,10 @@ export default function Signup() {
               </div>
             </form>
 
-            <div className="mt-8 text-center border-t border-gray-200 pt-6">
-              <p className="text-sm text-gray-600">
+            <div className="mt-8 text-center border-t border-[var(--border)] pt-6">
+              <p className="text-sm text-[var(--text)]">
                 Already a member?{' '}
-                <Link href="/login" className="text-[#8200DB] hover:underline font-semibold transition-all duration-300">
+                <Link href="/login" className="text-[var(--primary)] hover:underline font-semibold transition-all duration-300">
                   Login Here
                 </Link>
               </p>
