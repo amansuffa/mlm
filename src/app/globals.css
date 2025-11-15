@@ -153,6 +153,9 @@ body {
   color: #f3f4f6 !important;
 
 }
+.w-md-editor-text-textarea {
+  color: var(--text) !important;
+}
 .dark .w-md-editor-preview  {
   background-color: var(--card) !important;
   color: #f3f4f6 !important;
@@ -181,4 +184,12 @@ body {
 .dark .w-md-editor-preview code{
   color: var(--text) !important;
   background-color: var(--card) !important;
+}
+
+/* Preserve line breaks in markdown preview */
+.w-md-editor-preview {
+  white-space: pre-wrap !important;
+}
+.w-md-editor-preview p {
+  white-space: pre-wrap !important;
 }

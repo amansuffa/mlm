@@ -117,63 +117,63 @@ export default function SingleBlogPage() {
     let html = String(content);
 
     // Convert standard markdown headings # ## ###
-    html = html.replace(/^### (.+)$/gm, '<h3 class="text-xl font-semibold text-gray-800 mb-2 mt-4">$1</h3>');
-    html = html.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold text-gray-800 mb-3 mt-5">$1</h2>');
-    html = html.replace(/^# (.+)$/gm, '<h1 class="text-3xl font-bold text-gray-800 mb-4 mt-6">$1</h1>');
+    html = html.replace(/^### (.+)$/gm, '<h3 style="font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem 0; color: var(--text);">$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2 style="font-size: 1.5rem; font-weight: 700; margin: 1.25rem 0 0.75rem 0; color: var(--text);">$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1 style="font-size: 1.875rem; font-weight: 700; margin: 1.5rem 0 1rem 0; color: var(--text);">$1</h1>');
     
     // Convert asterisk headings (*** = h1, ** = h2, * = h3)
-    html = html.replace(/^\*\*\*\s*(.+)$/gm, '<h1 class="text-3xl font-bold text-gray-800 mb-4 mt-6">$1</h1>');
-    html = html.replace(/^\*\*\s*(.+)$/gm, '<h2 class="text-2xl font-bold text-gray-800 mb-3 mt-5">$1</h2>');
-    html = html.replace(/^\*\s*(.+)$/gm, '<h3 class="text-xl font-semibold text-gray-800 mb-2 mt-4">$1</h3>');
+    html = html.replace(/^\*\*\*\s*(.+)$/gm, '<h1 style="font-size: 1.875rem; font-weight: 700; margin: 1.5rem 0 1rem 0; color: var(--text);">$1</h1>');
+    html = html.replace(/^\*\*\s*(.+)$/gm, '<h2 style="font-size: 1.5rem; font-weight: 700; margin: 1.25rem 0 0.75rem 0; color: var(--text);">$1</h2>');
+    html = html.replace(/^\*\s*(.+)$/gm, '<h3 style="font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem 0; color: var(--text);">$1</h3>');
 
     // Convert bold text **text** or __text__
-    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold">$1</strong>');
-    html = html.replace(/__([^_]+)__/g, '<strong class="font-bold">$1</strong>');
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong style="font-weight: 700;">$1</strong>');
+    html = html.replace(/__([^_]+)__/g, '<strong style="font-weight: 700;">$1</strong>');
 
     // Convert italic text *text* or _text_
-    html = html.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
-    html = html.replace(/_([^_]+)_/g, '<em class="italic">$1</em>');
+    html = html.replace(/\*([^*]+)\*/g, '<em style="font-style: italic;">$1</em>');
+    html = html.replace(/_([^_]+)_/g, '<em style="font-style: italic;">$1</em>');
 
     // Convert code blocks ```code```
-    html = html.replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto"><code class="text-sm">$1</code></pre>');
+    html = html.replace(/```([\s\S]*?)```/g, '<pre style="background-color: var(--cardSecondary); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; overflow-x: auto;"><code style="font-size: 0.875rem; font-family: monospace;">$1</code></pre>');
 
     // Convert inline code `code`
-    html = html.replace(/`([^`]+)`/g, '<code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">$1</code>');
+    html = html.replace(/`([^`]+)`/g, '<code style="background-color: var(--cardSecondary); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem; font-family: monospace;">$1</code>');
 
     // Convert links [text](url)
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">$1</a>');
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: var(--primary); text-decoration: underline;" target="_blank" rel="noopener noreferrer">$1</a>');
 
     // Convert unordered lists - item
-    html = html.replace(/^- (.+)$/gm, '<li class="ml-4 mb-1">• $1</li>');
-    html = html.replace(/(<li[^>]*>.*<\/li>)/s, '<ul class="my-4">$1</ul>');
+    html = html.replace(/^- (.+)$/gm, '<li style="margin-left: 1rem; margin-bottom: 0.25rem;">• $1</li>');
+    html = html.replace(/(<li[^>]*>.*<\/li>)/s, '<ul style="margin: 1rem 0;">$1</ul>');
 
     // Convert ordered lists 1. item
-    html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4 mb-1">$1</li>');
-    html = html.replace(/(<li[^>]*>.*<\/li>)/s, '<ol class="my-4 list-decimal list-inside">$1</ol>');
+    html = html.replace(/^\d+\. (.+)$/gm, '<li style="margin-left: 1rem; margin-bottom: 0.25rem;">$1</li>');
+    html = html.replace(/(<li[^>]*>.*<\/li>)/s, '<ol style="margin: 1rem 0; list-style-type: decimal; padding-left: 1rem;">$1</ol>');
 
     // Convert blockquotes > text
-    html = html.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4">$1</blockquote>');
+    html = html.replace(/^> (.+)$/gm, '<blockquote style="border-left: 4px solid var(--border); padding-left: 1rem; font-style: italic; opacity: 0.8; margin: 1rem 0;">$1</blockquote>');
 
     // Convert horizontal rules ---
-    html = html.replace(/^---$/gm, '<hr class="border-gray-300 my-6">');
+    html = html.replace(/^---$/gm, '<hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">');
 
-    // Convert Markdown image syntax -> <img>
+    // Convert Markdown image syntax -> <img> (improved to handle all image URLs)
     html = html.replace(
-      /!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g,
+      /!\[([^\]]*)\]\(([^\s)]+)\)/g,
       (match, alt, src) => {
         return `<img src="${src}" alt="${
           alt || "image"
-        }" class="max-w-full rounded-lg my-4"/>`;
+        }" style="max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem 0; display: block;"/>`;
       }
     );
 
-    // Convert Markdown video links -> <video>
+    // Convert Markdown video links -> <video> (improved to handle all video URLs)
     html = html.replace(
-      /\[([^\]]*)\]\((https?:\/\/[^\s)]+\.mp4)\)/g,
+      /\[([^\]]*)\]\(([^\s)]+\.(mp4|mov|avi|webm))\)/gi,
       (match, text, src) => {
         return `
-       <div class="flex justify-start my-6">
-        <video controls class="h-60 w-60 rounded-xl shadow-lg">
+       <div style="display: flex; justify-content: flex-start; margin: 1.5rem 0;">
+        <video controls style="max-width: 100%; height: auto; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
           <source src="${src}" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -181,8 +181,20 @@ export default function SingleBlogPage() {
       }
     );
 
-    // Replace newlines with <br/>
-    html = html.replace(/\n/g, "<br/>");
+    // Handle line breaks properly - split by double newlines first
+    const paragraphs = html.split(/\n\s*\n/);
+    html = paragraphs.map(paragraph => {
+      // Replace single newlines within paragraphs with <br/>
+      const processedParagraph = paragraph.replace(/\n/g, '<br/>');
+      
+      // Don't wrap if already contains HTML tags
+      if (processedParagraph.includes('<')) {
+        return processedParagraph;
+      }
+      
+      // Wrap plain text in paragraph tags
+      return `<p style="margin: 1rem 0; color: var(--text);">${processedParagraph}</p>`;
+    }).join('');
 
     return html;
   };
@@ -1179,20 +1191,26 @@ export default function SingleBlogPage() {
                               {comment.replies.map((reply) => (
                                 <div key={reply._id} className="flex space-x-3">
                                   <div className="flex-shrink-0">
-                                    <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
+                                    <div 
+                                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                                      style={{ backgroundColor: 'var(--primary)', opacity: '0.7' }}
+                                    >
                                       <span className="text-white text-xs font-bold">
                                         {reply.userId?.name?.charAt(0) || "U"}
                                       </span>
                                     </div>
                                   </div>
                                   <div className="flex-1">
-                                    <div className="bg-gray-50 rounded-lg p-3">
+                                    <div 
+                                      className="rounded-lg p-3"
+                                      style={{ backgroundColor: 'var(--cardSecondary)' }}
+                                    >
                                       <div className="flex items-center justify-between mb-1">
-                                        <h5 className="font-semibold text-gray-800 text-sm">
+                                        <h5 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>
                                           {reply.userId?.name || "Anonymous"}
                                         </h5>
                                         <div className="flex items-center space-x-2">
-                                          <span className="text-xs text-gray-500">
+                                          <span className="text-xs opacity-70">
                                             {new Date(reply.createdAt).toLocaleDateString()}
                                           </span>
                                           {/* Only show delete for reply author */}
@@ -1206,7 +1224,7 @@ export default function SingleBlogPage() {
                                           )}
                                         </div>
                                       </div>
-                                      <p className="text-gray-700 text-sm">{reply.content}</p>
+                                      <p className="text-sm" style={{ color: 'var(--text)' }}>{reply.content}</p>
                                     </div>
                                   </div>
                                 </div>
