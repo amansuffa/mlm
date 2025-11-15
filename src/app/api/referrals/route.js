@@ -19,7 +19,7 @@ export async function GET() {
     }
 
     const referrals = await User.find({ referredBy: currentUser.username })
-      .select("name email username createdAt status");
+      .select("name email username createdAt status socialMedia profilePicture");
 
     return NextResponse.json({
       referralId: currentUser.username, 
