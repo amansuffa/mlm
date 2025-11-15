@@ -98,8 +98,8 @@ body {
 }
 
 .dark {
-  --primary: #a78bfa;       /* Soft lavender */
-  --secondary: #6d28d9;     /* Deep royal purple */
+  --primary: #8972fa;       /* Soft lavender */
+  --secondary: #491991;     /* Deep royal purple */
   --accent: #d7b33e;        /* Warm gold accent */
   --background: #0f0f17;    /* Deep black-blue */
   --card: #1a1a25;
@@ -160,7 +160,7 @@ body {
 }
 .dark .w-md-editor-toolbar {
   background-color: var(--cardSecondary) !important;
-  border-bottom: 1px solid #4b5563 !important;
+  border-bottom: 1px solid var(--border) !important;
 }
 .dark .w-md-editor-toolbar button {
   color: #f3f4f6 !important;

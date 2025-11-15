@@ -130,23 +130,26 @@ export default function BlogEditorPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl shadow-xl overflow-hidden">
+          <div 
+            className="header rounded-2xl shadow-xl overflow-hidden"
+          >
             <div className="px-8 py-8">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div className="mb-6 lg:mb-0">
                   <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
                     Blog Dashboard
                   </h1>
-                  <p className="text-blue-100 text-lg">
+                  <p className="text-white text-opacity-90 text-lg">
                     Manage and create amazing content for your audience
                   </p>
                 </div>
                 <button
                   onClick={() => router.push("/blog-editor/create")}
-                  className="bg-white text-[#8200DB] px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                  className="bg-white text-gray-800 px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group"
+                  style={{ color: 'var(--primary)' }}
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 group-hover:scale-110"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -165,19 +168,30 @@ export default function BlogEditorPage() {
           </div>
         </div>
 
-        {/* Stats Cards - */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#8200DB]">
+          <div className="rounded-xl" style={{border: `1px solid var(--border)`}}>
+          <div 
+            className="rounded-xl shadow-lg p-6 border-l-4 hover:shadow-xl"
+            style={{ 
+              backgroundColor: 'var(--card)',
+              borderLeftColor: 'var(--primary)',
+              borderColor: 'var(--primary)'
+            }}
+          >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Total Blogs</p>
-                <p className="text-2xl font-bold text-gray-800 mt-1">
+                <p className="text-sm font-medium opacity-80">Total Blogs</p>
+                <p className="text-2xl font-bold mt-1" style={{ color: 'var(--text)' }}>
                   {blogs.length}
                 </p>
               </div>
-              <div className="bg-[#8200DB] bg-opacity-10 p-3 rounded-lg">
+              <div 
+                className="p-3 rounded-lg bg-[var(--primary)]/20"
+              >
                 <svg
-                  className="w-6 h-6 text-[#fff]"
+                  className="w-6 h-6"
+                  style={{ color: 'var(--primary)' }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -192,10 +206,17 @@ export default function BlogEditorPage() {
               </div>
             </div>
           </div>
+</div>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div 
+          className="rounded-xl shadow-lg p-6 mb-6"
+          style={{ 
+            backgroundColor: 'var(--card)',
+            border: `1px solid var(--border)`
+          }}
+        >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex-1 max-w-md">
               <div className="relative">
@@ -204,10 +225,16 @@ export default function BlogEditorPage() {
                   placeholder="Search blogs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                  className="card-secondary w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1"
+                  style={{
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
                 />
                 <svg
-                  className="absolute left-3 top-3.5 w-5 h-5 text-gray-400"
+                  className="absolute left-3 top-3.5 w-5 h-5"
+                  style={{ color: 'var(--primary)' }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -226,7 +253,12 @@ export default function BlogEditorPage() {
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-1"
+                style={{
+                  '--tw-ring-color': 'var(--accent)'
+                }}
               >
                 {categories.map((category) => (
                   <option key={category} value={category}>
@@ -242,15 +274,30 @@ export default function BlogEditorPage() {
 
         {/* Blogs Grid */}
         {loading ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8200DB] mx-auto"></div>
-            <p className="text-gray-600 mt-4 text-lg">Loading your blogs...</p>
+          <div 
+            className="card rounded-xl shadow-lg p-12 text-center"
+          >
+            <div 
+              className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto"
+              style={{ borderColor: 'var(--primary)' }}
+            ></div>
+            <p className="mt-4 text-lg opacity-80">Loading your blogs...</p>
           </div>
         ) : filteredBlogs.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div 
+            className="rounded-xl shadow-lg p-12 text-center"
+            style={{ 
+              backgroundColor: 'var(--card)',
+              border: `1px solid var(--border)`
+            }}
+          >
+            <div 
+              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ backgroundColor: 'var(--primary)', opacity: '0.1' }}
+            >
               <svg
-                className="w-12 h-12 text-gray-400"
+                className="w-12 h-12"
+                style={{ color: 'var(--primary)' }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -263,19 +310,23 @@ export default function BlogEditorPage() {
                 ></path>
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--text)' }}>
               No blogs found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 opacity-80">
               {searchTerm || filterCategory !== "all"
                 ? "Try adjusting your search or filters"
                 : "Get started by creating your first blog post"}
             </p>
             <button
               onClick={() => router.push("/blog-editor/create")}
-              className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white px-8 py-3 rounded-xl font-semibold hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300"
+              className="px-8 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl inline-flex items-center space-x-2"
+              style={{ 
+                background: `linear-gradient(135deg, var(--primary), var(--secondary))`,
+                color: 'white'
+              }}
             >
-              Create Your First Blog
+              <span>Create Your First Blog</span>
             </button>
           </div>
         ) : (
@@ -283,10 +334,16 @@ export default function BlogEditorPage() {
             {filteredBlogs.map((blog) => (
               <div
                 key={blog._id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100"
+                className="card rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+                style={{ border: `1px solid var(--border)` }}
               >
                 {/* Blog Thumbnail */}
-                <div className="h-48 bg-gradient-to-br from-[#8200DB] to-[#6E11B0] relative overflow-hidden">
+                <div 
+                  className="h-48 relative overflow-hidden"
+                  style={{ 
+                    background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+                  }}
+                >
                   {blog.thumbnail ? (
                     <Image
                       src={blog.thumbnail}
@@ -317,39 +374,48 @@ export default function BlogEditorPage() {
                 {/* Blog Content */}
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="bg-[#8200DB] bg-opacity-10 text-[#fff] px-3 py-1 rounded-full text-xs font-semibold">
+                    <span 
+                      className="px-3 py-1 rounded-full text-xs bg-[var(--primary)]/20 text-[var(--primary)] font-semibold whitespace-nowrap transition-all duration-300"
+                    >
                       {blog.category || "Uncategorized"}
                     </span>
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-sm opacity-70">
                       {new Date(blog.createdAt).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2">
+                  <h3 className="font-bold text-lg mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
                     {blog.title}
                   </h3>
 
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                  <p className="text-sm mb-4 line-clamp-3 opacity-80">
                     {blog.excerpt ? (
                       blog.excerpt
                     ) : (
-                      <span className="text-gray-400 italic">
+                      <span className="italic opacity-60">
                         No excerpt provided.
                       </span>
                     )}
                   </p>
 
                   {/* Action Buttons */}
-                  <div className="flex space-x-2 pt-4 border-t border-gray-100">
+                  <div 
+                    className="flex space-x-2 pt-4"
+                    style={{ borderTop: `1px solid var(--border)` }}
+                  >
                     <button
                       onClick={() => handleViewBlog(blog._id)}
-                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200 text-sm"
+                      className="flex-1 px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-sm"
+                      style={{
+                        backgroundColor: 'var(--cardSecondary)',
+                        color: 'var(--text)'
+                      }}
                     >
                       View
                     </button>
                     <button
                       onClick={() => handleEditBlog(blog._id)}
-                      className="flex-1 bg-[#8200DB] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#6E11B0] transition-colors duration-200 text-sm"
+                      className="button flex-1 px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-sm text-white"
                     >
                       Edit
                     </button>

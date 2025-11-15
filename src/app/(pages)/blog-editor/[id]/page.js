@@ -257,8 +257,11 @@ export default function EditBlogPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#8200DB] mx-auto"></div>
-          <p className="text-gray-600 mt-4 text-lg">Loading blog data...</p>
+          <div 
+            className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto"
+            style={{ borderColor: 'var(--primary)' }}
+          ></div>
+          <p className="mt-4 text-lg opacity-80">Loading blog data...</p>
         </div>
       </div>
     );
@@ -266,27 +269,45 @@ export default function EditBlogPage() {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden">
-        {/* Professional Header */}
-        <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Edit Blog Post</h1>
-              <p className="text-blue-100 mt-2">
-                Update and refine your content
-              </p>
-            </div>
-            <div className="bg-white/20 rounded-lg px-4 py-2">
-              <span className="text-white text-sm font-medium">
-                Editing Mode
-              </span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div 
+            className="rounded-2xl shadow-xl overflow-hidden"
+            style={{ 
+              background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+            }}
+          >
+            <div className="px-8 py-8">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div className="mb-6 lg:mb-0">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                    Edit Blog Post
+                  </h1>
+                  <p className="text-white text-opacity-90 text-lg">
+                    Update and refine your content
+                  </p>
+                </div>
+                <div className="bg-white/20 rounded-lg px-4 py-2">
+                  <span className="text-white text-sm font-medium">
+                    Blog Editor
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="mx-8 mt-6 bg-red-50 border border-red-200 rounded-xl p-4">
-            <p className="text-red-700 flex items-center">
+          <div 
+            className="rounded-xl p-4 mb-6"
+            style={{
+              backgroundColor: 'var(--error)',
+              opacity: '0.1',
+              border: `1px solid var(--error)`
+            }}
+          >
+            <p className="flex items-center" style={{ color: 'var(--error)' }}>
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -305,15 +326,30 @@ export default function EditBlogPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+        <div 
+          className="rounded-xl shadow-lg p-8 space-y-8"
+          style={{
+            backgroundColor: 'var(--card)',
+            border: `1px solid var(--border)`
+          }}
+        >
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Title Section */}
           <div className="space-y-3">
-            <label className="block text-lg font-semibold text-gray-800">
+            <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
               Blog Title *
             </label>
             <input
               type="text"
-              className="w-full border-2 border-gray-200 rounded-xl px-6 py-4 text-xl focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+              className="w-full rounded-xl px-6 py-4 text-xl focus:outline-none focus:ring-1 transition-all duration-300"
+              style={{
+                backgroundColor: 'var(--cardSecondary)',
+                border: `2px solid var(--border)`,
+                color: 'var(--text)',
+                '--tw-ring-color': 'var(--accent)'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
               placeholder="Update your blog title..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -325,13 +361,21 @@ export default function EditBlogPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Category */}
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Category
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                style={{
+                  backgroundColor: 'var(--cardSecondary)',
+                  border: `2px solid var(--border)`,
+                  color: 'var(--text)',
+                  '--tw-ring-color': 'var(--accent)'
+                }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
               >
                 <option value="">Select Category</option>
                 <option value="business">Business & Strategy</option>
@@ -344,10 +388,17 @@ export default function EditBlogPage() {
 
             {/* Thumbnail Upload */}
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Featured Thumbnail
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#8200DB] transition-all duration-300">
+              <div 
+                className="border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300"
+                style={{ 
+                  borderColor: 'var(--border)'
+                }}
+                onMouseEnter={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onMouseLeave={(e) => e.target.style.borderColor = 'var(--border)'}
+              >
                 <input
                   type="file"
                   accept="image/*"
@@ -403,10 +454,15 @@ export default function EditBlogPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             {/* Multiple Images Upload */}
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Upload Additional Images
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-[#8200DB] transition-all duration-300 h-full">
+              <div 
+                className="border-2 border-dashed rounded-xl p-6 transition-all duration-300 h-full"
+                style={{ borderColor: 'var(--border)' }}
+                onMouseEnter={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onMouseLeave={(e) => e.target.style.borderColor = 'var(--border)'}
+              >
                 <input
                   type="file"
                   accept="image/*"
@@ -435,15 +491,15 @@ export default function EditBlogPage() {
                         ></path>
                       </svg>
                     </div>
-                    <p className="text-gray-600">Upload Images</p>
-                    <p className="text-xs text-gray-500">PNG, JPG, WEBP</p>
+                    <p style={{ color: 'var(--text)' }}>Upload Images</p>
+                    <p className="text-xs opacity-70">PNG, JPG, WEBP</p>
                   </div>
                 </label>
 
                 {/* Uploaded Images Preview */}
                 {uploadedImages.length > 0 && (
                   <div className="mt-4 space-y-3">
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>
                       New Images:
                     </p>
                     <div className="grid grid-cols-2 gap-2">
@@ -462,26 +518,13 @@ export default function EditBlogPage() {
                             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             ×
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                try {
-                                  const url = await uploadFileToServer(
-                                    video.file,
-                                    "blog-videos"
-                                  );
-                                  if (url) insertVideoToEditor(url);
-                                  toast.success("Video uploaded and inserted");
-                                } catch (err) {
-                                  toast.error(
-                                    "Failed to upload video. Try again."
-                                  );
-                                }
-                              }}
-                              className="absolute bottom-1 left-1 bg-[#8200DB] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              Insert
-                            </button>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertImageToEditor(image.preview)}
+                            className="button absolute bottom-1 left-1 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            Insert
                           </button>
                         </div>
                       ))}
@@ -493,10 +536,15 @@ export default function EditBlogPage() {
 
             {/* Video Upload */}
             <div className="space-y-3">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Upload Additional Videos
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-[#8200DB] transition-all duration-300 h-full">
+              <div 
+                className="border-2 border-dashed rounded-xl p-6 transition-all duration-300 h-full"
+                style={{ borderColor: 'var(--border)' }}
+                onMouseEnter={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onMouseLeave={(e) => e.target.style.borderColor = 'var(--border)'}
+              >
                 <input
                   type="file"
                   accept="video/*"
@@ -525,23 +573,24 @@ export default function EditBlogPage() {
                         ></path>
                       </svg>
                     </div>
-                    <p className="text-gray-600">Upload Videos</p>
-                    <p className="text-xs text-gray-500">MP4, MOV files</p>
+                    <p style={{ color: 'var(--text)' }}>Upload Videos</p>
+                    <p className="text-xs opacity-70">MP4, MOV files</p>
                   </div>
                 </label>
 
                 {/* Uploaded Videos List */}
                 {uploadedVideos.length > 0 && (
                   <div className="mt-4 space-y-2">
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>
                       New Videos:
                     </p>
                     {uploadedVideos.map((video, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2"
+                        className="flex items-center justify-between rounded-lg px-3 py-2"
+                        style={{ backgroundColor: 'var(--cardSecondary)' }}
                       >
-                        <span className="text-sm text-gray-600 truncate">
+                        <span className="text-sm truncate" style={{ color: 'var(--text)' }}>
                           {video.name}
                         </span>
                         <div className="flex space-x-2">
@@ -564,7 +613,7 @@ export default function EditBlogPage() {
                                 );
                               }
                             }}
-                            className="text-xs bg-[#8200DB] text-white px-2 py-1 rounded"
+                            className="button text-xs text-white px-2 py-1 rounded"
                           >
                             Insert
                           </button>
@@ -638,34 +687,50 @@ export default function EditBlogPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Tags */}
               <div className="space-y-3">
-                <label className="block text-lg font-semibold text-gray-800">
+                <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                   Tags
                 </label>
                 <input
                   type="text"
-                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                  style={{
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `2px solid var(--border)`,
+                    color: 'var(--text)',
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                   placeholder="mlm, business, success, marketing"
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm opacity-70">
                   Separate with commas for better categorization
                 </p>
               </div>
 
               {/* SEO Keywords */}
               <div className="space-y-3">
-                <label className="block text-lg font-semibold text-gray-800">
+                <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                   SEO Keywords
                 </label>
                 <input
                   type="text"
-                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                  className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
+                  style={{
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `2px solid var(--border)`,
+                    color: 'var(--text)',
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                   placeholder="network marketing, passive income, home business"
                   value={keywords}
                   onChange={(e) => setKeywords(e.target.value)}
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm opacity-70">
                   Keywords for search engine optimization
                 </p>
               </div>
@@ -674,11 +739,19 @@ export default function EditBlogPage() {
 
           {/* Excerpt */}
           <div className="space-y-3">
-            <label className="block text-lg font-semibold text-gray-800">
+            <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
               Excerpt
             </label>
             <textarea
-              className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 resize-none"
+              className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300 resize-none"
+              style={{
+                backgroundColor: 'var(--cardSecondary)',
+                border: `2px solid var(--border)`,
+                color: 'var(--text)',
+                '--tw-ring-color': 'var(--accent)'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
               placeholder="Update your blog summary for search results and social media..."
               rows="4"
               value={excerpt}
@@ -689,10 +762,10 @@ export default function EditBlogPage() {
           {/* Rich Text Editor */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="block text-lg font-semibold text-gray-800">
+              <label className="block text-lg font-semibold" style={{ color: 'var(--text)' }}>
                 Content *
               </label>
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <div className="flex items-center space-x-2 text-sm" style={{ color: 'var(--textSecondary)' }}>
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -711,7 +784,8 @@ export default function EditBlogPage() {
             </div>
             <div
               data-color-mode="light"
-              className="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm"
+              className="rounded-xl overflow-hidden shadow-sm"
+              style={{ border: `2px solid var(--border)` }}
             >
               <MDEditor
                 value={content}
@@ -720,7 +794,7 @@ export default function EditBlogPage() {
                 preview="live"
               />
             </div>
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
+            <div className="flex items-center space-x-4 text-sm" style={{ color: 'var(--textSecondary)' }}>
               <span># Headings</span>
               <span>**Bold**</span>
               <span>*Italic*</span>
@@ -730,11 +804,16 @@ export default function EditBlogPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-8 border-t border-gray-200">
+          <div className="flex justify-between items-center pt-8" style={{ borderTop: `1px solid var(--border)` }}>
             <button
               type="button"
               onClick={() => router.push("/blog-editor")}
-              className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
+              className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
+              style={{
+                backgroundColor: 'var(--cardSecondary)',
+                color: 'var(--text)',
+                border: `2px solid var(--border)`
+              }}
             >
               ← Back to Dashboard
             </button>
@@ -743,7 +822,20 @@ export default function EditBlogPage() {
               <button
                 type="button"
                 onClick={() => router.push(`/blogs/${id}`)}
-                className="px-8 py-3 border-2 border-[#8200DB] text-[#8200DB] rounded-xl hover:bg-[#8200DB] hover:text-white transition-all duration-300 font-semibold"
+                className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
+                style={{
+                  backgroundColor: 'transparent',
+                  color: 'var(--primary)',
+                  border: `2px solid var(--primary)`
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary)';
+                  e.target.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'transparent';
+                  e.target.style.color = 'var(--primary)';
+                }}
               >
                 Preview Blog
               </button>
@@ -751,7 +843,7 @@ export default function EditBlogPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-8 py-3 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white rounded-xl hover:from-[#6E11B0] hover:to-[#8200DB] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="button px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 {loading ? (
                   <>
@@ -783,6 +875,7 @@ export default function EditBlogPage() {
             </div>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

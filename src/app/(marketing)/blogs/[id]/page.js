@@ -425,7 +425,7 @@ export default function SingleBlogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-8">
+    <div className="min-h-screen pb-8" style={{ backgroundColor: 'var(--background)' }}>
       <ToastProvider />
       
       {/* Join Modal */}
@@ -633,14 +633,20 @@ export default function SingleBlogPage() {
       )}
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-[#8200DB] to-[#6E11B0] py-16 lg:py-24">
+      <div 
+        className="relative py-16 lg:py-24"
+        style={{ 
+          background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+        }}
+      >
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Top Right Buttons */}
           <div className="absolute top-6 right-6 flex flex-col space-y-3">
             <button
               onClick={() => setShowJoinModal(true)}
-              className="bg-white text-[#8200DB] px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 group"
+              className="bg-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 group"
+              style={{ color: 'var(--primary)' }}
             >
               <svg
                 className="w-5 h-5 group-hover:scale-110 transition-transform"
@@ -668,7 +674,7 @@ export default function SingleBlogPage() {
             <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
               {blog.title}
             </h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-white text-opacity-90 max-w-3xl mx-auto leading-relaxed">
               {blog.excerpt ? (
                 blog.excerpt
               ) : (
@@ -687,50 +693,70 @@ export default function SingleBlogPage() {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Author Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div 
+              className="rounded-2xl shadow-lg p-6"
+              style={{ 
+                backgroundColor: 'var(--card)',
+                border: `1px solid var(--border)`
+              }}
+            >
               <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-full flex items-center justify-center mx-auto mb-4">
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                  style={{ 
+                    background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+                  }}
+                >
                   <span className="text-white font-bold text-lg">
                     {blog.authorId?.name?.charAt(0) || "A"}
                   </span>
                 </div>
-                <h3 className="font-bold text-gray-800 text-lg mb-1">
+                <h3 className="font-bold text-lg mb-1" style={{ color: 'var(--text)' }}>
                   {blog.authorId?.name || "Anonymous"}
                 </h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-sm mb-4 opacity-80">
                   {blog.authorId?.username || "Author"}
                 </p>
-                <div className="bg-gray-100 rounded-lg p-3">
-                  <p className="text-xs text-gray-600">Blog Creator</p>
+                <div 
+                  className="rounded-lg p-3"
+                  style={{ backgroundColor: 'var(--cardSecondary)' }}
+                >
+                  <p className="text-xs opacity-70">Blog Creator</p>
                 </div>
               </div>
             </div>
 
             {/* Blog Stats */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h4 className="font-bold text-gray-800 mb-4">Blog Stats</h4>
+            <div 
+              className="rounded-2xl shadow-lg p-6"
+              style={{ 
+                backgroundColor: 'var(--card)',
+                border: `1px solid var(--border)`
+              }}
+            >
+              <h4 className="font-bold mb-4" style={{ color: 'var(--text)' }}>Blog Stats</h4>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Views</span>
-                  <span className="font-semibold text-[#8200DB]">
+                  <span className="text-sm opacity-80">Views</span>
+                  <span className="font-semibold" style={{ color: 'var(--primary)' }}>
                     {blog.views || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Likes</span>
-                  <span className="font-semibold text-[#8200DB]">
+                  <span className="text-sm opacity-80">Likes</span>
+                  <span className="font-semibold" style={{ color: 'var(--primary)' }}>
                     {likesCount}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Shares</span>
-                  <span className="font-semibold text-[#8200DB]">
+                  <span className="text-sm opacity-80">Shares</span>
+                  <span className="font-semibold" style={{ color: 'var(--primary)' }}>
                     {blog.shares?.length || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Comments</span>
-                  <span className="font-semibold text-[#8200DB]">
+                  <span className="text-sm opacity-80">Comments</span>
+                  <span className="font-semibold" style={{ color: 'var(--primary)' }}>
                     {comments.length}
                   </span>
                 </div>
@@ -742,7 +768,7 @@ export default function SingleBlogPage() {
                 className={`w-full mt-4 px-4 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group ${
                   isLiked
                     ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-gradient-to-r from-[#8200DB] to-[#6E11B0] text-white hover:from-[#6E11B0] hover:to-[#8200DB]"
+                    : "button text-white"
                 }`}
               >
                 <svg
@@ -764,8 +790,14 @@ export default function SingleBlogPage() {
             </div>
 
             {/* Share Widget */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h4 className="font-bold text-gray-800 mb-4">Quick Share</h4>
+            <div 
+              className="rounded-2xl shadow-lg p-6"
+              style={{ 
+                backgroundColor: 'var(--card)',
+                border: `1px solid var(--border)`
+              }}
+            >
+              <h4 className="font-bold mb-4" style={{ color: 'var(--text)' }}>Quick Share</h4>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => handleShare("copy")}
@@ -833,7 +865,13 @@ export default function SingleBlogPage() {
           <div className="lg:col-span-3">
             {/* Featured Image */}
             {blog.thumbnail && (
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+              <div 
+                className="rounded-2xl shadow-lg overflow-hidden mb-8"
+                style={{ 
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`
+                }}
+              >
                 <div className="relative h-80 lg:h-96">
                   <Image
                     src={blog.thumbnail}
@@ -847,11 +885,20 @@ export default function SingleBlogPage() {
             )}
 
             {/* Blog Content */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div 
+              className="rounded-2xl shadow-lg p-8 mb-8"
+              style={{ 
+                backgroundColor: 'var(--card)',
+                border: `1px solid var(--border)`
+              }}
+            >
               {/* Meta Information */}
-              <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-200">
+              <div 
+                className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6"
+                style={{ borderBottom: `1px solid var(--border)` }}
+              >
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2 text-gray-600">
+                  <div className="flex items-center space-x-2 opacity-80">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -873,7 +920,7 @@ export default function SingleBlogPage() {
                       })}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2 text-gray-600">
+                  <div className="flex items-center space-x-2 opacity-80">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -897,7 +944,7 @@ export default function SingleBlogPage() {
                     {blog.tags.slice(0, 3).map((tag, index) => (
                       <span
                         key={index}
-                        className="bg-[#8200DB] bg-opacity-10 text-[#8200DB] px-3 py-1 rounded-full text-xs font-semibold"
+                        className="px-3 py-1 rounded-full text-xs bg-[var(--primary)]/20 text-[var(--primary)] font-semibold whitespace-nowrap transition-all duration-300"
                       >
                         #{tag}
                       </span>
@@ -909,7 +956,8 @@ export default function SingleBlogPage() {
               {/* Blog Content */}
               <article className="prose prose-lg max-w-none">
                 <div
-                  className="text-gray-700 leading-relaxed text-lg"
+                  className="leading-relaxed text-lg"
+                  style={{ color: 'var(--text)' }}
                   dangerouslySetInnerHTML={{
                     __html: renderHTMLFromContent(blog.content),
                   }}
@@ -917,12 +965,17 @@ export default function SingleBlogPage() {
               </article>
 
               {/* Bottom Join Section */}
-              <div className="mt-12 pt-8 border-t border-gray-200">
-                <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl p-8 text-center text-white">
+              <div className="mt-12 pt-8" style={{ borderTop: `1px solid var(--border)` }}>
+                <div 
+                  className="rounded-2xl p-8 text-center text-white"
+                  style={{ 
+                    background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+                  }}
+                >
                   <h3 className="text-2xl font-bold mb-4">
                     Ready to Start Your Journey?
                   </h3>
-                  <p className="text-blue-100 mb-6 text-lg">
+                  <p className="text-white text-opacity-90 mb-6 text-lg">
                     Join our MLM community today and unlock your earning
                     potential. Start building your business with our proven
                     system.
@@ -930,13 +983,16 @@ export default function SingleBlogPage() {
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button
                       onClick={copyAffiliateLink}
-                      className="bg-white text-[#8200DB] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg"
+                      className="bg-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg"
+                      style={{ color: 'var(--primary)' }}
                     >
                       Copy Affiliate Link
                     </button>
                     <button
                       onClick={handleJoinClick}
-                      className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-[#8200DB] transition-all duration-300"
+                      className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white transition-all duration-300"
+                      onMouseEnter={(e) => e.target.style.color = 'var(--primary)'}
+                      onMouseLeave={(e) => e.target.style.color = 'white'}
                     >
                       Join Now
                     </button>
@@ -946,13 +1002,17 @@ export default function SingleBlogPage() {
 
               {/* Keywords */}
               {blog.keywords?.length > 0 && blog.keywords[0] && (
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h4 className="font-bold text-gray-800 mb-3">Keywords</h4>
+                <div className="mt-8 pt-6" style={{ borderTop: `1px solid var(--border)` }}>
+                  <h4 className="font-bold mb-3" style={{ color: 'var(--text)' }}>Keywords</h4>
                   <div className="flex flex-wrap gap-2">
                     {blog.keywords.map((keyword, index) => (
                       <span
                         key={index}
-                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm"
+                        className="px-3 py-1 rounded-lg text-sm"
+                        style={{
+                          backgroundColor: 'var(--cardSecondary)',
+                          color: 'var(--text)'
+                        }}
                       >
                         {keyword}
                       </span>
@@ -963,8 +1023,14 @@ export default function SingleBlogPage() {
             </div>
 
             {/* Comments Section */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+            <div 
+              className="rounded-2xl shadow-lg p-8 mb-8"
+              style={{ 
+                backgroundColor: 'var(--card)',
+                border: `1px solid var(--border)`
+              }}
+            >
+              <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>
                 Comments ({comments.length})
               </h3>
 
@@ -974,14 +1040,19 @@ export default function SingleBlogPage() {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Share your thoughts..."
-                  className="text-gray-800 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#8200DB] focus:border-transparent resize-none"
+                  className="card-secondary w-full px-4 py-3 rounded-xl focus:ring-1 resize-none"
+                  style={{
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                   rows="4"
                 />
                 <div className="flex justify-end mt-3">
                   <button
                     onClick={handleAddComment}
                     disabled={commentLoading || !newComment.trim()}
-                    className="bg-[#8200DB] text-white px-6 py-2 rounded-xl font-semibold hover:bg-[#6E11B0] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="button text-white px-6 py-2 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {commentLoading ? "Posting..." : "Post Comment"}
                   </button>
@@ -991,9 +1062,9 @@ export default function SingleBlogPage() {
               {/* Comments List */}
               <div className="space-y-6">
                 {comments.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 opacity-70">
                     <svg
-                      className="w-12 h-12 mx-auto text-gray-400 mb-3"
+                      className="w-12 h-12 mx-auto mb-3 opacity-60"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1009,24 +1080,38 @@ export default function SingleBlogPage() {
                   </div>
                 ) : (
                   comments.map((comment) => (
-                    <div key={comment._id} className="border-b border-gray-200 pb-6 last:border-b-0">
+                    <div 
+                      key={comment._id} 
+                      className="pb-6 last:border-b-0"
+                      style={{ 
+                        borderBottom: `1px solid var(--border)`
+                      }}
+                    >
                       {/* Main Comment */}
                       <div className="flex space-x-3">
                         <div className="flex-shrink-0">
-                          <div className="w-10 h-10 bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-full flex items-center justify-center">
+                          <div 
+                            className="w-10 h-10 rounded-full flex items-center justify-center"
+                            style={{ 
+                              background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+                            }}
+                          >
                             <span className="text-white text-sm font-bold">
                               {comment.userId?.name?.charAt(0) || "U"}
                             </span>
                           </div>
                         </div>
                         <div className="flex-1">
-                          <div className="bg-gray-50 rounded-xl p-4">
+                          <div 
+                            className="rounded-xl p-4"
+                            style={{ backgroundColor: 'var(--cardSecondary)' }}
+                          >
                             <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-gray-800">
+                              <h4 className="font-semibold" style={{ color: 'var(--text)' }}>
                                 {comment.userId?.name || "Anonymous"}
                               </h4>
                               <div className="flex items-center space-x-2">
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs opacity-70">
                                   {new Date(comment.createdAt).toLocaleDateString()}
                                 </span>
                                 {/* Only show delete for comment author */}
@@ -1040,10 +1125,13 @@ export default function SingleBlogPage() {
                                 )}
                               </div>
                             </div>
-                            <p className="text-gray-700">{comment.content}</p>
+                            <p style={{ color: 'var(--text)' }}>{comment.content}</p>
                             <button
                               onClick={() => setReplyingTo(replyingTo === comment._id ? null : comment._id)}
-                              className="text-[#8200DB] text-sm font-semibold mt-2 hover:text-[#6E11B0] transition-colors duration-200"
+                              className="text-sm font-semibold mt-2 transition-colors duration-200"
+                              style={{ color: 'var(--primary)' }}
+                              onMouseEnter={(e) => e.target.style.color = 'var(--accent)'}
+                              onMouseLeave={(e) => e.target.style.color = 'var(--primary)'}
                             >
                               {replyingTo === comment._id ? "Cancel" : "Reply"}
                             </button>
@@ -1056,20 +1144,28 @@ export default function SingleBlogPage() {
                                 value={replyText}
                                 onChange={(e) => setReplyText(e.target.value)}
                                 placeholder="Write a reply..."
-                                className="text-gray-800 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8200DB] focus:border-transparent resize-none"
+                                className="card-secondary w-full px-4 py-2 rounded-lg focus:ring-1 resize-none"
+                                style={{
+                                  '--tw-ring-color': 'var(--accent)'
+                                }}
+                                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                                 rows="3"
                               />
                               <div className="flex justify-end space-x-2 mt-2">
                                 <button
                                   onClick={() => setReplyingTo(null)}
-                                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                                  className="px-4 py-2 transition-colors duration-200"
+                                  style={{ color: 'var(--text)' }}
+                                  onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+                                  onMouseLeave={(e) => e.target.style.opacity = '1'}
                                 > 
                                   Cancel
                                 </button>
                                 <button
                                   onClick={() => handleAddReply(comment._id)}
                                   disabled={!replyText.trim()}
-                                  className="bg-[#8200DB] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#6E11B0] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="button text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   Post Reply
                                 </button>
@@ -1127,21 +1223,28 @@ export default function SingleBlogPage() {
 
             {/* Related Blogs */}
             {relatedBlogs.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">
+              <div 
+                className="rounded-2xl shadow-lg p-8"
+                style={{ 
+                  backgroundColor: 'var(--card)',
+                  border: `1px solid var(--border)`
+                }}
+              >
+                <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>
                   Related Blogs
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {relatedBlogs.map((relatedBlog) => (
                     <div
                       key={relatedBlog._id}
-                      className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow duration-300"
+                      className="rounded-xl p-4 hover:shadow-md transition-shadow duration-300"
+                      style={{ backgroundColor: 'var(--cardSecondary)' }}
                     >
-                      <h4 className="font-semibold text-gray-800 mb-2 line-clamp-2">
+                      <h4 className="font-semibold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
                         {relatedBlog.title}
                       </h4>
                       <div 
-                        className="text-gray-600 text-sm line-clamp-2"
+                        className="text-sm line-clamp-2 opacity-80"
                         dangerouslySetInnerHTML={{
                           __html: renderHTMLFromContent(
                             relatedBlog.excerpt || relatedBlog.content?.substring(0, 80) + "..."
@@ -1152,7 +1255,10 @@ export default function SingleBlogPage() {
                         onClick={() =>
                           (window.location.href = `/blogs/${relatedBlog._id}`)
                         }
-                        className="text-[#8200DB] text-sm font-semibold mt-3 hover:text-[#6E11B0] transition-colors duration-200"
+                        className="text-sm font-semibold mt-3 transition-colors duration-200"
+                        style={{ color: 'var(--primary)' }}
+                        onMouseEnter={(e) => e.target.style.color = 'var(--accent)'}
+                        onMouseLeave={(e) => e.target.style.color = 'var(--primary)'}
                       >
                         Read More →
                       </button>
