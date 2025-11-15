@@ -25,31 +25,31 @@ export default function TopReferrers() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="card rounded-2xl shadow-lg p-6">
       {/* Header */}
-      <h3 className="text-lg font-bold text-gray-700 mb-4">👑 Top Referrers</h3>
+      <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text)' }}>👑 Top Referrers</h3>
 
       {/* List */}
       {loading ? (
-        <div className="text-center py-4">Loading...</div>
+        <div className="text-center py-4" style={{ color: 'var(--text)' }}>Loading...</div>
       ) : top.length === 0 ? (
-        <div className="text-center py-4 text-gray-500">No data available</div>
+        <div className="text-center py-4" style={{ color: 'var(--textSecondary)' }}>No data available</div>
       ) : (
         <ul className="space-y-3">
           {top.map((t, i) => (
             <li
               key={t.username}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition"
+              className="flex items-center justify-between p-3 card-secondary rounded-xl shadow-sm hover:shadow-md transition"
             >
               {/* Left */}
               <div>
-                <p className="font-medium text-gray-800">{t.name}</p>
-                <p className="text-xs text-gray-500">Total Sales</p>
+                <p className="font-medium" style={{ color: 'var(--text)' }}>{t.name}</p>
+                <p className="text-xs" style={{ color: 'var(--textSecondary)' }}>Total Sales</p>
               </div>
 
               {/* Right */}
               <div className="text-right">
-                <p className="text-lg font-bold text-gray-700">{t.totalSales}</p>
+                <p className="text-lg font-bold" style={{ color: 'var(--text)' }}>{t.totalSales}</p>
               </div>
             </li>
           ))}

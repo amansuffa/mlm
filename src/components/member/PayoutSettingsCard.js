@@ -31,9 +31,9 @@ export default function PayoutSettingsCard() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
-        <h3 className="text-lg font-bold text-gray-700 mb-3">💰 Payout Settings</h3>
-        <p className="text-gray-500">Loading...</p>
+      <div className="card rounded-2xl shadow-lg p-6">
+        <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--text)' }}>💰 Payout Settings</h3>
+        <p style={{ color: 'var(--textSecondary)' }}>Loading...</p>
       </div>
     );
   }
@@ -43,23 +43,23 @@ export default function PayoutSettingsCard() {
   const primaryMethod = payouts.find((m) => m.isPrimary);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
-      <h3 className="text-lg font-bold text-gray-700 mb-3">💰 Payout Settings</h3>
+    <div className="card rounded-2xl shadow-lg p-6">
+      <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--text)' }}>💰 Payout Settings</h3>
 
       {primaryMethod ? (
-        <p className="text-gray-700">
+        <p style={{ color: 'var(--text)' }}>
           Primary Method:{" "}
           <span className="font-semibold capitalize">{primaryMethod.methodName}</span>
         </p>
       ) : (
-        <p className="text-red-500 text-sm">
+        <p className="text-sm" style={{ color: 'var(--error)' }}>
           ⚠ No payout method added. Please set one in your profile.
         </p>
       )}
 
       <button
         onClick={() => (window.location.href = "/dashboard/payout-settings")}
-        className="mt-4 px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-green-600 text-white font-medium"
+        className="button mt-4 px-4 py-2 rounded-lg text-white font-medium"
       >
         Manage Payout Methods
       </button>

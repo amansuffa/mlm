@@ -77,7 +77,7 @@ export default function DownlineTree() {
       />
       {/* Node Label */}
       <text
-        fill="#111827"
+        fill="var(--text)"
         x="24"
         dy=".35em"
         fontSize="13"
@@ -90,21 +90,24 @@ export default function DownlineTree() {
   );
 
   return (
-    <div className="bg-white shadow-lg rounded-2xl p-5 h-full flex flex-col">
+    <div className="card shadow-lg rounded-2xl p-5 h-full flex flex-col">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-bold text-gray-700">🌳 Downline Tree</h3>
+        <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>🌳 Downline Tree</h3>
         <button
           onClick={() => router.push('/user/downline')}
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          className="text-sm font-medium transition-colors"
+          style={{ color: 'var(--accent)' }}
+          onMouseEnter={(e) => e.target.style.opacity = '0.8'}
+          onMouseLeave={(e) => e.target.style.opacity = '1'}
         >
           Show More
         </button>
       </div>
       <div ref={treeContainer} className="flex-1 w-full">
         {loading ? (
-          <div className="text-center py-8">Loading...</div>
+          <div className="text-center py-8" style={{ color: 'var(--text)' }}>Loading...</div>
         ) : treeData.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">No downline data available</div>
+          <div className="text-center py-8" style={{ color: 'var(--textSecondary)' }}>No downline data available</div>
         ) : dimensions.x !== 0 ? (
           <Tree
             data={treeData}

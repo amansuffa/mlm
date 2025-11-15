@@ -55,30 +55,30 @@ export default function EarningsChart() {
   }, [userId, fetchEarnings]);
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg">
+    <div className="card p-6 rounded-2xl shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-gray-700">💰 Earnings Overview</h3>
-        <span className="text-sm font-medium text-gray-500">USD</span>
+        <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>💰 Earnings Overview</h3>
+        <span className="text-sm font-medium" style={{ color: 'var(--textSecondary)' }}>USD</span>
       </div>
 
       {/* Date Range Filters */}
       <div className="flex gap-3 mb-5">
         <input
           type="date"
-          className="border border-gray-300 rounded-lg px-3 py-1 text-sm"
+          className="card-secondary rounded-lg px-3 py-1 text-sm"
           value={from}
           onChange={(e) => setFrom(e.target.value)}
         />
         <input
           type="date"
-          className="border border-gray-300 rounded-lg px-3 py-1 text-sm"
+          className="card-secondary rounded-lg px-3 py-1 text-sm"
           value={to}
           onChange={(e) => setTo(e.target.value)}
         />
         <button
           onClick={fetchEarnings}
-          className="bg-purple-600 text-white px-4 py-1 rounded-lg hover:bg-purple-700 transition"
+          className="button text-white px-4 py-1 rounded-lg transition"
         >
           Filter
         </button>
@@ -90,7 +90,7 @@ export default function EarningsChart() {
             setTo("");
             setIsCustomRange(false);
           }}
-          className="border border-gray-300 rounded-lg px-3 py-1 text-sm bg-white ml-auto"
+          className="card-secondary rounded-lg px-3 py-1 text-sm ml-auto"
         >
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>

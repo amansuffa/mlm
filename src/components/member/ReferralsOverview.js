@@ -61,14 +61,14 @@ export default function ReferralsOverview() {
   }, []);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
-      <h3 className="text-lg font-bold text-gray-700 mb-4">
+    <div className="card rounded-2xl shadow-lg p-6">
+      <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text)' }}>
         👥 My Direct Referrals
       </h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
           <thead>
-            <tr className="bg-gray-100 text-gray-600 uppercase text-xs">
+            <tr className="card-secondary uppercase text-xs" style={{ color: 'var(--textSecondary)' }}>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Username</th>
               <th className="px-4 py-2">Join Date</th>
@@ -79,11 +79,12 @@ export default function ReferralsOverview() {
             {referrals.map((ref, i) => (
               <tr
                 key={i}
-                className="border-b last:border-0 hover:bg-gray-50 transition"
+                className="last:border-0 hover:opacity-80 transition"
+                style={{ borderBottom: '1px solid var(--border)' }}
               >
-                <td className="px-4 py-2 font-medium">{ref.name}</td>
-                <td className="px-4 py-2">{ref.username}</td>
-                <td className="px-4 py-2">{ref.joinDate}</td>
+                <td className="px-4 py-2 font-medium" style={{ color: 'var(--text)' }}>{ref.name}</td>
+                <td className="px-4 py-2" style={{ color: 'var(--text)' }}>{ref.username}</td>
+                <td className="px-4 py-2" style={{ color: 'var(--text)' }}>{ref.joinDate}</td>
                 <td className="px-4 py-2">
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${ref.statusClass}`}>
                     {ref.statusText}
@@ -100,7 +101,10 @@ export default function ReferralsOverview() {
         <div className="mt-4 text-center">
           <Link
             href="/user/referrals"
-            className="inline-block px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+            className="inline-block px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            style={{ color: 'var(--accent)' }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--cardSecondary)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
           >
             Show All
           </Link>

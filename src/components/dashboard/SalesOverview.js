@@ -35,18 +35,18 @@ export default function SalesOverview() {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="bg-white rounded-2xl shadow-lg overflow-hidden"
+      className="card rounded-2xl shadow-lg overflow-hidden"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-600 to-gray-600 p-4">
+      <div className="header p-4">
         <h3 className="text-lg font-bold text-white">🌍 Sales Overview</h3>
-        <p className="text-sm text-purple-100">Global performance insights</p>
+        <p className="text-sm text-white text-opacity-90">Global performance insights</p>
       </div>
 
       {/* Map */}
       <div className="p-6 flex justify-center">
         {loading ? (
-          <div className="text-center py-8">Loading...</div>
+          <div className="text-center py-8" style={{ color: 'var(--text)' }}>Loading...</div>
         ) : (
           <WorldMap
             color="gray"
@@ -58,20 +58,20 @@ export default function SalesOverview() {
       </div>
 
       {/* Stats / Legend */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6 border-t">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6" style={{ borderTop: '1px solid var(--border)' }}>
         {topMarkets.map((mkt, idx) => (
           <motion.div
             key={idx}
             whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl shadow-sm"
+            className="flex items-center gap-3 card-secondary p-3 rounded-xl shadow-sm"
           >
             <span
               className={`w-3 h-3 rounded-full ${colors[idx] || "bg-gray-500"}`}
               aria-hidden="true"
             ></span>
             <div>
-              <p className="text-sm font-semibold text-gray-700">{mkt.name}</p>
-              <p className="text-xs text-gray-500">{mkt.value} ({mkt.salesCount} Sales)</p>
+              <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{mkt.name}</p>
+              <p className="text-xs" style={{ color: 'var(--textSecondary)' }}>{mkt.value} ({mkt.salesCount} Sales)</p>
             </div>
           </motion.div>
         ))}

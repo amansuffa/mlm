@@ -15,7 +15,7 @@ export default function DashboardAdmin({ session }) {
   return (
 
   <main className="py-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <h1 className="text-3xl md:text-4xl font-extrabold text-gray-700">
+      <h1 className="text-3xl md:text-4xl font-extrabold" style={{ color: 'var(--text)' }}>
               Welcome, {session?.user?.name || "User"} 👋
             </h1>
       {/* KPIs always on top - full width */}

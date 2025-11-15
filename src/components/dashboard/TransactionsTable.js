@@ -25,13 +25,13 @@ export default function TransactionsTable() {
     .slice(0, 5);
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg overflow-x-auto">
-      <h3 className="text-lg font-bold text-gray-700 mb-4">💳 Recent Transactions</h3>
+    <div className="card p-6 rounded-2xl shadow-lg overflow-x-auto">
+      <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text)' }}>💳 Recent Transactions</h3>
 
       <div className="min-w-[700px]">
         <table className="w-full text-sm table-auto border-collapse">
           <thead>
-            <tr className="bg-gray-100 text-gray-600 text-left">
+            <tr className="card-secondary text-left" style={{ color: 'var(--textSecondary)' }}>
               <th className="p-3 font-semibold">Date</th>
               <th className="p-3 font-semibold">From</th>
               <th className="p-3 font-semibold">To</th>
@@ -43,14 +43,14 @@ export default function TransactionsTable() {
           <tbody>
             {recentTransactions.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center p-3 text-gray-500">
+                <td colSpan={6} className="text-center p-3" style={{ color: 'var(--textSecondary)' }}>
                   No recent transactions
                 </td>
               </tr>
             ) : (
               recentTransactions.map((t) => (
-                <tr key={t._id} className="border-t hover:bg-gray-50 transition-colors">
-                  <td className="p-3 text-gray-700">
+                <tr key={t._id} className="hover:opacity-80 transition-colors" style={{ borderTop: '1px solid var(--border)' }}>
+                  <td className="p-3" style={{ color: 'var(--text)' }}>
                     {new Date(t.createdAt).toLocaleString("en-US", {
                       year: "numeric",
                       month: "short",
@@ -59,10 +59,10 @@ export default function TransactionsTable() {
                       minute: "2-digit",
                     })}
                   </td>
-                  <td className="p-3 font-medium text-gray-800">{t.fromUser?.username || "N/A"}</td>
-                  <td className="p-3 font-medium text-gray-800">{t.toUser?.username || "N/A"}</td>
-                  <td className="p-3 text-gray-600">${t.amount}</td>
-                  <td className="p-3 font-semibold text-gray-900">{t.type}</td>
+                  <td className="p-3 font-medium" style={{ color: 'var(--text)' }}>{t.fromUser?.username || "N/A"}</td>
+                  <td className="p-3 font-medium" style={{ color: 'var(--text)' }}>{t.toUser?.username || "N/A"}</td>
+                  <td className="p-3" style={{ color: 'var(--textSecondary)' }}>${t.amount}</td>
+                  <td className="p-3 font-semibold" style={{ color: 'var(--text)' }}>{t.type}</td>
                   <td className="p-3">
                     <span
                       className={`px-3 py-1 text-xs font-medium rounded-full ${
@@ -88,7 +88,10 @@ export default function TransactionsTable() {
         <div className="mt-4 text-center">
           <button
             onClick={() => router.push('/transactions')}
-            className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            style={{ color: 'var(--accent)' }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--cardSecondary)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
           >
             Show All
           </button>
