@@ -13,6 +13,13 @@ export async function GET(req) {
     }
 
     const user = await User.findOne({ email: session.user.email }).select("-password");
+    
+    // Get sponsor info by referredBy username
+    if (user && user.referredBy) {
+      const sponsor = await User.findOne({ username: user.referredBy })
+        .select('name username profilePicture socialMedia');
+      user.sponsor = sponsor;
+    }
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
