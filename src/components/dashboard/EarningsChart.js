@@ -103,14 +103,14 @@ export default function EarningsChart() {
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis 
               dataKey="period" 
-              stroke="#6b7280" 
+              stroke="var(--textSecondary)" 
               tick={!isCustomRange} 
               interval={data.length > 10 ? Math.floor(data.length / 8) : 0}
             />
-            <YAxis stroke="#6b7280" />
+            <YAxis stroke="var(--textSecondary)" />
             <Tooltip
               contentStyle={{
                 backgroundColor: "#fff",

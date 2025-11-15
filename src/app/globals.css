@@ -87,8 +87,8 @@ body {
 :root {
  --primary: #7b61ff;    
   --secondary: #4c1d95;
-  --accent: #B8860B;        /* Gold accent */
-  --background: #f9fafb;    /* Light gray background */
+  --accent: #B8860B;       
+  --background: #f9fafb;    
   --card: #ffffff;
   --cardSecondary: #f9fafb;
   --text: #111827;
@@ -98,10 +98,10 @@ body {
 }
 
 .dark {
-  --primary: #8972fa;       /* Soft lavender */
-  --secondary: #491991;     /* Deep royal purple */
-  --accent: #d7b33e;        /* Warm gold accent */
-  --background: #0f0f17;    /* Deep black-blue */
+  --primary: #8972fa;     
+  --secondary: #491991;    
+  --accent: #d7b33e;       
+  --background: #0f0f17;    
   --card: #1a1a25;
   --cardSecondary: #29293b;
   --text: #f3f4f6;
@@ -109,6 +109,22 @@ body {
   --border: #333333;
   --buttonBg: linear-gradient(to right, #c2a23a 0%, #b89a38 100%);
 }
+
+/* BLUE */
+.dark .bg-blue-50 { background-color: rgba(30, 58, 138, 0.3); }
+.dark .blue-tr:hover{background-color: rgba(30, 58, 138, 0.3);}
+.dark .text-blue-800 { color: #93c5fd; }
+
+/* GREEN */
+.dark .bg-green-50 { background-color: rgba(20, 83, 45, 0.3); }
+.dark .green-tr:hover{background-color: rgba(20, 83, 45, 0.3);}
+.dark .text-green-800 { color: #86efac; }
+
+/* RED */
+.dark .bg-red-50 { background-color: rgba(127, 29, 29, 0.3); }
+.dark .red-tr:hover{background-color: rgba(127, 29, 29, 0.3);}
+.dark .text-red-800 { color: #fca5a5; }
+
 
 .button{
   background: var(--buttonBg);

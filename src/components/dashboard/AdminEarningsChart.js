@@ -126,14 +126,14 @@ export default function EarningsChart() {
       <div className="h-64 p-6">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis 
               dataKey="label" 
-              stroke="#6b7280" 
+              stroke="var(--textSecondary)" 
               tick={!isCustomRange} 
               interval={data.length > 10 ? Math.floor(data.length / 8) : 0}
             />
-            <YAxis stroke="#6b7280" />
+            <YAxis stroke="var(--textSecondary)" />
             <Tooltip content={<CustomTooltip />} />
             <Bar
               dataKey="revenue"
