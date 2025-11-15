@@ -51,6 +51,16 @@ export default function EditBlogPage() {
         setCategory(blogData.category || "");
         setThumbnailPreview(blogData.thumbnail || "");
         setVideoLinks(blogData.videoLinks || [""]);
+        
+        // Extract existing images from content
+        if (blogData.images && blogData.images.length > 0) {
+          const existingImages = blogData.images.map((imageUrl, index) => ({
+            preview: imageUrl,
+            name: `existing-image-${index + 1}`,
+            isExisting: true
+          }));
+          setUploadedImages(existingImages);
+        }
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
@@ -223,9 +233,11 @@ export default function EditBlogPage() {
         formData.append("thumbnail", thumbnail);
       }
 
-      // Append images
+      // Append images (only new ones with file objects)
       uploadedImages.forEach((image, index) => {
-        formData.append(`images`, image.file);
+        if (image.file) {
+          formData.append(`images`, image.file);
+        }
       });
 
       // Append videos
@@ -241,7 +253,7 @@ export default function EditBlogPage() {
       toast.success("🎉 Blog updated successfully!");
 
       setTimeout(() => {
-        router.push("/blog-editor");
+        router.push("/blog-editor?refresh=" + Date.now());
       }, 1500);
     } catch (err) {
       console.error("Update error:", err);
@@ -500,7 +512,7 @@ export default function EditBlogPage() {
                 {uploadedImages.length > 0 && (
                   <div className="mt-4 space-y-3">
                     <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>
-                      New Images:
+                      {uploadedImages.some(img => img.isExisting) ? 'Images:' : 'New Images:'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
                       {uploadedImages.map((image, index) => (

@@ -5,7 +5,7 @@ import "@/Styling/style.scss";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -24,12 +24,13 @@ export default function BlogEditorPage() {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Fetch user's blogs
+  // Fetch all blogs
   async function fetchBlogs() {
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/blogs?my=true");
+      const { data } = await axios.get("/api/blogs");
       if (data?.blogs) setBlogs(data.blogs);
     } catch (err) {
       console.error("Failed to fetch blogs:", err?.response || err);
@@ -96,6 +97,16 @@ export default function BlogEditorPage() {
   useEffect(() => {
     fetchBlogs();
   }, []);
+
+  // Refetch blogs when refresh parameter changes
+  useEffect(() => {
+    const refreshParam = searchParams.get('refresh');
+    if (refreshParam) {
+      fetchBlogs();
+      // Clean up URL without refresh param
+      router.replace('/blog-editor');
+    }
+  }, [searchParams, router]);
 
   // Filter blogs based on search and category
   const filteredBlogs = blogs.filter((blog) => {
@@ -334,7 +345,7 @@ export default function BlogEditorPage() {
             {filteredBlogs.map((blog) => (
               <div
                 key={blog._id}
-                className="card rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="card rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full"
                 style={{ border: `1px solid var(--border)` }}
               >
                 {/* Blog Thumbnail */}
@@ -372,7 +383,7 @@ export default function BlogEditorPage() {
                 </div>
 
                 {/* Blog Content */}
-                <div className="p-6">
+                <div className="p-6 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-3">
                     <span 
                       className="px-3 py-1 rounded-full text-xs bg-[var(--primary)]/20 text-[var(--primary)] font-semibold whitespace-nowrap transition-all duration-300"
@@ -388,7 +399,7 @@ export default function BlogEditorPage() {
                     {blog.title}
                   </h3>
 
-                  <p className="text-sm mb-4 line-clamp-3 opacity-80">
+                  <p className="text-sm mb-4 line-clamp-3 opacity-80 flex-1">
                     {blog.excerpt ? (
                       blog.excerpt
                     ) : (
@@ -400,30 +411,39 @@ export default function BlogEditorPage() {
 
                   {/* Action Buttons */}
                   <div 
-                    className="flex space-x-2 pt-4"
+                    className="flex justify-center space-x-4 pt-4"
                     style={{ borderTop: `1px solid var(--border)` }}
                   >
                     <button
                       onClick={() => handleViewBlog(blog._id)}
-                      className="flex-1 px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-sm"
-                      style={{
-                        backgroundColor: 'var(--cardSecondary)',
-                        color: 'var(--text)'
-                      }}
+                      className="p-2 hover:opacity-70 transition-opacity duration-200"
+                      style={{ color: 'var(--text)' }}
+                      title="View Blog"
                     >
-                      View
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                      </svg>
                     </button>
                     <button
                       onClick={() => handleEditBlog(blog._id)}
-                      className="button flex-1 px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-sm text-white"
+                      className="p-2 hover:opacity-70 transition-opacity duration-200"
+                      style={{ color: 'var(--accent)' }}
+                      title="Edit Blog"
                     >
-                      Edit
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
                     </button>
                     <button
                       onClick={() => openDeleteModal(blog._id, blog.title)}
-                      className="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors duration-200 text-sm"
+                      className="p-2 hover:opacity-70 transition-opacity duration-200"
+                      style={{ color: '#ef4444' }}
+                      title="Delete Blog"
                     >
-                      Delete
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
                     </button>
                   </div>
                 </div>

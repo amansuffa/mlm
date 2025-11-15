@@ -88,21 +88,28 @@ export async function PUT(req, { params }) {
       }
     }
 
+    // Prepare update object
+    const updateData = {
+      title,
+      content,
+      excerpt,
+      tags,
+      keywords,
+      category,
+      images,
+      videos,
+      videoLinks,
+    };
+
+    // Only update thumbnail if a new one was uploaded
+    if (thumbnailUrl) {
+      updateData.thumbnail = thumbnailUrl;
+    }
+
     // Update the blog
     const updatedBlog = await Blog.findByIdAndUpdate(
       params.id,
-      {
-        title,
-        content,
-        excerpt,
-        tags,
-        keywords,
-        category,
-        thumbnail: thumbnailUrl,
-        images,
-        videos,
-        videoLinks,
-      },
+      updateData,
       { new: true }
     );
 

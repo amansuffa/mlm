@@ -30,8 +30,7 @@ export default function CreateBlogPage() {
   const MAX_THUMBNAIL_SIZE = 2 * 1024 * 1024; // 2MB
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
   const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 15MB
-  // Toast duration used for navigation after success
-  const TOAST_SUCCESS_MS = 3000; // 3 seconds
+
 
   const handleThumbnailUpload = (e) => {
     const file = e.target.files[0];
@@ -242,19 +241,14 @@ export default function CreateBlogPage() {
           timeout: 120000, // 2 minutes for large uploads
         });
         console.log("API Response:", response.data);
-        // Show success toast and navigate only after the toast has finished auto-closing
-        const start = Date.now();
         toast.success(response.data?.message || "Blog created successfully", {
           className: "my-custom-toast",
-          onClose: () => {
-            const elapsed = Date.now() - start;
-            // If the toast was visible for the full auto-close duration, navigate.
-            // If the user dismissed it early, do not navigate.
-            if (elapsed >= TOAST_SUCCESS_MS - 100) {
-              router.push("/blog-editor");
-            }
-          },
         });
+        
+        // Navigate immediately after showing toast
+        setTimeout(() => {
+          router.push("/blog-editor");
+        }, 500);
         setLoading(false);
         return;
       } catch (axiosError) {
