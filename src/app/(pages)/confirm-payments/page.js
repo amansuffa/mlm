@@ -268,8 +268,8 @@ export default function ConfirmPaymentsPage() {
             }}
           >
             <div 
-              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: 'var(--primary)', opacity: '0.1' }}
+              className="w-24 h-24 rounded-full bg-[var(--primary)}]/20  flex items-center justify-center mx-auto mb-4"
+      
             >
               <svg
                 className="w-12 h-12"
