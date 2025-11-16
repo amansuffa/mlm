@@ -285,6 +285,8 @@ export default function ReferralsPage() {
                   placeholder="Search referrals by name, username, or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                   className="card-secondary w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1"
                   style={{
                     '--tw-ring-color': 'var(--accent)'
@@ -306,6 +308,8 @@ export default function ReferralsPage() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                 className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-1"
                 style={{
                   '--tw-ring-color': 'var(--accent)'
@@ -379,8 +383,8 @@ export default function ReferralsPage() {
                   <tr style={{ backgroundColor: `var(--cardSecondary)` }}>
                     <th className="text-left py-4 px-6 font-semibold">Member</th>
                     <th className="text-left py-4 px-6 font-semibold">Email</th>
-                    <th className="text-left py-4 px-6 font-semibold">Join Date</th>
                     <th className="text-left py-4 px-6 font-semibold">Status</th>
+                    <th className="text-left py-4 px-6 font-semibold">Join Date</th>
                     <th className="text-center py-4 px-6 font-semibold w-24">Actions</th>
                   </tr>
                 </thead>
@@ -408,14 +412,14 @@ export default function ReferralsPage() {
                           <p className="opacity-90">{referral.email}</p>
                         </td>
                         <td className="py-4 px-6">
-                          <p className="opacity-90">
-                            {referral.createdAt ? new Date(referral.createdAt).toLocaleDateString() : "N/A"}
-                          </p>
-                        </td>
-                        <td className="py-4 px-6">
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusInfo.class}`}>
                             {statusInfo.text}
                           </span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <p className="opacity-90">
+                            {referral.createdAt ? new Date(referral.createdAt).toLocaleDateString() : "N/A"}
+                          </p>
                         </td>
                         <td className="py-4 px-6">
                           <div className="flex justify-center">

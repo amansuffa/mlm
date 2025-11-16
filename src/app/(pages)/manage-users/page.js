@@ -1,14 +1,18 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import toast from "react-hot-toast";
 
 export default function ManageUsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [saving, setSaving] = useState(false);
   const router = useRouter();
+  const { theme } = useTheme();
 
   useEffect(() => {
     async function fetchUsers() {
@@ -16,8 +20,10 @@ export default function ManageUsersPage() {
         const res = await fetch("/api/admin/users");
         const data = await res.json();
         if (!data.error) setUsers(data);
+        else toast.error("Failed to load users");
       } catch (err) {
         console.error(err);
+        toast.error("Failed to load users");
       } finally {
         setLoading(false);
       }
@@ -25,8 +31,45 @@ export default function ManageUsersPage() {
     fetchUsers();
   }, []);
 
-  function handleViewDetails(userId) {
-    router.push(`/manage-users/users/${userId}`);
+
+
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/admin/users/${selectedUser._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: selectedUser.status })
+      });
+      if (res.ok) {
+        toast.success('User updated successfully!');
+        fetchUsers();
+        setSelectedUser(null);
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Failed to update user');
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      toast.error('Error updating user');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  async function fetchUsers() {
+    try {
+      const res = await fetch("/api/admin/users");
+      const data = await res.json();
+      if (!data.error) setUsers(data);
+      else toast.error("Failed to load users");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load users");
+    } finally {
+      setLoading(false);
+    }
   }
 
   // Filter users based on search and status
@@ -39,28 +82,50 @@ export default function ManageUsersPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const statuses = ["all", "free", "admin_fee_paid", "membership_paid", "fully_active"];
+  const statusOptions = [
+    { value: "all", label: "All Status" },
+    { value: "free", label: "Free" },
+    { value: "admin_fee_paid", label: "Admin Fee Paid" },
+    { value: "membership_paid", label: "Membership Paid" },
+    { value: "fully_active", label: "Fully Active" },
+  ];
+
+  const getStatusInfo = (status) => {
+    switch (status) {
+      case "fully_active":
+        return { text: "Fully Active", class: "bg-green-100 text-green-700" };
+      case "membership_paid":
+        return { text: "Membership Paid", class: "bg-blue-100 text-blue-700" };
+      case "admin_fee_paid":
+        return { text: "Admin Fee Paid", class: "bg-yellow-100 text-yellow-700" };
+      case "free":
+        return { text: "Free Member", class: "bg-gray-100 text-gray-700" };
+      default:
+        return { text: "Free", class: "bg-gray-100 text-gray-700" };
+    }
+  };
 
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="bg-gradient-to-r from-[#8200DB] to-[#6E11B0] rounded-2xl shadow-xl overflow-hidden">
+          <div className="header rounded-2xl shadow-xl overflow-hidden">
             <div className="px-8 py-8">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div className="mb-6 lg:mb-0">
                   <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
                     Manage Users
                   </h1>
-                  <p className="text-blue-100 text-lg">
+                  <p className="text-white text-opacity-90 text-lg">
                     View and manage all users in your MLM system
                   </p>
                 </div>
-                <div className="bg-white/20 rounded-lg px-4 py-2">
-                  <span className="text-white text-sm font-medium">
-                    {users.length} Total Users
-                  </span>
+                <div className="flex items-center space-x-4">
+                  <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-xl text-white">
+                    <p className="text-sm opacity-90">Total Users</p>
+                    <p className="text-2xl font-bold">{users.length}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -68,88 +133,109 @@ export default function ManageUsersPage() {
         </div>
 
         {/* Stats Cards */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#8200DB]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div 
+            className="rounded-xl shadow-lg p-6 border-l-4 hover:shadow-xl transition-all duration-300"
+            style={{ 
+              backgroundColor: 'var(--card)',
+              borderLeftColor: 'var(--primary)',
+            }}
+          >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Total Users</p>
-                <p className="text-2xl font-bold text-gray-800 mt-1">
+                <p className="text-sm font-medium opacity-80">Total Users</p>
+                <p className="text-2xl font-bold mt-1" style={{ color: 'var(--text)' }}>
                   {users.length}
                 </p>
               </div>
-              <div className="bg-[#8200DB] bg-opacity-10 p-3 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-[#8200DB]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                  ></path>
+              <div className="p-3 rounded-lg bg-[var(--primary)]/20">
+                <svg className="w-6 h-6" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+          <div 
+            className="rounded-xl shadow-lg p-6 border-l-4 hover:shadow-xl transition-all duration-300"
+            style={{ 
+              backgroundColor: 'var(--card)',
+              borderLeftColor: 'var(--secondary)',
+            }}
+          >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Active Users</p>
-                <p className="text-2xl font-bold text-gray-800 mt-1">
+                <p className="text-sm font-medium opacity-80">Active Users</p>
+                <p className="text-2xl font-bold mt-1" style={{ color: 'var(--text)' }}>
                   {users.filter(u => u.status === "fully_active").length}
                 </p>
               </div>
-              <div className="bg-green-500 bg-opacity-10 p-3 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
+              <div className="p-3 rounded-lg bg-[var(--secondary)]/20">
+                <svg className="w-6 h-6" style={{ color: 'var(--secondary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+          <div 
+            className="rounded-xl shadow-lg p-6 border-l-4 hover:shadow-xl transition-all duration-300"
+            style={{ 
+              backgroundColor: 'var(--card)',
+              borderLeftColor: 'var(--accent)',
+            }}
+          >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Pending</p>
-                <p className="text-2xl font-bold text-gray-800 mt-1">
-                  {users.filter(u => u.status === "free").length}
+                <p className="text-sm font-medium opacity-80">Admin fee paid</p>
+                <p className="text-2xl font-bold mt-1" style={{ color: 'var(--text)' }}>
+                  {users.filter(u => u.status === "admin_fee_paid").length}
                 </p>
               </div>
-              <div className="bg-yellow-500 bg-opacity-10 p-3 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-yellow-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
+              <div className="p-3 rounded-lg bg-[var(--accent)]/20">
+                <svg className="w-6 h-6" style={{ color: 'var(--accent)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
             </div>
           </div>
-        </div> */}
+
+          <div 
+            className="rounded-xl shadow-lg p-6 border-l-4 hover:shadow-xl transition-all duration-300"
+            style={{ 
+              backgroundColor: 'var(--card)',
+              borderLeftColor: 'var(--success)',
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium opacity-80">New This Month</p>
+                <p className="text-2xl font-bold mt-1" style={{ color: 'var(--text)' }}>
+                  {users.filter(u => {
+                    const joinDate = new Date(u.createdAt);
+                    const currentMonth = new Date().getMonth();
+                    const currentYear = new Date().getFullYear();
+                    return joinDate.getMonth() === currentMonth && joinDate.getFullYear() === currentYear;
+                  }).length}
+                </p>
+              </div>
+              <div className="p-3 rounded-lg bg-[var(--success)]/20">
+                <svg className="w-6 h-6" style={{ color: 'var(--success)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div 
+          className="rounded-xl shadow-lg p-6 mb-6"
+          style={{ 
+            backgroundColor: 'var(--card)',
+            border: `1px solid var(--border)`
+          }}
+        >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex-1 max-w-md">
               <div className="relative">
@@ -158,20 +244,21 @@ export default function ManageUsersPage() {
                   placeholder="Search users by name, email, or username..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300"
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                  className="card-secondary w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1"
+                  style={{
+                    '--tw-ring-color': 'var(--accent)'
+                  }}
                 />
                 <svg
-                  className="absolute left-3 top-3.5 w-5 h-5 text-gray-400"
+                  className="absolute left-3 top-3.5 w-5 h-5"
+                  style={{ color: 'var(--primary)' }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  ></path>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
             </div>
@@ -180,11 +267,16 @@ export default function ManageUsersPage() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8200DB] focus:ring-2 focus:ring-[#8200DB]/20 transition-all duration-300 bg-white"
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-1"
+                style={{
+                  '--tw-ring-color': 'var(--accent)'
+                }}
               >
-                {statuses.map((status) => (
-                  <option key={status} value={status}>
-                    {status === "all" ? "All Status" : status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                {statusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -194,93 +286,322 @@ export default function ManageUsersPage() {
 
         {/* Users Table */}
         {loading ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8200DB] mx-auto"></div>
-            <p className="text-gray-600 mt-4 text-lg">Loading users...</p>
+          <div className="card rounded-xl shadow-lg p-12 text-center">
+            <div 
+              className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto"
+              style={{ borderColor: 'var(--primary)' }}
+            ></div>
+            <p className="mt-4 text-lg opacity-80">Loading users...</p>
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div 
+            className="rounded-xl shadow-lg p-12 text-center"
+            style={{ 
+              backgroundColor: 'var(--card)',
+              border: `1px solid var(--border)`
+            }}
+          >
+            <div 
+              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ backgroundColor: 'var(--primary)', opacity: '0.1' }}
+            >
               <svg
-                className="w-12 h-12 text-gray-400"
+                className="w-12 h-12"
+                style={{ color: 'var(--primary)' }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                ></path>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--text)' }}>
               No users found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 opacity-80">
               {searchTerm || filterStatus !== "all"
                 ? "Try adjusting your search or filters"
                 : "No users registered in the system yet"}
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="card rounded-xl shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left py-4 px-6 font-semibold text-gray-700">User</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Contact</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Status</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Joined Date</th>
-                    <th className="text-center py-4 px-6 font-semibold text-gray-700 w-32">Actions</th>
+                  <tr style={{ backgroundColor: `var(--cardSecondary)` }}>
+                    <th className="text-left py-4 px-6 font-semibold">User</th>
+                    <th className="text-left py-4 px-6 font-semibold">Email</th>
+                    <th className="text-left py-4 px-6 font-semibold">Status</th>
+                    <th className="text-left py-4 px-6 font-semibold">Joined Date</th>
+                    <th className="text-center py-4 px-6 font-semibold w-24">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user) => (
-                    <tr key={user._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="py-4 px-6">
-                        <div>
-                          <p className="font-medium text-gray-800">{user.name}</p>
-                          <p className="text-sm text-gray-500">@{user.username}</p>
-                        </div>
-                      </td>
-                      <td className="py-4 px-6">
-                        <p className="text-gray-700">{user.email}</p>
-                      </td>
-                      <td className="py-4 px-6">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            user.status === "fully_active"
-                              ? "bg-green-100 text-green-700"
-                              : user.status === "membership_paid"
-                              ? "bg-blue-100 text-blue-700"
-                              : user.status === "admin_fee_paid"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {user.status ? user.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : "Free"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 text-gray-500 text-sm">
-                        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
-                      </td>
-                      <td className="py-4 px-6">
-                        <div className="flex justify-center">
-                          <button
-                            onClick={() => handleViewDetails(user._id)}
-                            className="bg-[#8200DB] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#6E11B0] transition-colors duration-200 text-sm"
-                          >
-                            View Details
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {filteredUsers.map((user, index) => {
+                    const statusInfo = getStatusInfo(user.status);
+                    return (
+                      <tr 
+                        key={user._id} 
+                        className="transition-colors duration-200 hover:opacity-90"
+                        style={{ 
+                          borderBottom: index !== filteredUsers.length - 1 ? `1px solid var(--border)` : 'none',
+                          backgroundColor: `transparent`
+                        }}
+                      >
+                        <td className="py-4 px-6">
+                          <div>
+                            <p className="font-medium" style={{ color: 'var(--text)' }}>{user.name}</p>
+                            <p className="text-sm opacity-70">@{user.username}</p>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <p className="opacity-90">{user.email}</p>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusInfo.class}`}>
+                            {statusInfo.text}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <p className="text-sm opacity-70">
+                            {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => setSelectedUser(user)}
+                              className="p-2 transition-all duration-200 hover:opacity-70"
+                              style={{ color: 'var(--accent)' }}
+                              title="View Details"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* User Modal */}
+        {selectedUser && (
+          <div className="fixed inset-0 backdrop-blur-sm bg-white/10 flex items-center justify-center z-50 p-4">
+            <div 
+              className="rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+              style={{ backgroundColor: 'var(--card)' }}
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>User Profile</h2>
+                  <button
+                    onClick={() => setSelectedUser(null)}
+                    className="p-2 hover:opacity-70 transition-opacity"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="text-center mb-6">
+                  {selectedUser.profilePicture ? (
+                    <img 
+                      src={selectedUser.profilePicture}
+                      alt={selectedUser.name}
+                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                    />
+                  ) : (
+                    <div 
+                      className="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-white"
+                      style={{ backgroundColor: 'var(--primary)' }}
+                    >
+                      {selectedUser.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </div>
+                  )}
+                  <h3 className="text-xl font-semibold mb-1" style={{ color: 'var(--text)' }}>
+                    {selectedUser.name}
+                  </h3>
+                  <p className="opacity-70">@{selectedUser.username}</p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>{selectedUser.email}</span>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span>Sponsored by: {selectedUser.referredBy || 'Not sponsored'}</span>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h6m-6 0l-2 2m8-2l2 2m-2-2v6a2 2 0 01-2 2H10a2 2 0 01-2-2v-6" />
+                    </svg>
+                    <span>{getStatusInfo(selectedUser.status).text}</span>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-5 h-5" style={{ color: 'var(--primary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h6m-6 0l-2 2m8-2l2 2m-2-2v6a2 2 0 01-2 2H10a2 2 0 01-2-2v-6" />
+                    </svg>
+                    <span>Joined {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : "N/A"}</span>
+                  </div>
+                </div>
+
+                <div className="mt-5 pt-5" style={{ borderTop: `1px solid var(--border)` }}>
+                  <h4 className="font-semibold mb-3" style={{ color: 'var(--text)' }}>Social Links</h4>
+                  <div className="grid grid-cols-5 gap-3">
+                    <a
+                      href={`mailto:${selectedUser.email}`}
+                      className="p-3 rounded-lg transition-all duration-200 hover:opacity-70 flex items-center justify-center"
+                      style={{ backgroundColor: 'var(--cardSecondary)', color: '#EA4335' }}
+                      title="Send Email"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.904.732-1.636 1.636-1.636h3.819v.273L12 8.91l6.545-4.816v-.273h3.819c.904 0 1.636.732 1.636 1.636z"/>
+                      </svg>
+                    </a>
+
+                    {selectedUser.socialMedia?.facebook ? (
+                      <a
+                        href={selectedUser.socialMedia.facebook.startsWith('http') ? selectedUser.socialMedia.facebook : `https://facebook.com/${selectedUser.socialMedia.facebook}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-lg transition-all duration-200 hover:opacity-70 flex items-center justify-center"
+                        style={{ backgroundColor: 'var(--cardSecondary)', color: '#1877F2' }}
+                        title="Facebook"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                      </a>
+                    ) : (
+                      <div className="p-3 rounded-lg opacity-30 flex items-center justify-center" style={{ backgroundColor: 'var(--cardSecondary)', color: '#1877F2' }}>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                      </div>
+                    )}
+
+                    {selectedUser.socialMedia?.instagram ? (
+                      <a
+                        href={selectedUser.socialMedia.instagram.startsWith('http') ? selectedUser.socialMedia.instagram : `https://instagram.com/${selectedUser.socialMedia.instagram}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-lg transition-all duration-200 hover:opacity-70 flex items-center justify-center"
+                        style={{ backgroundColor: 'var(--cardSecondary)', color: '#E4405F' }}
+                        title="Instagram"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                      </a>
+                    ) : (
+                      <div className="p-3 rounded-lg opacity-30 flex items-center justify-center" style={{ backgroundColor: 'var(--cardSecondary)', color: '#E4405F' }}>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                      </div>
+                    )}
+
+                    {selectedUser.socialMedia?.tiktok ? (
+                      <a
+                        href={selectedUser.socialMedia.tiktok.startsWith('http') ? selectedUser.socialMedia.tiktok : `https://tiktok.com/@${selectedUser.socialMedia.tiktok}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-lg transition-all duration-200 hover:opacity-70 flex items-center justify-center"
+                        style={{ backgroundColor: 'var(--cardSecondary)', color: '#000000' }}
+                        title="TikTok"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                        </svg>
+                      </a>
+                    ) : (
+                      <div className="p-3 rounded-lg opacity-30 flex items-center justify-center" style={{ backgroundColor: 'var(--cardSecondary)', color: '#000000' }}>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                        </svg>
+                      </div>
+                    )}
+
+                    {selectedUser.socialMedia?.whatsapp ? (
+                      <a
+                        href={`https://wa.me/${selectedUser.socialMedia.whatsapp}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-lg transition-all duration-200 hover:opacity-70 flex items-center justify-center"
+                        style={{ backgroundColor: 'var(--cardSecondary)', color: '#25D366' }}
+                        title="WhatsApp"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.488"/>
+                        </svg>
+                      </a>
+                    ) : (
+                      <div className="p-3 rounded-lg opacity-30 flex items-center justify-center" style={{ backgroundColor: 'var(--cardSecondary)', color: '#25D366' }}>
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.488"/>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <form onSubmit={handleUpdateUser} className="mt-5 pt-5" style={{ borderTop: `1px solid var(--border)` }}>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>User Status</label>
+                    <select
+                      value={selectedUser.status}
+                      onChange={(e) => setSelectedUser({...selectedUser, status: e.target.value})}
+                      onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                      onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                      className="card-secondary w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-1"
+                      style={{ '--tw-ring-color': 'var(--accent)' }}
+                    >
+                      <option value="free">Free Member</option>
+                      <option value="admin_fee_paid">Admin Fee Paid</option>
+                      <option value="membership_paid">Membership Paid</option>
+                      <option value="fully_active">Fully Active</option>
+                    </select>
+            
+                  </div>
+                  
+                  <div className="flex justify-end space-x-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedUser(null)}
+                      className="px-4 py-2 rounded-lg"
+                      style={{ backgroundColor: 'var(--cardSecondary)', color: 'var(--text)' }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="button px-5 py-2 rounded-lg font-semibold transition-all disabled:opacity-50"
+                    >
+                      {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         )}

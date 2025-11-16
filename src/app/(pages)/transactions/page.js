@@ -221,6 +221,8 @@ export default function TransactionsPage() {
                   placeholder="Search transactions by user, ID..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                   className="card-secondary w-full rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1"
                   style={{
                     '--tw-ring-color': 'var(--accent)'
@@ -242,6 +244,8 @@ export default function TransactionsPage() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                 className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-1"
                 style={{
                   '--tw-ring-color': 'var(--accent)'
@@ -257,6 +261,8 @@ export default function TransactionsPage() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
+                onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                 className="card-secondary rounded-xl px-4 py-3 focus:outline-none focus:ring-1"
                 style={{
                   '--tw-ring-color': 'var(--accent)'
