@@ -250,7 +250,7 @@ export default function PayoutSettingsPage() {
 
   const handleTextareaBlur = (e) => {
     e.target.style.borderColor = 'var(--border)';
-    e.target.style.boxShadow = 'none';
+
   };
 
   if (status === "loading") {
