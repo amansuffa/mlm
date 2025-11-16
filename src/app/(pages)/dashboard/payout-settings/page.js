@@ -31,7 +31,14 @@ export default function PayoutSettingsPage() {
         const data = await res.json();
         console.log('API Response:', data);
         
-        setPayouts(Array.isArray(data) ? data : []);
+        const payoutMethods = Array.isArray(data) ? data : [];
+        
+        // If there are methods but no primary method, set the first one as primary
+        if (payoutMethods.length > 0 && !payoutMethods.some(method => method.isPrimary)) {
+          payoutMethods[0].isPrimary = true;
+        }
+        
+        setPayouts(payoutMethods);
       } catch (err) {
         console.error("Failed to fetch payout methods:", err);
         toast.error(`Failed to load payout methods: ${err.message}`);
@@ -45,8 +52,6 @@ export default function PayoutSettingsPage() {
       fetchPayoutMethods();
     }
   }, [status, userId]);
-
- 
 
   const handleSave = async () => {
     if (!form.methodName.trim() || !form.details.trim()) {
@@ -78,8 +83,6 @@ export default function PayoutSettingsPage() {
         method,
         headers: { 
           "Content-Type": "application/json",
-          // Add authorization header if needed
-          // "Authorization": `Bearer ${session?.accessToken}`
         },
         body: JSON.stringify(body),
       });
@@ -96,8 +99,14 @@ export default function PayoutSettingsPage() {
         throw new Error("Invalid response from server");
       }
 
+      // Ensure first method is primary if no primary exists
+      const updatedPayouts = Array.isArray(data) ? data : [];
+      if (updatedPayouts.length > 0 && !updatedPayouts.some(method => method.isPrimary)) {
+        updatedPayouts[0].isPrimary = true;
+      }
+      
       // Update local state
-      setPayouts(data);
+      setPayouts(updatedPayouts);
       setForm({ methodName: "", details: "", isPrimary: false });
       setEditingIndex(null);
       
@@ -135,13 +144,11 @@ export default function PayoutSettingsPage() {
                     method: "DELETE",
                     headers: { 
                       "Content-Type": "application/json",
-                      // Add authorization header if needed
-                      // "Authorization": `Bearer ${session?.accessToken}`
                     },
                     body: JSON.stringify({ 
                       index,
-                      methodName, // Include method name for verification
-                      userId     // Include userId for verification
+                      methodName,
+                      userId
                     }),
                   });
 
@@ -151,12 +158,17 @@ export default function PayoutSettingsPage() {
                   }
 
                   const data = await res.json();
-                  // Verify the response data
                   if (!Array.isArray(data)) {
                     throw new Error("Invalid response from server");
                   }
                   
-                  setPayouts(data);
+                  // Ensure first method is primary if no primary exists after deletion
+                  const updatedPayouts = Array.isArray(data) ? data : [];
+                  if (updatedPayouts.length > 0 && !updatedPayouts.some(method => method.isPrimary)) {
+                    updatedPayouts[0].isPrimary = true;
+                  }
+                  
+                  setPayouts(updatedPayouts);
                   toast.success("Payout method deleted successfully!");
                 } catch (err) {
                   console.error("Delete failed:", err);
@@ -218,6 +230,27 @@ export default function PayoutSettingsPage() {
   const handleCancelEdit = () => {
     setForm({ methodName: "", details: "", isPrimary: false });
     setEditingIndex(null);
+  };
+
+  // Enhanced input handlers with focus effects
+  const handleInputFocus = (e) => {
+    e.target.style.borderColor = 'var(--accent)';
+ 
+  };
+
+  const handleInputBlur = (e) => {
+    e.target.style.borderColor = 'var(--border)';
+
+  };
+
+  const handleTextareaFocus = (e) => {
+    e.target.style.borderColor = 'var(--accent)';
+
+  };
+
+  const handleTextareaBlur = (e) => {
+    e.target.style.borderColor = 'var(--border)';
+    e.target.style.boxShadow = 'none';
   };
 
   if (status === "loading") {
@@ -326,11 +359,14 @@ export default function PayoutSettingsPage() {
                 placeholder="e.g., Bank Transfer, PayPal, etc."
                 value={form.methodName}
                 onChange={(e) => setForm({ ...form, methodName: e.target.value })}
-                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300"
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
                 style={{ 
                   backgroundColor: `var(--cardsec)`,
                   border: `2px solid var(--border)`,
-                  color: 'var(--text)'
+                  color: 'var(--text)',
+                  '--tw-ring-color': 'var(--accent)'
                 }}
               />
             </div>
@@ -343,12 +379,15 @@ export default function PayoutSettingsPage() {
                 placeholder="e.g., Account number, email, wallet address, routing number, etc."
                 value={form.details}
                 onChange={(e) => setForm({ ...form, details: e.target.value })}
+                onFocus={handleTextareaFocus}
+                onBlur={handleTextareaBlur}
                 rows={4}
-                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-300 resize-vertical"
+                className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300 resize-vertical"
                 style={{ 
                   backgroundColor: `var(--cardsec)`,
                   border: `2px solid var(--border)`,
-                  color: 'var(--text)'
+                  color: 'var(--text)',
+                  '--tw-ring-color': 'var(--accent)'
                 }}
               />
             </div>
@@ -360,10 +399,11 @@ export default function PayoutSettingsPage() {
                 type="checkbox"
                 checked={form.isPrimary}
                 onChange={(e) => setForm({ ...form, isPrimary: e.target.checked })}
-                className="w-4 h-4 rounded focus:ring-2 transition-all duration-300"
+                className="w-4 h-4 rounded focus:ring-1 transition-all duration-300"
                 style={{ 
                   backgroundColor: form.isPrimary ? 'var(--primary)' : 'var(--cardsec)',
-                  borderColor: 'var(--border)'
+                  borderColor: 'var(--border)',
+                  '--tw-ring-color': 'var(--accent)'
                 }}
               />
               <span className="opacity-80">Set as primary payout method</span>
@@ -504,19 +544,23 @@ export default function PayoutSettingsPage() {
                         <div className="flex justify-center space-x-2">
                           <button
                             onClick={() => handleEdit(index)}
-                            className="px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:shadow-lg"
-                            style={{ 
-                              backgroundColor: 'var(--primary)',
-                              color: 'white'
-                            }}
+                            className="p-2 transition-all duration-200 hover:opacity-70"
+                            style={{ color: 'var(--primary)' }}
+                            title="Edit"
                           >
-                            Edit
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
                           </button>
                           <button
                             onClick={() => handleDelete(index, String(payout.methodName || ''))}
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors duration-200 text-sm"
+                            className="p-2 transition-all duration-200 hover:opacity-70"
+                            style={{ color: '#ef4444' }}
+                            title="Delete"
                           >
-                            Delete
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                           </button>
                         </div>
                       </td>
