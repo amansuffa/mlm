@@ -83,6 +83,18 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Pre-save middleware to ensure admin users have correct first sale status
+userSchema.pre('save', function(next) {
+  // If user is admin, ensure they have correct first sale status
+  if (this.role === 'admin') {
+    this.hasFirstSale = true; // Admin is always qualified
+    this.firstSaleLocked = false; // Admin can never be locked
+    this.firstSaleLockedBy = null;
+    this.firstSaleLockedAt = null;
+  }
+  next();
+});
+
 // /* INDEXES for Performance */
 // userSchema.index({ sponsor: 1 });       // For fast downline/referral queries
 // userSchema.index({ username: 1 });     // For login & affiliate link lookups

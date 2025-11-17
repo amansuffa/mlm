@@ -160,6 +160,19 @@ export async function PATCH(req, context) {
                 `✅ Added user ${user.username} to ${recipient.username}'s directSales`
               );
             }
+            
+            // For admin users, always add to directSales regardless of distribution type
+            if (distributionResult.recipient && distributionResult.recipient.role === "admin") {
+              const adminRecipient = distributionResult.recipient;
+              if (!adminRecipient.directSales) {
+                adminRecipient.directSales = [];
+              }
+              if (!adminRecipient.directSales.some(id => id.toString() === user._id.toString())) {
+                adminRecipient.directSales.push(user._id);
+                await adminRecipient.save();
+                console.log(`✅ Added user ${user.username} to admin ${adminRecipient.username}'s directSales`);
+              }
+            }
             // If distributionType is "direct", do NOT push to passupSales
           } else {
             console.warn(
@@ -173,14 +186,20 @@ export async function PATCH(req, context) {
 
         // Update sponsor's first sale status
         if (sponsor) {
-          // If this was sponsor's first sale (pass-up), mark it as complete
-          if (
-            distributionResult &&
-            distributionResult.success &&
-            distributionResult.distributionType === "pass_up"
-          ) {
-            sponsor.hasFirstSale = true;
+          // Admin users don't have first sale qualification - they're always qualified
+          if (sponsor.role === "admin") {
+            sponsor.hasFirstSale = true; // Admin is always qualified
+          } else {
+            // If this was sponsor's first sale (pass-up), mark it as complete
+            if (
+              distributionResult &&
+              distributionResult.success &&
+              distributionResult.distributionType === "pass_up"
+            ) {
+              sponsor.hasFirstSale = true;
+            }
           }
+          
           // Unlock sponsor's first sale (if it was locked)
           if (sponsor.firstSaleLocked) {
             sponsor.firstSaleLocked = false;

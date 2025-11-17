@@ -71,6 +71,19 @@ export async function POST(req) {
     }).sort({ createdAt: -1 });
 
     // Handle lock/unlock action
+    // Admin users don't have first sale qualification, so they can't be locked
+    if (sponsor.role === "admin") {
+      return NextResponse.json({
+        success: true,
+        message: "Admin users don't require first sale qualification",
+        sponsor: {
+          id: sponsor._id,
+          username: sponsor.username,
+          firstSaleLocked: false,
+          firstSaleLockedBy: null,
+        },
+      });
+    }
 
     if(!sponsor.hasFirstSale){
     if (action === "lock") {

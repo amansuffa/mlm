@@ -33,14 +33,17 @@ export async function distributeMembershipFee(newMember, feeAmount = 500) {
       };
     }
 
-    // Direct referrer ki invite count check karo
+    // Check if direct referrer is admin - admins don't have first sale qualification
+    const isReferrerAdmin = directReferrer.role === "admin";
+    
+    // Direct referrer ki invite count check karo (only for non-admin users)
     const inviteCount = directReferrer.directInvitesCount || 0;
     
     let recipientUser;
     let distributionType;
 
-    if (inviteCount === 0) {
-      // Pehla invite hai - 1-Up Pass-Up
+    if (!isReferrerAdmin && inviteCount === 0) {
+      // Pehla invite hai - 1-Up Pass-Up (only for non-admin referrers)
       // Fee referrer ke sponsor ko jayegi
       if (directReferrer.referredBy) {
         recipientUser = await User.findOne({ username: directReferrer.referredBy });
@@ -65,10 +68,14 @@ export async function distributeMembershipFee(newMember, feeAmount = 500) {
         };
       }
     } else {
-      // Doosra ya usse zyada invite hai
+      // Admin referrer OR doosra ya usse zyada invite hai
       // Fee direct referrer ko jayegi
       recipientUser = directReferrer;
       distributionType = "direct"; // Direct payment to referrer
+      
+      if (isReferrerAdmin) {
+        console.log(`Admin referrer ${directReferrer.username} - all sales go direct (no first sale qualification)`);
+      }
     }
 
     // Recipient user ki earnings update karo

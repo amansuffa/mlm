@@ -37,8 +37,13 @@ export async function POST(req) {
     let recipientUser = null;
     let recipientLabel = "No Sponsor";
 
+    // Admin users don't have first sale qualification - all payments go directly to them
+    if (sponsor.role === "admin") {
+      recipientUser = sponsor;
+      recipientLabel = `Admin Sponsor (Direct): ${sponsor.username || "Not found"}`;
+    }
     // Step 2: Check if sponsor's first sale is locked
-   if (sponsor.firstSaleLocked) {
+    else if (sponsor.firstSaleLocked) {
       // Check if locked by current user
       if (
         sponsor.firstSaleLockedBy &&

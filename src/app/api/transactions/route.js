@@ -80,8 +80,12 @@ export async function POST(req) {
         );
       }
 
+      // Admin users don't have first sale qualification - all payments go directly to them
+      if (sponsor.role === "admin") {
+        finalReceiver = sponsor._id;
+      }
       // Check if sponsor's first sale is locked
-      if (sponsor.firstSaleLocked) {
+      else if (sponsor.firstSaleLocked) {
         // Check if locked by current user
         if (
           sponsor.firstSaleLockedBy &&
@@ -187,7 +191,7 @@ export async function POST(req) {
     }
 
     // Send email to sponsor
-    if (sponsor && sponsor.hasFirstSale) {
+    if (sponsor && (sponsor.hasFirstSale || sponsor.role === "admin")) {
       if (sponsorTemplate) {
         try {
           const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
@@ -210,8 +214,8 @@ export async function POST(req) {
       }
     }
 
-    // Send email to sponsor's sponsor if applicable
-    if (sponsor && !sponsor.hasFirstSale) {
+    // Send email to sponsor's sponsor if applicable (not for admin sponsors)
+    if (sponsor && !sponsor.hasFirstSale && sponsor.role !== "admin") {
       if (sponsorUplineTemplate && sponsorUpline) {
         try {
           const sponsorUplineHtml = parseTemplate(
