@@ -10,7 +10,7 @@ export async function GET(request, context) {
 
     const { id } = await context.params;
 
-    const blog = await Blog.findById(id).populate("authorId", "name username");
+    const blog = await Blog.findById(id).populate("authorId", "name username profilePicture");
 
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });

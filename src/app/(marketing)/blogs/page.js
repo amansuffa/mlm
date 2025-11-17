@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
@@ -56,17 +57,41 @@ export default function BlogsPage() {
     return Math.ceil(words / wordsPerMinute);
   };
 
+  // Strip markdown syntax for clean text display
+  const stripMarkdown = (content) => {
+    if (!content) return "";
+    return content
+      .replace(/#{1,6}\s+/g, '') // Remove heading markers
+      .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove bold
+      .replace(/\*([^*]+)\*/g, '$1') // Remove italic
+      .replace(/__([^_]+)__/g, '$1') // Remove bold
+      .replace(/_([^_]+)_/g, '$1') // Remove italic
+      .replace(/`([^`]+)`/g, '$1') // Remove inline code
+      .replace(/```[\s\S]*?```/g, '') // Remove code blocks
+      .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1') // Remove images
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links
+      .replace(/^[-*+]\s+/gm, '') // Remove list markers
+      .replace(/^\d+\.\s+/gm, '') // Remove numbered list markers
+      .replace(/^>\s+/gm, '') // Remove blockquotes
+      .replace(/---/g, '') // Remove horizontal rules
+      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '') // Remove iframes
+      .replace(/<a[^>]*>(.*?)<\/a>/gi, '$1') // Remove link tags but keep text
+      .replace(/<[^>]*>/g, '') // Remove all other HTML tags
+      .replace(/\n+/g, ' ') // Replace newlines with spaces
+      .trim();
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen py-8">
+      <div className="min-h-screen py-8 flex items-center justify-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="card rounded-xl shadow-lg p-12 text-center">
+  
             <div 
               className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto"
               style={{ borderColor: 'var(--primary)' }}
             ></div>
             <p className="mt-4 text-lg opacity-80">Loading articles...</p>
-          </div>
+        
         </div>
       </div>
     );
@@ -102,7 +127,8 @@ export default function BlogsPage() {
                 style={{ 
                   backgroundColor: 'var(--card)',
                   border: `2px solid var(--border)`,
-                  color: 'var(--text)','--tw-ring-color': 'var(--accent)'
+                  color: 'var(--text)',
+                  '--tw-ring-color': 'var(--accent)'
                 }}
               />
               <svg
@@ -128,6 +154,18 @@ export default function BlogsPage() {
                 border: `1px solid var(--border)`
               }}
             >
+              {/* Featured Blog Thumbnail */}
+              {featuredBlog.thumbnail && (
+                <div className="relative h-64 lg:h-80 w-full">
+                  <Image
+                    src={featuredBlog.thumbnail}
+                    alt={featuredBlog.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              
               <div className="p-8 lg:p-12">
                 <div className="flex items-center mb-6">
                   <span 
@@ -151,16 +189,23 @@ export default function BlogsPage() {
                 </h2>
                 
                 <p className="text-lg opacity-80 mb-8 leading-relaxed">
-                  {featuredBlog.content.split(" ").slice(0, 50).join(" ")}...
+                  {stripMarkdown(featuredBlog.content).split(" ").slice(0, 50).join(" ")}...
                 </p>
 
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                   <div className="flex items-center space-x-4">
-                    <div 
-                      className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-white"
-                      style={{ backgroundColor: 'var(--primary)' }}
-                    >
-                      {featuredBlog.authorId?.name?.charAt(0) || "A"}
+                    <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center font-semibold text-white" style={{ backgroundColor: 'var(--primary)' }}>
+                      {featuredBlog.authorId?.profilePicture ? (
+                        <Image
+                          src={featuredBlog.authorId.profilePicture}
+                          alt={featuredBlog.authorId.name || "Author"}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        featuredBlog.authorId?.name?.charAt(0) || "A"
+                      )}
                     </div>
                     <div>
                       <p className="font-semibold" style={{ color: 'var(--text)' }}>
@@ -242,15 +287,42 @@ export default function BlogsPage() {
               {(searchTerm ? filteredBlogs : filteredBlogs.filter(blog => blog._id !== featuredBlog?._id)).map((blog) => (
                 <article
                   key={blog._id}
-                  className="rounded-2xl shadow-lg overflow-hidden hover:shadow-xl hover:translate-y-[-8px] transition-all duration-500 group"
+                  className="rounded-2xl shadow-lg overflow-hidden hover:shadow-xl hover:translate-y-[-8px] transition-all duration-500 group flex flex-col h-full"
                   style={{ 
                     backgroundColor: 'var(--card)',
                     border: `1px solid var(--border)`
                   }}
                 >
-                  <div className="p-6">
+                  {/* Blog Thumbnail */}
+                  {blog.thumbnail ? (
+                    <div className="relative h-48 w-full">
+                      <Image
+                        src={blog.thumbnail}
+                        alt={blog.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div 
+                      className="h-48 w-full flex items-center justify-center"
+                      style={{ backgroundColor: 'var(--cardSecondary)' }}
+                    >
+                      <svg
+                        className="w-12 h-12 opacity-30"
+                        style={{ color: 'var(--primary)' }}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  )}
+
+                  <div className="p-6 flex flex-col flex-1">
                     {/* Article Meta */}
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2 text-sm opacity-70">
                         <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
                         <span>•</span>
@@ -258,24 +330,34 @@ export default function BlogsPage() {
                       </div>
                     </div>
 
-                    {/* Article Title */}
-                    <h3 className="text-xl font-bold mb-4 line-clamp-2 group-hover:opacity-80 transition-opacity" style={{ color: 'var(--text)' }}>
+                    {/* Article Title - Below Image */}
+                    <h3 className="text-xl font-bold mb-3 line-clamp-2 group-hover:opacity-80 transition-opacity" style={{ color: 'var(--text)' }}>
                       {blog.title}
                     </h3>
                     
                     {/* Article Excerpt */}
-                    <p className="opacity-80 mb-6 line-clamp-3 leading-relaxed">
-                      {blog.content.split(" ").slice(0, 30).join(" ")}...
+                    <p className="opacity-80 mb-4 line-clamp-3 leading-relaxed text-sm flex-1">
+                      {stripMarkdown(blog.content).split(" ").slice(0, 25).join(" ")}...
                     </p>
 
                     {/* Author and Actions */}
-                    <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+                    <div className="flex items-center justify-between pt-4 border-t mt-auto" style={{ borderColor: 'var(--border)' }}>
                       <div className="flex items-center space-x-3">
                         <div 
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white overflow-hidden"
                           style={{ backgroundColor: 'var(--primary)' }}
                         >
-                          {blog.authorId?.name?.charAt(0) || "A"}
+                          {blog.authorId?.profilePicture ? (
+                                                               <Image
+                                                                 src={blog.authorId.profilePicture}
+                                                                 alt={blog.authorId.name || "Author"}
+                                                                 width={48}
+                                                                 height={48}
+                                                                 className="w-full h-full object-cover"
+                                                               />
+                                                             ) : (
+                                                               blog.authorId?.name?.charAt(0) || "A"
+                                                             )}
                         </div>
                         <span className="text-sm opacity-80">{blog.authorId?.name || "Anonymous"}</span>
                       </div>
@@ -314,7 +396,7 @@ export default function BlogsPage() {
         )}
 
         {/* Newsletter Section */}
-        <div className="mt-20">
+        {/* <div className="mt-20">
           <div 
             className="rounded-2xl shadow-xl overflow-hidden"
             style={{ 
@@ -325,11 +407,9 @@ export default function BlogsPage() {
             <div className="px-8 py-12 text-center">
               <div 
                 className="w-20 h-20 rounded-2xl bg-[var(--primary)]/20 flex items-center justify-center mx-auto mb-6"
-                
               >
                 <svg
                   className="w-10 h-10 text-[var(--primary)]"
-           
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -353,7 +433,8 @@ export default function BlogsPage() {
                   style={{ 
                     backgroundColor: 'var(--cardSecondary)',
                     border: `2px solid var(--border)`,
-                    color: 'var(--text)','--tw-ring-color': 'var(--accent)'
+                    color: 'var(--text)',
+                    '--tw-ring-color': 'var(--accent)'
                   }}
                 />
                 <button className="button px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg whitespace-nowrap">
@@ -362,7 +443,7 @@ export default function BlogsPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

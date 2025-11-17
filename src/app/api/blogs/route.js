@@ -35,7 +35,7 @@ export async function GET(request) {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("authorId", "name username");
+      .populate("authorId", "name username profilePicture");
 
     const total = await Blog.countDocuments(filter);
 

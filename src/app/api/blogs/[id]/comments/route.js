@@ -11,7 +11,7 @@ export async function GET(request, context) {
     const { id } = await context.params;
 
     const comments = await Comment.find({ blogId: id, parentId: null })
-      .populate("userId", "name username")
+      .populate("userId", "name username profilePicture")
       .populate({
         path: "replies",
         populate: {
@@ -80,7 +80,7 @@ export async function POST(request, context) {
     }
 
     // Populate the user data
-    await comment.populate("userId", "name username");
+    await comment.populate("userId", "name username profilePicture");
 
     return NextResponse.json({ success: true, comment });
   } catch (error) {

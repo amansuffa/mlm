@@ -111,12 +111,39 @@ export default function SingleBlogPage() {
     }
   };
 
+  // Strip markdown syntax for clean text display
+  const stripMarkdown = (content) => {
+    if (!content) return "";
+    return content
+      .replace(/#{1,6}\s+/g, '') // Remove heading markers
+      .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove bold
+      .replace(/\*([^*]+)\*/g, '$1') // Remove italic
+      .replace(/__([^_]+)__/g, '$1') // Remove bold
+      .replace(/_([^_]+)_/g, '$1') // Remove italic
+      .replace(/`([^`]+)`/g, '$1') // Remove inline code
+      .replace(/```[\s\S]*?```/g, '') // Remove code blocks
+      .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1') // Remove images
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links
+      .replace(/^[-*+]\s+/gm, '') // Remove list markers
+      .replace(/^\d+\.\s+/gm, '') // Remove numbered list markers
+      .replace(/^>\s+/gm, '') // Remove blockquotes
+      .replace(/---/g, '') // Remove horizontal rules
+      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '') // Remove iframes
+      .replace(/<a[^>]*>(.*?)<\/a>/gi, '$1') // Remove link tags but keep text
+      .replace(/<[^>]*>/g, '') // Remove all other HTML tags
+      .replace(/\n+/g, ' ') // Replace newlines with spaces
+      .trim();
+  };
+
   // Helper: convert markdown syntax to HTML
   const renderHTMLFromContent = (content) => {
     if (!content) return "No content available";
     let html = String(content);
 
-    // Convert standard markdown headings # ## ###
+    // Convert standard markdown headings # ## ### #### ##### ######
+    html = html.replace(/^###### (.+)$/gm, '<h6 style="font-size: 0.875rem; font-weight: 600; margin: 0.75rem 0 0.25rem 0; color: var(--text);">$1</h6>');
+    html = html.replace(/^##### (.+)$/gm, '<h5 style="font-size: 1rem; font-weight: 600; margin: 0.75rem 0 0.25rem 0; color: var(--text);">$1</h5>');
+    html = html.replace(/^#### (.+)$/gm, '<h4 style="font-size: 1.125rem; font-weight: 600; margin: 1rem 0 0.5rem 0; color: var(--text);">$1</h4>');
     html = html.replace(/^### (.+)$/gm, '<h3 style="font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem 0; color: var(--text);">$1</h3>');
     html = html.replace(/^## (.+)$/gm, '<h2 style="font-size: 1.5rem; font-weight: 700; margin: 1.25rem 0 0.75rem 0; color: var(--text);">$1</h2>');
     html = html.replace(/^# (.+)$/gm, '<h1 style="font-size: 1.875rem; font-weight: 700; margin: 1.5rem 0 1rem 0; color: var(--text);">$1</h1>');
@@ -140,6 +167,30 @@ export default function SingleBlogPage() {
     // Convert inline code `code`
     html = html.replace(/`([^`]+)`/g, '<code style="background-color: var(--cardSecondary); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem; font-family: monospace;">$1</code>');
 
+    // Convert Markdown image syntax -> <img> (process BEFORE links to avoid conflict)
+    html = html.replace(
+      /!\[([^\]]*)\]\(([^\s)]+)\)/g,
+      (match, alt, src) => {
+        return `<div style="margin: 1rem 0; text-align: center;"><img src="${src}" alt="${
+          alt || "image"
+        }" style="max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: inline-block;" loading="lazy"/></div>`;
+      }
+    );
+
+    // Convert Markdown video links -> <video> (process BEFORE links to avoid conflict)
+    html = html.replace(
+      /\[([^\]]*)\]\(([^\s)]+\.(mp4|mov|avi|webm))\)/gi,
+      (match, text, src) => {
+        return `
+       <div style="display: flex; justify-content: center; margin: 1.5rem 0;">
+        <video controls style="max-width: 100%; height: auto; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+          <source src="${src}" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>`;
+      }
+    );
+
     // Convert links [text](url)
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: var(--primary); text-decoration: underline;" target="_blank" rel="noopener noreferrer">$1</a>');
 
@@ -157,29 +208,9 @@ export default function SingleBlogPage() {
     // Convert horizontal rules ---
     html = html.replace(/^---$/gm, '<hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">');
 
-    // Convert Markdown image syntax -> <img> (improved to handle all image URLs)
-    html = html.replace(
-      /!\[([^\]]*)\]\(([^\s)]+)\)/g,
-      (match, alt, src) => {
-        return `<img src="${src}" alt="${
-          alt || "image"
-        }" style="max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem 0; display: block;"/>`;
-      }
-    );
 
-    // Convert Markdown video links -> <video> (improved to handle all video URLs)
-    html = html.replace(
-      /\[([^\]]*)\]\(([^\s)]+\.(mp4|mov|avi|webm))\)/gi,
-      (match, text, src) => {
-        return `
-       <div style="display: flex; justify-content: flex-start; margin: 1.5rem 0;">
-        <video controls style="max-width: 100%; height: auto; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
-          <source src="${src}" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>`;
-      }
-    );
+
+
 
     // Handle line breaks properly - split by double newlines first
     const paragraphs = html.split(/\n\s*\n/);
@@ -376,7 +407,7 @@ export default function SingleBlogPage() {
           queryParams.append("category", currentBlog.category);
         if (currentBlog.tags?.[0])
           queryParams.append("tag", currentBlog.tags[0]);
-        queryParams.append("limit", "3");
+        queryParams.append("limit", "4");
         queryParams.append("exclude", currentBlog._id);
 
         const res = await axios.get(`/api/blogs?${queryParams}`);
@@ -714,14 +745,22 @@ export default function SingleBlogPage() {
             >
               <div className="text-center">
                 <div 
-                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden text-2xl font-bold text-white overflow-hidden"
                   style={{ 
                     background: `linear-gradient(135deg, var(--primary), var(--secondary))`
                   }}
                 >
-                  <span className="text-white font-bold text-lg">
-                    {blog.authorId?.name?.charAt(0) || "A"}
-                  </span>
+                 {blog.authorId?.profilePicture ? (
+                                         <Image
+                                           src={blog.authorId.profilePicture}
+                                           alt={blog.authorId.name || "Author"}
+                                           width={48}
+                                           height={48}
+                                           className="w-full h-full object-cover"
+                                         />
+                                       ) : (
+                                         blog.authorId?.name?.charAt(0) || "A"
+                                       )}
                 </div>
                 <h3 className="font-bold text-lg mb-1" style={{ color: 'var(--text)' }}>
                   {blog.authorId?.name || "Anonymous"}
@@ -1103,14 +1142,23 @@ export default function SingleBlogPage() {
                       <div className="flex space-x-3">
                         <div className="flex-shrink-0">
                           <div 
-                            className="w-10 h-10 rounded-full flex items-center justify-center"
+                            className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden text-xl font-bold text-white"
                             style={{ 
                               background: `linear-gradient(135deg, var(--primary), var(--secondary))`
                             }}
                           >
-                            <span className="text-white text-sm font-bold">
-                              {comment.userId?.name?.charAt(0) || "U"}
-                            </span>
+                            
+                                {comment.userId?.profilePicture ? (
+                                         <Image
+                                           src={comment.userId.profilePicture}
+                                           alt={comment.userId.name || "Author"}
+                                           width={48}
+                                           height={48}
+                                           className="w-full h-full object-cover"
+                                         />
+                                       ) : (
+                                         comment.userId?.name?.charAt(0) || "U"
+                                       )}
                           </div>
                         </div>
                         <div className="flex-1">
@@ -1130,9 +1178,11 @@ export default function SingleBlogPage() {
                                 {comment.userId?._id === session?.user?.id && (
                                   <button
                                     onClick={() => handleDeleteComment(comment._id)}
-                                    className="text-red-500 hover:text-red-700 text-xs"
+                                    className="text-red-500 hover:text-red-700 p-1"
                                   >
-                                    Delete
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
                                   </button>
                                 )}
                               </div>
@@ -1192,12 +1242,21 @@ export default function SingleBlogPage() {
                                 <div key={reply._id} className="flex space-x-3">
                                   <div className="flex-shrink-0">
                                     <div 
-                                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                                      className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden text-lg font-bold text-white"
                                       style={{ backgroundColor: 'var(--primary)', opacity: '0.7' }}
                                     >
-                                      <span className="text-white text-xs font-bold">
-                                        {reply.userId?.name?.charAt(0) || "U"}
-                                      </span>
+                                     
+                                       {reply.userId?.profilePicture ? (
+                                         <Image
+                                           src={reply.userId.profilePicture}
+                                           alt={reply.userId.name || "Author"}
+                                           width={48}
+                                           height={48}
+                                           className="w-full h-full object-cover"
+                                         />
+                                       ) : (
+                                         reply.userId?.name?.charAt(0) || "U"
+                                       )}
                                     </div>
                                   </div>
                                   <div className="flex-1">
@@ -1217,9 +1276,11 @@ export default function SingleBlogPage() {
                                           {reply.userId?._id === session?.user?.id && (
                                             <button
                                               onClick={() => handleDeleteComment(reply._id)}
-                                              className="text-red-500 hover:text-red-700 text-xs"
+                                              className="text-red-500 hover:text-red-700 p-1"
                                             >
-                                              Delete
+                                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                              </svg>
                                             </button>
                                           )}
                                         </div>
@@ -1252,28 +1313,23 @@ export default function SingleBlogPage() {
                   Related Blogs
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {relatedBlogs.map((relatedBlog) => (
+                  {relatedBlogs.filter(relatedBlog => relatedBlog._id !== blog._id).map((relatedBlog) => (
                     <div
                       key={relatedBlog._id}
-                      className="rounded-xl p-4 hover:shadow-md transition-shadow duration-300"
+                      className="rounded-xl p-4 hover:shadow-md transition-shadow duration-300 flex flex-col h-full"
                       style={{ backgroundColor: 'var(--cardSecondary)' }}
                     >
                       <h4 className="font-semibold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
                         {relatedBlog.title}
                       </h4>
-                      <div 
-                        className="text-sm line-clamp-2 opacity-80"
-                        dangerouslySetInnerHTML={{
-                          __html: renderHTMLFromContent(
-                            relatedBlog.excerpt || relatedBlog.content?.substring(0, 80) + "..."
-                          )
-                        }}
-                      />
+                      <p className="text-sm line-clamp-2 opacity-80 flex-1 mb-3">
+                        {stripMarkdown(relatedBlog.excerpt || relatedBlog.content)?.substring(0, 80)}...
+                      </p>
                       <button
                         onClick={() =>
                           (window.location.href = `/blogs/${relatedBlog._id}`)
                         }
-                        className="text-sm font-semibold mt-3 transition-colors duration-200"
+                        className="text-sm font-semibold mt-auto transition-colors duration-200"
                         style={{ color: 'var(--primary)' }}
                         onMouseEnter={(e) => e.target.style.color = 'var(--accent)'}
                         onMouseLeave={(e) => e.target.style.color = 'var(--primary)'}
