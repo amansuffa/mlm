@@ -13,8 +13,8 @@ export async function GET() {
     }
 
     const currentUser = await User.findById(session.user.id)
-      .populate("directSales", "name username status directSales passupSales")
-      .populate("passupSales", "name username status directSales passupSales");
+      .populate("directSales", "name username status")
+      .populate("passupSales", "name username status");
 
     if (!currentUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -23,66 +23,45 @@ export async function GET() {
     // Build tree recursively
     const buildTree = async (user, visited = new Set()) => {
       if (visited.has(user._id.toString())) {
-        return null; // Prevent infinite loops
+        return null;
       }
       visited.add(user._id.toString());
 
       const children = [];
       
-      // Add direct sales (green)
-      if (user.directSales && user.directSales.length > 0) {
-        for (const directSale of user.directSales) {
-          if (directSale.status === "fully_active") {
-            const childNode = await buildTree(directSale, new Set(visited));
-            if (childNode) {
-              childNode.referral_type = "green";
-              children.push(childNode);
-            }
+      // Get all referrals of this user
+      const allReferrals = await User.find({
+        referredBy: user.username,
+        status: "fully_active"
+      });
+
+      for (const referral of allReferrals) {
+        const childNode = await buildTree(referral, new Set(visited));
+        if (childNode) {
+          // Determine color based on relationship to current user
+          let referralType;
+          
+          // Check if locked by current user AND referred by current user (blue)
+          if (referral.firstSaleLockedBy && referral.firstSaleLockedBy.toString() === currentUser._id.toString() && referral.referredBy === currentUser.username) {
+            referralType = "blue";
           }
+          // Check if in direct sales AND referred by current user (green)
+          else if (currentUser.directSales && currentUser.directSales.some(ds => ds._id.toString() === referral._id.toString()) && referral.referredBy === currentUser.username) {
+            referralType = "green";
+          }
+          // Check if in passup sales (red)
+          else if (currentUser.passupSales && currentUser.passupSales.some(ps => ps._id.toString() === referral._id.toString())) {
+            referralType = "red";
+          }
+          // Use gray only if none of the above match
+          else {
+            referralType = "gray";
+          }
+          
+          childNode.referral_type = referralType;
+          children.push(childNode);
         }
       }
-      if (user.passupSales && user.passupSales.length > 0) {
-        for (const passupSale of user.passupSales) {
-          if (passupSale.status === "fully_active") {
-            const childNode = await buildTree(passupSale, new Set(visited));
-            if (childNode) {
-              childNode.referral_type = "red";
-              children.push(childNode);
-            }
-          }
-        }
-      }
-
-      // Add first sales (blue)
-      if (user.hasFirstSale && user.firstSaleLockedBy) {
-        const firstSale = await User.findById(user.firstSaleLockedBy).populate("name username status");
-            const childNode = await buildTree(firstSale, new Set(visited));
-            if (childNode) {
-              childNode.referral_type = "blue";
-              children.push(childNode);
-            }
-       
-      }
-
-      // Add other fully active referrals (blue)
-      // const otherReferrals = await User.find({
-      //   referredBy: user.username,
-      //   status: "fully_active",
-      //   _id: { 
-      //     $nin: [
-      //       ...(user.directSales || []).map(ds => ds._id),
-      //       ...(user.passupSales || []).map(ps => ps._id)
-      //     ]
-      //   }
-      // });
-
-      // for (const referral of otherReferrals) {
-      //   const childNode = await buildTree(referral, new Set(visited));
-      //   if (childNode) {
-      //     childNode.referral_type = "red";
-      //     children.push(childNode);
-      //   }
-      // }
 
       return {
         name: user.name || user.username,

@@ -159,7 +159,9 @@ export default function DownlinePage() {
             ? "url(#blueGradient)"
             : nodeDatum.referral_type === "green"
             ? "url(#greenGradient)"
-            : "url(#redGradient)"
+            : nodeDatum.referral_type === "red"
+            ? "url(#redGradient)"
+            : "url(#grayGradient)"
         }
         stroke="#fff"
         strokeWidth="3"
@@ -457,6 +459,10 @@ export default function DownlinePage() {
               <linearGradient id="purpleGradient" x1="0" y1="0" x2="1" y2="1">
                 <stop stopColor="#8B5CF6" offset="0%" />
                 <stop stopColor="#5B21B6" offset="100%" />
+              </linearGradient>
+              <linearGradient id="grayGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop stopColor="#9CA3AF" offset="0%" />
+                <stop stopColor="#6B7280" offset="100%" />
               </linearGradient>
             </defs>
           </svg>
