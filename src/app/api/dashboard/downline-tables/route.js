@@ -23,19 +23,25 @@ export async function GET() {
       status: "fully_active"
     }).sort({ createdAt: 1 });
 
+    // Get first sale locked by information
+    const firstSaleLockedBy = currentUser.firstSaleLockedBy ? 
+      await User.findById(currentUser.firstSaleLockedBy) : null;
+
     // Table 1: 1st Sale (Qualifying Sale - Passed Up)
-    const firstSale = allReferrals.length > 0 ? [allReferrals[0]] : [];
-    const qualifyingSales = firstSale.map((user, index) => ({
-      sr: index + 1,
-      name: user.name || user.username,
-      username: user.username,
-      email: user.email,
-      originalSponsor: currentUser.name || currentUser.username,
-      saleType: "Qualifying (1st Sale)",
-      passedUpTo: currentUser.referredBy || "Admin",
-      status: "Active",
-      joinedAt: user.createdAt
-    }));
+    const qualifyingSales = [];
+    if (firstSaleLockedBy) {
+      qualifyingSales.push({
+        sr: 1,
+        name: firstSaleLockedBy.name || firstSaleLockedBy.username,
+        username: firstSaleLockedBy.username,
+        email: firstSaleLockedBy.email,
+        originalSponsor: currentUser.name || currentUser.username,
+        saleType: "Qualifying (1st Sale)",
+        passedUpTo: currentUser.referredBy || "Admin",
+        status: "Active",
+        joinedAt: firstSaleLockedBy.createdAt
+      });
+    }
 
     // Table 2: Direct Referrals (2nd sale onwards)
     const directSales = allReferrals.slice(1).map((user, index) => ({
