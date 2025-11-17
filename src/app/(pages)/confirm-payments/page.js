@@ -27,7 +27,7 @@ export default function ConfirmPaymentsPage() {
         toast.error("Failed to load pending transactions");
         setTransactions([]);
       } else {
-        setTransactions(Array.isArray(data) ? data : []);
+        setTransactions(data.transactions || []);
       }
     } catch (error) {
       console.error('Fetch error:', error);

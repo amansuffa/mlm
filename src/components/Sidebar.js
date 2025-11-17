@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import {
   FaClipboardList,
   FaEnvelope,
@@ -19,8 +21,42 @@ import {
 
 export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   const pathname = usePathname();
+  const [pendingCount, setPendingCount] = useState(0);
+  const { data: session } = useSession();
 
   console.log("Sidebar Status:", status, "Role:", role);
+
+  // Fetch pending transactions count
+  const fetchPendingCount = async () => {
+    if (!session?.user?.id) return;
+    
+    try {
+      const response = await fetch(`/api/transactions/pending?userId=${session.user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPendingCount(data.count || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching pending count:', error);
+    }
+  };
+
+  // Real-time updates
+  useEffect(() => {
+    if (status === 'fully_active' && session?.user?.id) {
+      fetchPendingCount();
+      const interval = setInterval(fetchPendingCount, 30000); // Update every 30 seconds
+      
+      // Listen for immediate updates
+      const handleUpdate = () => fetchPendingCount();
+      window.addEventListener('pendingTransactionUpdate', handleUpdate);
+      
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener('pendingTransactionUpdate', handleUpdate);
+      };
+    }
+  }, [status, session?.user?.id, fetchPendingCount]);
 
   const allLinks = [
     {
@@ -135,7 +171,12 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
               }`}
             >
               {icon}
-              {label}
+              <span className="flex-1">{label}</span>
+              {href === "/confirm-payments" && pendingCount > 0 && (
+                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                  {pendingCount}
+                </span>
+              )}
             </Link>
           ))}
         </nav>

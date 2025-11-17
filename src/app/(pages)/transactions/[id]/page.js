@@ -45,6 +45,8 @@ export default function TransactionDetailsPage() {
 
       if (data.success) {
         toast.success(`Transaction ${action}ed successfully`);
+        // Trigger sidebar update
+        window.dispatchEvent(new CustomEvent('pendingTransactionUpdate'));
         if (from === 'confirm-payments') {
           router.push('/confirm-payments');
         } else {

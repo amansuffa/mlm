@@ -45,7 +45,10 @@ export async function GET(request) {
       .populate('toUser', 'username')
       .sort({ createdAt: -1 });
 
-    return NextResponse.json(transactions);
+    return NextResponse.json({ 
+      transactions, 
+      count: transactions.length 
+    });
   } catch (error) {
     console.error("Error fetching pending transactions:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
