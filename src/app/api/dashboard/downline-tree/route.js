@@ -42,7 +42,7 @@ export async function GET() {
           let referralType;
           
           // Check if locked by current user AND referred by current user (blue)
-          if (referral.firstSaleLockedBy && referral.firstSaleLockedBy.toString() === currentUser._id.toString() && referral.referredBy === currentUser.username) {
+          if (currentUser.firstSaleLockedBy && currentUser.firstSaleLockedBy.toString() === referral._id.toString() && referral.referredBy === currentUser.username) {
             referralType = "blue";
           }
           // Check if in direct sales AND referred by current user (green)
