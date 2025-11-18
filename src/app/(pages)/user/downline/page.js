@@ -48,19 +48,6 @@ export default function DownlinePage() {
     window.addEventListener("resize", setSize);
     return () => window.removeEventListener("resize", setSize);
   }, []);
-
-  useEffect(() => {
-    fetchTreeData();
-    fetchTableData();
-  }, [fetchTreeData, fetchTableData]);
-
-  useEffect(() => {
-    if (viewMode === "tree" && treeContainer.current) {
-      const { width } = treeContainer.current.getBoundingClientRect();
-      setDimensions({ x: width / 2, y: 80 });
-    }
-  }, [viewMode]);
-
   const fetchTreeData = useCallback(async () => {
     try {
       const response = await fetch("/api/dashboard/downline-tree");
@@ -144,6 +131,19 @@ export default function DownlinePage() {
       console.error("Error fetching table data:", error);
     }
   }, []);
+  useEffect(() => {
+    fetchTreeData();
+    fetchTableData();
+  }, [fetchTreeData, fetchTableData]);
+
+  useEffect(() => {
+    if (viewMode === "tree" && treeContainer.current) {
+      const { width } = treeContainer.current.getBoundingClientRect();
+      setDimensions({ x: width / 2, y: 80 });
+    }
+  }, [viewMode]);
+
+
 
 
 
