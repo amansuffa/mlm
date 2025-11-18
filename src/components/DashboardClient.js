@@ -36,20 +36,21 @@ export default function DashboardMember({ session }) {
           {/* Left/Main Section */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-2">
             <SalesOverview />
-            <EarningsChart />
           </div>
 
           {/* Right Sidebar Widgets */}
-          <div className="flex flex-col gap-6 sm:col-span-2 lg:col-span-1">
-            <PayoutSettingsCard />
-            <TopReferrers />
+          <div className="flex flex-col space-y-6 sm:col-span-2 lg:col-span-1 h-full">
             <div className="flex-1">
-              <DownlineTree />
+              <PayoutSettingsCard />
+            </div>
+            <div className="flex-1">
+              <TopReferrers />
             </div>
           </div>
 
           {/* Full Width Section */}
           <div className="col-span-1 space-y-6 sm:col-span-2 lg:col-span-3">
+            <EarningsChart />
             <ReferralsOverview />
             <TransactionsTable />
           </div>

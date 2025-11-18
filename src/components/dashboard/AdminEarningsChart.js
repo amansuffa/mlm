@@ -70,16 +70,16 @@ export default function EarningsChart() {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="card rounded-2xl shadow-lg overflow-hidden"
+      className="card rounded-2xl shadow-lg overflow-hidden h-full flex flex-col"
     >
       <div className="p-4">
-        <div className="mb-4">
+        <div className="mb-2">
           <div className="flex justify-between items-start mb-3">
             <div>
               <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
                 📊 Platform Revenue
               </h3>
-              <p className="text-sm" style={{ color: 'var(--textSecondary)' }}>Total earnings overview</p>
+         
               <p className="text-xl font-bold" style={{ color: 'var(--accent)' }}>${total.toLocaleString()}</p>
             </div>
             <select
@@ -123,7 +123,7 @@ export default function EarningsChart() {
         </div>
       </div>
 
-      <div className="h-64 p-6">
+      <div className="flex-1 px-6 min-h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
