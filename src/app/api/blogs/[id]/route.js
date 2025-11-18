@@ -10,7 +10,7 @@ export async function GET(request, context) {
 
     const { id } = await context.params;
 
-    const blog = await Blog.findById(id).populate("authorId", "name username");
+    const blog = await Blog.findById(id).populate("authorId", "name username profilePicture");
 
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
@@ -88,21 +88,28 @@ export async function PUT(req, { params }) {
       }
     }
 
+    // Prepare update object
+    const updateData = {
+      title,
+      content,
+      excerpt,
+      tags,
+      keywords,
+      category,
+      images,
+      videos,
+      videoLinks,
+    };
+
+    // Only update thumbnail if a new one was uploaded
+    if (thumbnailUrl) {
+      updateData.thumbnail = thumbnailUrl;
+    }
+
     // Update the blog
     const updatedBlog = await Blog.findByIdAndUpdate(
       params.id,
-      {
-        title,
-        content,
-        excerpt,
-        tags,
-        keywords,
-        category,
-        thumbnail: thumbnailUrl,
-        images,
-        videos,
-        videoLinks,
-      },
+      updateData,
       { new: true }
     );
 

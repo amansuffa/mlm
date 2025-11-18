@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import {
   FaClipboardList,
   FaEnvelope,
@@ -13,12 +15,48 @@ import {
   FaUsers,
   FaWallet,
   FaHospitalUser,
+  FaCreditCard,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   const pathname = usePathname();
+  const [pendingCount, setPendingCount] = useState(0);
+  const { data: session } = useSession();
 
   console.log("Sidebar Status:", status, "Role:", role);
+
+  // Fetch pending transactions count
+  const fetchPendingCount = useCallback(async () => {
+    if (!session?.user?.id) return;
+    
+    try {
+      const response = await fetch(`/api/transactions/pending?userId=${session.user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPendingCount(data.count || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching pending count:', error);
+    }
+  }, [session?.user?.id]);
+
+  // Real-time updates
+  useEffect(() => {
+    if (status === 'fully_active' && session?.user?.id) {
+      fetchPendingCount();
+      const interval = setInterval(fetchPendingCount, 30000); // Update every 30 seconds
+      
+      // Listen for immediate updates
+      const handleUpdate = () => fetchPendingCount();
+      window.addEventListener('pendingTransactionUpdate', handleUpdate);
+      
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener('pendingTransactionUpdate', handleUpdate);
+      };
+    }
+  }, [status, session?.user?.id, fetchPendingCount]);
 
   const allLinks = [
     {
@@ -34,6 +72,12 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
     },
     {
+      href: "/dashboard/payout-settings",
+      label: "Payout Settings",
+      icon: <FaCreditCard />,
+      statuses: ["fully_active"],
+    },
+    {
       href: "/user/downline",
       label: "Downline",
       icon: <FaUsers />,
@@ -43,18 +87,18 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       href: "/user/referrals",
       label: "My Referrals",
       icon: <FaUserFriends />,
-      statuses: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
-    },
-    {
-      href: "/user/pay-to-sponser",
-      label: "Pay to Sponser",
-      icon: <FaUserFriends />,
-      roles:["user"]
+      statuses: ["fully_active"],
     },
     {
       href: "/transactions",
       label: "Transactions",
       icon: <FaExchangeAlt />,
+      statuses: ["fully_active"],
+    },
+    {
+      href: "/confirm-payments",
+      label: "Pending Transactions",
+      icon: <FaCheckCircle />,
       statuses: ["fully_active"],
     },
     // 👇 Admin-only links
@@ -76,12 +120,6 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
       icon: <FaUserCog />,
       roles: ["admin"],
     },
-    {
-      href: "/manage-plans",
-      label: "Manage Plans",
-      icon: <FaHospitalUser />,
-      roles: ["admin"],
-    },
   ];
 
   // ✅ Filter logic: show link if
@@ -98,7 +136,7 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   return (
     <>
       <aside
-        className={`fixed top-0 left-0 min-h-screen w-64 p-6 flex flex-col z-40 transform transition-transform duration-300
+        className={`fixed top-0 left-0 min-h-screen w-64 p-6 border-r border-t border-[var(--border)] flex flex-col z-40 transform transition-transform duration-300
         bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 text-white shadow-2xl
         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
         md:translate-x-0 md:static md:block`}
@@ -133,7 +171,12 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
               }`}
             >
               {icon}
-              {label}
+              <span className="flex-1">{label}</span>
+              {href === "/confirm-payments" && pendingCount > 0 && (
+                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                  {pendingCount}
+                </span>
+              )}
             </Link>
           ))}
         </nav>

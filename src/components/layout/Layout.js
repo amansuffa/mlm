@@ -28,16 +28,20 @@
 import { useState } from "react";
 import Nav from "../dashboard/Nav";
 import Sidebar from "../Sidebar";
+import { useTheme } from "next-themes";
+
 
 export default function Layout({ children, role , status}) {
   const [isOpen, setIsOpen] = useState(false);
+    const { theme } = useTheme();
+  
 
   return (
     <div className="min-h-screen flex flex-col">
       <Nav setIsOpen={setIsOpen} />
       <div className="flex flex-1">
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} role={role} status={status}/>
-        <main className="px-6 w-full bg-gray-100 min-h-screen">{children}</main>
+        <main style={{backgroundImage: 'var(--background-gradient)'}} className="px-6 w-full bg-[var(--background)] border-t border-[var(--border)] min-h-screen">{children}</main>
       </div>
     </div>
   );

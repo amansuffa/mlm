@@ -7,47 +7,57 @@ import { Transaction } from "@/models/Transaction";
 export async function GET() {
   await connectDB();
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const username = session.user.username; // use username for referral comparison
+  const username = session.user.username;
   const role = session.user.role;
 
   let kpis = {
-    directReferrals: 0,
-    indirectReferrals: 0,
-    totalDownline: 0,
+    directSales: 0,
+    passupSales: 0,
+    totalSales: 0,
     totalEarnings: 0,
     currentRank: session.user.rank || "Bronze",
   };
 
-  if (role === "admin") {
-    // Admin sees all totals except self
-    const allUsers = await User.find({ username: { $ne: username } }).select("username referredBy");
-    kpis.totalDownline = allUsers.length;
+  // if (role === "admin") {
+  //   // ✅ Admin — show total platform stats
+  //   const allUsers = await User.find({ role: "user" });
 
-    kpis.directReferrals = allUsers.filter(u => u.referredBy === username).length;
-    kpis.indirectReferrals = kpis.totalDownline - kpis.directReferrals;
+  //   const totalDirectSales = allUsers.reduce(
+  //     (sum, u) => sum + (u.directSales?.length || 0),
+  //     0
+  //   );
+  //   const totalPassupSales = allUsers.reduce(
+  //     (sum, u) => sum + (u.passupSales?.length || 0),
+  //     0
+  //   );
+  //   const totalEarnings = allUsers.reduce(
+  //     (sum, u) => sum + (u.earnings?.total || 0),
+  //     0
+  //   );
 
-    const earningsAgg = await Transaction.aggregate([
-      { $group: { _id: null, total: { $sum: "$amount" } } }
-    ]);
-    kpis.totalEarnings = `$${earningsAgg[0]?.total || 0}`;
-  } else {
-    // Regular user sees only their own
-    const directUsers = await User.find({ referredBy: username }).select("username");
-    kpis.directReferrals = directUsers.length;
+  //   kpis.directSales = totalDirectSales;
+  //   kpis.passupSales = totalPassupSales;
+  //   kpis.totalSales = totalDirectSales + totalPassupSales;
+  //   kpis.totalEarnings = `$${totalEarnings}`;
+  // } else {
+    // ✅ Regular user — show personal KPIs
+    const currentUser = await User.findOne({ username }).select(
+      "directSales passupSales earnings"
+    );
 
-    const directUsernames = directUsers.map(u => u.username);
-    kpis.indirectReferrals = await User.countDocuments({ referredBy: { $in: directUsernames } });
+    const directSales = currentUser?.directSales?.length || 0;
+    const passupSales = currentUser?.passupSales?.length || 0;
+    const totalSales = directSales + passupSales;
+    const totalEarnings = currentUser?.earnings?.total || 0;
 
-    kpis.totalDownline = kpis.directReferrals + kpis.indirectReferrals;
-
-    const earningsAgg = await Transaction.aggregate([
-      { $match: { toUser: username } }, // assuming toUser stores username as well
-      { $group: { _id: null, total: { $sum: "$amount" } } }
-    ]);
-    kpis.totalEarnings = `$${earningsAgg[0]?.total || 0}`;
-  }
+    kpis.directSales = directSales;
+    kpis.passupSales = passupSales;
+    kpis.totalSales = totalSales;
+    kpis.totalEarnings = `$${totalEarnings}`;
+  // }
 
   return NextResponse.json(kpis);
 }

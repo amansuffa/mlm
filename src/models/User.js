@@ -1,128 +1,99 @@
 import mongoose from "mongoose";
 import { payoutMethodSchema } from "./PayoutMethod.js";
 
+const userSchema = new mongoose.Schema(
+  {
+    name: String,
+    email: { type: String, unique: true },
+    password: String,
+    username: { type: String, unique: true },
+    referredBy: { type: String, default: null },
 
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
-  username:{ type: String, unique: true }, 
-  referredBy: { type: String, default: null },
-  status:{
-    type: String,
-    enum: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
-    default: "free",
-  },
+    sponsor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    hasFirstSale: { type: Boolean, default: false },
+    firstSaleLocked: { type: Boolean, default: false },
+    firstSaleLockedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    firstSaleLockedAt: { type: Date, default: null },
+
+    passupSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    directSales:[{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+
+    status: {
+      type: String,
+      enum: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
+      default: "free",
+    },
     role: {
-    type: String,
-    enum: ["admin", "user"],
-    default: "user",
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+    },
+    isVerified: { type: Boolean, default: false },
+    verificationToken: { type: String, default: null },
+
+    adminFeePaid: { type: Boolean, default: false },
+    membershipFeePaid: { type: Boolean, default: false },
+
+    payoutMethods: [payoutMethodSchema],
+    
+    firstName: { type: String, default: "" },
+    middleName: { type: String, default: "" },
+    lastName: { type: String, default: "" },
+    profilePicture: { type: String, default: "" },
+    phone: {
+      countryCode: { type: String, default: "" },
+      number: { type: String, default: "" },
+    },
+    address: {
+      country: { type: String, default: "" },
+      province: { type: String, default: "" },
+      city: { type: String, default: "" },
+    },
+    socialMedia: {
+      facebook: { type: String, default: "" },
+      instagram: { type: String, default: "" },
+      tiktok: { type: String, default: "" },
+      whatsapp: { type: String, default: "" },
+    },
+    pendingEmail: { type: String, default: "" },
+    emailChangeToken: { type: String, default: "" },
+    emailChangeExpires: { type: Date, default: null },
+
+    // Fee Distribution Fields
+    directInvitesCount: { type: Number, default: 0 }, 
+    earnings: {
+      total: { type: Number, default: 0 }, 
+       history: [
+    {
+      amount: { type: Number, required: true },
+      date: { type: Date, default: Date.now },
+      source: { type: String, default: "sale" }, // optional: "direct" | "passup"
+    },
+  ],
+    },
+    
+    
+    //   notifications: [{
+    //     type: { type: String },
+    //     message: String,
+    //     read: { type: Boolean, default: false },
+    //     createdAt: { type: Date, default: Date.now },
+    //   }],
   },
-  isVerified: { type: Boolean, default: false },
-verificationToken: { type: String, default: null },
+  { timestamps: true }
+);
 
-  adminFeePaid: { type: Boolean, default: false },
-  membershipFeePaid: { type: Boolean, default: false },
-  payoutMethods: [payoutMethodSchema],
-  firstName: { type: String, default: "" },
-  middleName: { type: String, default: "" },
-  lastName: { type: String, default: "" },
-  profilePicture: { type: String, default: "" },
-  phone: {
-    countryCode: { type: String, default: "" },
-    number: { type: String, default: "" },
-  },
-  address: {
-    country: { type: String, default: "" },
-    province: { type: String, default: "" },
-    city: { type: String, default: "" },
-  },
-  socialMedia: {
-    facebook: { type: String, default: "" },
-    instagram: { type: String, default: "" },
-    tiktok: { type: String, default: "" },
-    whatsapp: { type: String, default: "" },
-  },
-  pendingEmail: { type: String, default: "" },
-  emailChangeToken: { type: String, default: "" },
-  emailChangeExpires: { type: Date, default: null },
-},
-{ timestamps: true } );
-
-export const User = mongoose.models.User || mongoose.model("User", userSchema);
-
-
-// import mongoose from "mongoose";
-
-// const userSchema = new mongoose.Schema({
-//   username: { type: String, required: true },
-//   email: { type: String, required: true },
-//   passwordHash: { type: String, required: true },
-
-//   role: {
-//     type: String,
-//     enum: ["admin", "member"],
-//     default: "member",
-//   },
-//   membershipStatus: {
-//     type: String,
-//     enum: ["free", "admin_fee_paid", "membership_paid", "fully_active"],
-//     default: "free",
-//   },
-
-//   sponsor: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//     default: null,
-//   },
-
-//   payoutMethods: [{
-//     method: String,
-//     details: mongoose.Schema.Types.Mixed,
-//   }],
-
-//   socialLinks: {
-//     facebook: String,
-//     twitter: String,
-//     instagram: String,
-//     linkedin: String,
-//   },
-
-//   downline: [{
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   }],
-
-//   directReferrals: [{
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   }],
-
-//   passedUpReferrals: [{
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   }],
-
-//   adminFeePaid: { type: Boolean, default: false },
-//   membershipFeePaid: { type: Boolean, default: false },
-
-//   affiliateId: { type: String },
-
-//   profileImage: { type: String, default: '/images/default-avatar.png' },
-
-//   earnings: {
-//     total: { type: Number, default: 0 },
-//     available: { type: Number, default: 0 },
-//     withdrawn: { type: Number, default: 0 },
-//   },
-
-//   notifications: [{
-//     type: { type: String },
-//     message: String,
-//     read: { type: Boolean, default: false },
-//     createdAt: { type: Date, default: Date.now },
-//   }],
-// }, { timestamps: true });
+// Pre-save middleware to ensure admin users have correct first sale status
+userSchema.pre('save', function(next) {
+  // If user is admin, ensure they have correct first sale status
+  if (this.role === 'admin') {
+    this.hasFirstSale = true; // Admin is always qualified
+    this.firstSaleLocked = false; // Admin can never be locked
+    this.firstSaleLockedBy = null;
+    this.firstSaleLockedAt = null;
+  }
+  next();
+});
 
 // /* INDEXES for Performance */
 // userSchema.index({ sponsor: 1 });       // For fast downline/referral queries
@@ -132,5 +103,4 @@ export const User = mongoose.models.User || mongoose.model("User", userSchema);
 // userSchema.index({ role: 1 });         // For admin/member filter pages
 // userSchema.index({ membershipStatus: 1 }); // For filtering active/inactive members
 
-// export const User = mongoose.models.User || mongoose.model("User", userSchema);
-
+export const User = mongoose.models.User || mongoose.model("User", userSchema);

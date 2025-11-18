@@ -3,14 +3,13 @@ import mongoose from "mongoose";
 
 
 export const payoutMethodSchema = new mongoose.Schema({
-  type: {
+  methodName: {
     type: String,
-    enum: ["bank", "easypaisa", "jazzcash", "paypal", "crypto"],
     required: true,
   },
   details: {
-    type: Map, // flexible key-value storage for method-specific details
-    of: String,
+    type: String,
+    required: true,
   },
   isPrimary: { type: Boolean, default: false },
 }, { _id: false });

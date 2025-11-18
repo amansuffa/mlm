@@ -6,7 +6,7 @@ import { store } from "../store/store";
 
 export default function Providers({ children }) {
   return (
-    <SessionProvider>
+    <SessionProvider refetchInterval={0} refetchOnWindowFocus={false} refetchWhenOffline={false}>
       <Provider store={store}>{children}</Provider>
     </SessionProvider>
   );
