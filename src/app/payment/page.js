@@ -634,7 +634,7 @@ function PaymentForm() {
                         <h4 className="font-semibold mb-2 opacity-80">How it works:</h4>
                         <ol className="text-sm space-y-1 opacity-80">
                           <li>1. Select your preferred cryptocurrency</li>
-                          <li>2. Click "Pay with Crypto" button</li>
+                          <li>2. Click <strong>Pay with Crypto</strong> button</li>
                           <li>3. Complete payment through NowPayments</li>
                           <li>4. Instant confirmation and activation</li>
                         </ol>

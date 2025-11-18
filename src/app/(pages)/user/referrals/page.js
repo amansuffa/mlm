@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
@@ -468,9 +469,11 @@ export default function ReferralsPage() {
 
                 <div className="text-center mb-6">
                   {selectedUser.profilePicture ? (
-                    <img 
+                    <Image
                       src={selectedUser.profilePicture}
                       alt={selectedUser.name}
+                      width={96}
+                      height={96}
                       className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                     />
                   ) : (

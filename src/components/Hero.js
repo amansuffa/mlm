@@ -150,11 +150,11 @@ export default function HomePage() {
                 About us
               </h2>
               <p className="text-lg mb-6 opacity-90">
-                At PASH.CLUB, we make online earning simple with our 1-Up affiliate system. You'll get access to digital tools and 
-                easy training designed to help you grow your income fast, even if you're just starting out.
+                At PASH.CLUB, we make online earning simple with our 1-Up affiliate system. You will get access to digital tools and 
+                easy training designed to help you grow your income fast, even if you are just starting out.
               </p>
               <p className="text-lg mb-8 opacity-90">
-                We offer direct member-to-member payments, so you get paid instantly with no middleman. With 24/7 access to your dashboard, you're always in control of 
+                We offer direct member-to-member payments, so you get paid instantly with no middleman. With 24/7 access to your dashboard, you are always in control of 
                 your business—anytime, anywhere.
               </p>
               <Link href="/about">
@@ -465,8 +465,8 @@ export default function HomePage() {
               </div>
               
               <p className="text-lg italic mb-6">
-                "I tried other platforms before, but nothing clicked. With PASH.CLUB, I made my first sale 
-                within days. The 1-Up system really works, and the direct payments are a game-changer."
+                I tried other platforms before, but nothing clicked. With PASH.CLUB, I made my first sale 
+                within days. The 1-Up system really works, and the direct payments are a game-changer.
               </p>
               
               {/* Success Metrics */}

@@ -5,7 +5,7 @@ import "@/Styling/style.scss";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -24,7 +24,6 @@ export default function BlogEditorPage() {
   });
 
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Fetch all blogs
   async function fetchBlogs() {
@@ -98,15 +97,16 @@ export default function BlogEditorPage() {
     fetchBlogs();
   }, []);
 
-  // Refetch blogs when refresh parameter changes
+  // Refetch blogs when refresh parameter changes (client-side only)
   useEffect(() => {
-    const refreshParam = searchParams.get('refresh');
+    const params = new URLSearchParams(window.location.search);
+    const refreshParam = params.get('refresh');
     if (refreshParam) {
       fetchBlogs();
       // Clean up URL without refresh param
       router.replace('/blog-editor');
     }
-  }, [searchParams, router]);
+  }, [router]);
 
   // Filter blogs based on search and category
   const filteredBlogs = blogs.filter((blog) => {

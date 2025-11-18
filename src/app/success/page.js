@@ -42,7 +42,7 @@ export default function Success() {
             <p className="mb-6 opacity-80 leading-relaxed">
               Our team will verify and activate your account manually.
               <br />
-              You'll get an email once it's approved — then you can log in and send your
+              You&apos;ll get an email once it&apos;s approved — then you can log in and send your
               <strong> $500 membership fee</strong> to your sponsor to complete your activation. 🚀
             </p>
 

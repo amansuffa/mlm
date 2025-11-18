@@ -52,7 +52,7 @@ export default function DownlinePage() {
   useEffect(() => {
     fetchTreeData();
     fetchTableData();
-  }, []);
+  }, [fetchTreeData, fetchTableData]);
 
   useEffect(() => {
     if (viewMode === "tree" && treeContainer.current) {
@@ -132,7 +132,7 @@ export default function DownlinePage() {
     }
   }, []);
 
-  const fetchTableData = async () => {
+  const fetchTableData = useCallback(async () => {
     try {
       const response = await fetch("/api/dashboard/downline-tables");
       const result = await response.json();
@@ -143,7 +143,7 @@ export default function DownlinePage() {
     } catch (error) {
       console.error("Error fetching table data:", error);
     }
-  };
+  }, []);
 
 
 

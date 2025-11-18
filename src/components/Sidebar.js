@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import {
   FaClipboardList,
@@ -27,7 +27,7 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   console.log("Sidebar Status:", status, "Role:", role);
 
   // Fetch pending transactions count
-  const fetchPendingCount = async () => {
+  const fetchPendingCount = useCallback(async () => {
     if (!session?.user?.id) return;
     
     try {
@@ -39,7 +39,7 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
     } catch (error) {
       console.error('Error fetching pending count:', error);
     }
-  };
+  }, [session?.user?.id]);
 
   // Real-time updates
   useEffect(() => {
