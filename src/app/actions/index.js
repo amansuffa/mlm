@@ -9,12 +9,17 @@ export async function doLogin(formData) {
       password: formData.get("password"),
       redirect: false,
     });
-    return response;
+    
+    if (response?.error) {
+      return { error: response.error };
+    }
+    
+    return { success: true };
   } catch (error) {
     return { error: error.cause?.err?.message || error.cause?.message || error.message || "Login failed" };
   }
 }
 
 export async function doLogout() {
-  await signOut({ redirectTo: "/login" });
+  await signOut({ redirect: false });
 }

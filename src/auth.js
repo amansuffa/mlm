@@ -58,7 +58,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             role: user.role,
             status: user.status,
             username: user.username,
-            referredBy: user.referredBy
+            referredBy: user.referredBy,
+            profilePicture: user.profilePicture
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -83,6 +84,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.referredBy = user.referredBy;
         token.adminFeePaid = user.adminFeePaid;
         token.membershipFeePaid = user.membershipFeePaid;
+        token.profilePicture = user.profilePicture;
       }
       return token;
     },
@@ -100,6 +102,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             session.user.referredBy = user.referredBy;
             session.user.adminFeePaid = user.adminFeePaid;
             session.user.membershipFeePaid = user.membershipFeePaid;
+            session.user.profilePicture = user.profilePicture;
           }
         } catch (error) {
           console.error("Session callback error:", error);

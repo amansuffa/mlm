@@ -1,15 +1,16 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-
 import Logout from "../Logout";
 import Image from "next/image";
 import logo from "../../assets/logo.png";
+import { useSession } from "next-auth/react";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import ThemeToggleButton from "../ThemeToggleButton";
 
 const Nav = ({ setIsOpen }) => {
+  const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -18,7 +19,10 @@ const Nav = ({ setIsOpen }) => {
 
   if (!mounted) {
     return (
-      <nav style={{ backgroundColor: 'var(--card)' }} className="shadow-md md:sticky top-0 z-50">
+      <nav
+        style={{ backgroundColor: "var(--card)" }}
+        className="shadow-md md:sticky top-0 z-50"
+      >
         <div className="w-full h-[68px] px-4 py-3 flex justify-between items-center">
           {/* Loading state */}
           <div className="flex items-center gap-6">
@@ -29,39 +33,67 @@ const Nav = ({ setIsOpen }) => {
     );
   }
 
-
   return (
-    <div className="h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50" style={{ backgroundColor: 'var(--card)' }}>
-
+    <div
+      className="h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50"
+      style={{ backgroundColor: "var(--card)" }}
+    >
       {/* Logo */}
       <div className="flex justify-center overflow-hidden h-full">
         <Image
           className="object-cover mb-1"
           src={logo}
           alt="Logo"
-          width={180}  
+          width={180}
           height={48}
         />
       </div>
 
       {/* Right section */}
       <div className="flex items-center gap-3">
-         <Link href="/" style={{ color: 'var(--text)' }} className="hover:opacity-80">
-            Home
-          </Link>
-        <ThemeToggleButton/>
-        <Logout />
+        <Link
+          href="/"
+          style={{ color: "var(--text)" }}
+          className="hover:opacity-80"
+        >
+          Home
+        </Link>
+        <ThemeToggleButton />
+                <Logout />
+        <Link href="/user/profile" className="hidden md:block">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm overflow-hidden"
+            style={{ backgroundColor: "var(--primary)" }}
+          >
+
+            {session?.user?.profilePicture ? (
+              <Image
+                src={session.user.profilePicture}
+                alt={session.user.name || "User"}
+                width={32}
+                height={32}
+                className="w-full h-full object-cover"
+                priority
+              />
+            ) : (
+              session?.user?.name?.charAt(0) ||
+              session?.user?.email?.charAt(0) ||
+              "U"
+            )}
+          </div>
+        </Link>
+
 
         {/* Hamburger (mobile only) */}
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           className="md:hidden p-2 rounded-lg hover:opacity-80"
-          style={{ backgroundColor: 'var(--cardsec)' }}
+          style={{ backgroundColor: "var(--cardsec)" }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6"
-            style={{ color: 'var(--text)' }}
+            style={{ color: "var(--text)" }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

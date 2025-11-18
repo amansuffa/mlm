@@ -4,13 +4,14 @@ import Link from "next/link";
 import { doLogin } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-
+import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { update } = useSession();
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -23,6 +24,8 @@ export default function Login() {
       setLoading(false);
     } else {
       toast.success("Login successful!");
+      await update();
+      setLoading(false);
       router.push("/dashboard");
     }
   }
