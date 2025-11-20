@@ -124,7 +124,9 @@ body {
 .dark .red-tr:hover{background-color: rgba(127, 29, 29, 0.3);}
 .dark .text-red-800 { color: #fca5a5; }
 
-
+.sidebar{
+  background: linear-gradient(to bottom, #0f0f17,#1a1a25, #29293b);  
+}
 .button{
   background: var(--buttonBg);
   color: white;
