@@ -265,7 +265,7 @@ export default function TransactionDetailsPage() {
             </div>
 
           {/* Admin Actions Card */}
-          {transaction.status === "pending" && session?.user?.role === "admin" ? (
+          {transaction.status === "pending" && session?.user?.username === transaction.toUser?.username ? (
             <div 
               className="rounded-xl shadow-lg p-6"
               style={{ 
@@ -274,7 +274,7 @@ export default function TransactionDetailsPage() {
               }}
             >
                 <h3 className="text-xl font-semibold mb-4" style={{ color: 'var(--text)' }}>
-                  Admin Actions
+                  Payment Actions
                 </h3>
                 <div className="flex space-x-4">
                   <button

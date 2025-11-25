@@ -191,27 +191,7 @@ export async function PATCH(req, context) {
               );
             }
 
-            // For admin users, always add to directSales regardless of distribution type
-            if (
-              distributionResult.recipient &&
-              distributionResult.recipient.role === "admin"
-            ) {
-              const adminRecipient = distributionResult.recipient;
-              if (!adminRecipient.directSales) {
-                adminRecipient.directSales = [];
-              }
-              if (
-                !adminRecipient.directSales.some(
-                  (id) => id.toString() === user._id.toString()
-                )
-              ) {
-                adminRecipient.directSales.push(user._id);
-                await adminRecipient.save();
-                console.log(
-                  `✅ Added user ${user.username} to admin ${adminRecipient.username}'s directSales`
-                );
-              }
-            }
+        
             // If distributionType is "direct", do NOT push to passupSales
           } else {
             console.warn(
