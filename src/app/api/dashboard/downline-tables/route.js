@@ -44,41 +44,42 @@ export async function GET() {
     }
 
     // Table 2: Direct Referrals (2nd sale onwards)
-    const directSales = allReferrals.slice(1).map((user, index) => ({
-      sr: index + 2,
-      name: user.name || user.username,
-      username: user.username,
-      email: user.email,
-      sponsorName: currentUser.name || currentUser.username,
-      saleType: "Direct",
-      status: "Active",
-      joinedAt: user.createdAt
-    }));
-
+    let directSales = [];
+    if(currentUser.directSales && currentUser.directSales.length > 0){
+      const directSaleUsers = await User.find({
+        _id: { $in: currentUser.directSales },
+        status: "fully_active"
+      });
+      
+      directSales = directSaleUsers.map((user, index) => ({
+        sr: index + 2,
+        name: user.name || user.username,
+        username: user.username,
+        email: user.email,
+        sponsorName: currentUser.name || currentUser.username,
+        saleType: "Direct",
+        status: "Active",
+        joinedAt: user.createdAt
+      }));
+    }
     // Table 3: Pass-up Sales (1st sales from direct referrals)
-    const passUpSales = [];
+    let passUpSales = [];
     if (currentUser.passupSales && currentUser.passupSales.length > 0) {
       const passUpUsers = await User.find({
         _id: { $in: currentUser.passupSales },
         status: "fully_active"
       });
 
-      for (let i = 0; i < passUpUsers.length; i++) {
-        const user = passUpUsers[i];
-        // Find who originally sponsored this user
-        const originalSponsor = await User.findOne({ username: user.referredBy });
-        
-        passUpSales.push({
-          sr: i + 1,
-          name: user.name || user.username,
-          username: user.username,
-          email: user.email,
-          originalSponsor: originalSponsor?.name || originalSponsor?.username || "Unknown",
-          saleType: "Pass Up",
-          status: "Active",
-          joinedAt: user.createdAt
-        });
-      }
+      passUpSales = passUpUsers.map((user, index) => ({
+        sr: index + 1,
+        name: user.name || user.username,
+        username: user.username,
+        email: user.email,
+        originalSponsor: user.referredBy || "Unknown",
+        saleType: "Pass Up",
+        status: "Active",
+        joinedAt: user.createdAt
+      }));
     }
 
     return NextResponse.json({

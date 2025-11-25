@@ -401,7 +401,7 @@ export default function DownlinePage() {
                           color: 'var(--text)',
                           borderBottom: `1px solid var(--border)`
                         }}
-                      >Passed-up Referrals (From Direct Referrals)</h4>
+                      >Passed-up Referrals</h4>
                       <div className="overflow-x-auto">
                         <table className="card w-full border-collapse rounded-lg shadow-sm">
                           <thead>

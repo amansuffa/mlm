@@ -17,6 +17,8 @@ const userSchema = new mongoose.Schema(
 
     passupSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     directSales:[{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+    isPassup: { type: Boolean, default: false },
+    passupSponsor: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
 
     status: {
       type: String,
