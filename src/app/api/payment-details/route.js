@@ -50,9 +50,14 @@ export async function POST(req) {
         sponsor.firstSaleLockedBy.toString() == userId
       ) {
         // Locked by current user → 1-up pass-up
-        const sponsorUpline = await User.findOne({
+        let sponsorUpline = null;
+        if(sponsor.isPassup ){
+
+          sponsorUpline = await User.findById(sponsor.passupSponsor);
+        }else{sponsorUpline = await User.findOne({
           username: sponsor.referredBy,
-        });
+        });}
+        
         if (sponsorUpline) {
           recipientUser = sponsorUpline;
           recipientLabel = `Sponsor (1-Up Pass-Up): ${
@@ -78,9 +83,14 @@ export async function POST(req) {
     }
     // Step 4: Default → 1-up pass-up
     else {
-      const sponsorUpline = await User.findOne({
-        username: sponsor.referredBy,
-      });
+     let sponsorUpline = null;
+        if(sponsor.isPassup ){
+
+          sponsorUpline = await User.findById(sponsor.passupSponsor);
+        }else{sponsorUpline = await User.findOne({
+          username: sponsor.referredBy,
+        });}
+        
       if (sponsorUpline) {
         recipientUser = sponsorUpline;
         recipientLabel = `Sponsor (1-Up Pass-Up): ${

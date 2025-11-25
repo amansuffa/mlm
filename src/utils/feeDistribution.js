@@ -46,8 +46,14 @@ export async function distributeMembershipFee(newMember, feeAmount = 500) {
       // Pehla invite hai - 1-Up Pass-Up (only for non-admin referrers)
       // Fee referrer ke sponsor ko jayegi
       if (directReferrer.referredBy) {
-        recipientUser = await User.findOne({ username: directReferrer.referredBy });
-        
+        if(directReferrer.isPassup) {
+          recipientUser = await User.findById(directReferrer.passupSponsor);
+        } else {
+          recipientUser = await User.findOne({
+            username: directReferrer.referredBy,
+          });
+        }
+   
         if (!recipientUser) {
           console.log(`Sponsor ${directReferrer.referredBy} not found. Fee distribution skipped.`);
           return {
@@ -56,7 +62,7 @@ export async function distributeMembershipFee(newMember, feeAmount = 500) {
             recipient: null,
           };
         }
-        
+
         distributionType = "pass_up"; // 1-Up pass-up
       } else {
         // Referrer ka bhi koi sponsor nahi hai

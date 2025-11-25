@@ -15,8 +15,8 @@ export async function GET(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const queryUserId = searchParams.get('userId');
-  const queryType = searchParams.get('type');
+  const queryUserId = searchParams.get("userId");
+  const queryType = searchParams.get("type");
 
   const userId = session.user.id;
   const role = session.user.role;
@@ -28,7 +28,7 @@ export async function GET(req) {
     // Allow checking admin fee status for specific user
     transactions = await Transaction.find({
       fromUser: queryUserId,
-      type: queryType
+      type: queryType,
     })
       .populate("fromUser", "name username email")
       .populate("toUser", "name username email")
@@ -92,9 +92,15 @@ export async function POST(req) {
           sponsor.firstSaleLockedBy.toString() === sender
         ) {
           // Locked by current user → pay to sponsor's sponsor (1-up pass-up)
-          const sponsorUpline = await User.findOne({
-            username: sponsor.referredBy,
-          });
+          let sponsorUpline = null;
+          if (sponsor.isPassup) {
+            sponsorUpline = await User.findById(sponsor.passupSponsor);
+            
+          } else {
+            sponsorUpline = await User.findOne({
+              username: sponsor.referredBy,
+            });
+          }
           if (sponsorUpline) {
             finalReceiver = sponsorUpline._id;
           } else {
@@ -110,9 +116,14 @@ export async function POST(req) {
         finalReceiver = sponsor._id;
       } else {
         // No first sale → pay to sponsor's sponsor (1-up pass-up) and set lock
-        const sponsorUpline = await User.findOne({
-          username: sponsor.referredBy,
-        });
+        let sponsorUpline = null;
+        if (sponsor.isPassup) {
+          sponsorUpline = await User.findById(sponsor.passupSponsor);
+        } else {
+          sponsorUpline = await User.findOne({
+            username: sponsor.referredBy,
+          });
+        }
         if (sponsorUpline) {
           finalReceiver = sponsorUpline._id;
           // Set lock for sponsor's first sale
@@ -145,7 +156,14 @@ export async function POST(req) {
 
     // Find email receiver
     const sponsor = await User.findOne({ username: user.referredBy });
-    const sponsorUpline = sponsor ? await User.findOne({ username: sponsor.referredBy }) : null;
+    let sponsorUpline = null;
+    if (sponsor.isPassup) {
+      sponsorUpline = await User.findById(sponsor.passupSponsor);
+    } else {
+      sponsorUpline = await User.findOne({
+        username: sponsor.referredBy,
+      });
+    }
     const admin = await User.findOne({ role: "admin" });
     // Find email templates
     const userTemplate = await EmailTemplate.findOne({
@@ -165,15 +183,22 @@ export async function POST(req) {
     });
     const paidTo = await User.findById(finalReceiver);
     const templateData = {
-      MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
-      MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
+      MemberFirstName: user.firstName || user.name?.split(" ")[0] || "Member",
+      MemberName:
+        user.name ||
+        `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
+        user.username,
       MemberEmail: user.email,
       MemberUsername: user.username,
-      SponsorName: sponsor?.name || `${sponsor?.firstName || ''} ${sponsor?.lastName || ''}`.trim() || "N/A",
-      SponsorFirstName: sponsor?.firstName || sponsor?.name?.split(' ')[0] || "N/A",
+      SponsorName:
+        sponsor?.name ||
+        `${sponsor?.firstName || ""} ${sponsor?.lastName || ""}`.trim() ||
+        "N/A",
+      SponsorFirstName:
+        sponsor?.firstName || sponsor?.name?.split(" ")[0] || "N/A",
       SponsorEmail: sponsor?.email || "N/A",
       SponsorUplineFirstName:
-        sponsorUpline?.firstName || sponsorUpline?.name?.split(' ')[0] || "N/A",
+        sponsorUpline?.firstName || sponsorUpline?.name?.split(" ")[0] || "N/A",
       LoginLink: `${process.env.NEXTAUTH_URL}/login`,
       PaymentDate: new Date().toLocaleDateString(),
       PaidTo: paidTo?.name || paidTo?.firstName || "N/A",
@@ -198,11 +223,14 @@ export async function POST(req) {
           await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
           console.log(`✅ Sponsor email sent to ${sponsor.email}`);
         } catch (error) {
-          console.error(`❌ Failed to send sponsor email to ${sponsor.email}:`, error);
+          console.error(
+            `❌ Failed to send sponsor email to ${sponsor.email}:`,
+            error
+          );
         }
       }
     }
-    
+
     // Send email to admin
     if (adminTemplate && admin) {
       try {
@@ -210,7 +238,10 @@ export async function POST(req) {
         await sendEmail(admin.email, adminTemplate.subject, adminHtml);
         console.log(`✅ Admin email sent to ${admin.email}`);
       } catch (error) {
-        console.error(`❌ Failed to send admin email to ${admin.email}:`, error);
+        console.error(
+          `❌ Failed to send admin email to ${admin.email}:`,
+          error
+        );
       }
     }
 
@@ -229,7 +260,10 @@ export async function POST(req) {
           );
           console.log(`✅ Sponsor upline email sent to ${sponsorUpline.email}`);
         } catch (error) {
-          console.error(`❌ Failed to send sponsor upline email to ${sponsorUpline.email}:`, error);
+          console.error(
+            `❌ Failed to send sponsor upline email to ${sponsorUpline.email}:`,
+            error
+          );
         }
       }
       if (sponsorUplinePassupTemplate && sponsorUpline) {
@@ -243,9 +277,14 @@ export async function POST(req) {
             sponsorUplinePassupTemplate.subject,
             sponsorUplineHtml
           );
-          console.log(`✅ Sponsor upline passup email sent to ${sponsorUpline.email}`);
+          console.log(
+            `✅ Sponsor upline passup email sent to ${sponsorUpline.email}`
+          );
         } catch (error) {
-          console.error(`❌ Failed to send sponsor upline passup email to ${sponsorUpline.email}:`, error);
+          console.error(
+            `❌ Failed to send sponsor upline passup email to ${sponsorUpline.email}:`,
+            error
+          );
         }
       }
     }

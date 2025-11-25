@@ -294,16 +294,16 @@ export default function ConfirmPaymentsPage() {
         ) : (
           <div className="card rounded-xl shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-max">
                 <thead>
                   <tr style={{ backgroundColor: `var(--cardSecondary)` }}>
                     <th className="text-left py-4 px-6 font-semibold">Date & Time</th>
                     <th className="text-left py-4 px-6 font-semibold">From User</th>
                     <th className="text-left py-4 px-6 font-semibold">To User</th>
                     <th className="text-left py-4 px-6 font-semibold">Amount</th>
-                    <th className="text-left py-4 px-6 font-semibold">Type</th>
+                    <th className="text-left py-4 px-6 font-semibold" style={{minWidth: '200px'}}>Type</th>
                     <th className="text-left py-4 px-6 font-semibold">Status</th>
-                    <th className="text-center py-4 px-6 font-semibold">Actions</th>
+                    <th className="text-center py-4 px-6 font-semibold" style={{width: '80px'}}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -354,7 +354,7 @@ export default function ConfirmPaymentsPage() {
                         </td>
                         <td className="py-4 px-6">
                           <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
-                            PENDING REVIEW
+                            PENDING
                           </span>
                         </td>
                         <td className="py-4 px-6">

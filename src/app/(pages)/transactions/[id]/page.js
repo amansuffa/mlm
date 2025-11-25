@@ -276,34 +276,20 @@ export default function TransactionDetailsPage() {
                 <h3 className="text-xl font-semibold mb-4" style={{ color: 'var(--text)' }}>
                   Admin Actions
                 </h3>
-                <div className="space-y-3">
+                <div className="flex space-x-4">
                   <button
                     onClick={() => handleAction("approve")}
                     disabled={loading}
-                    className="w-full px-6 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 disabled:opacity-50 transition-all duration-300 flex items-center justify-center space-x-2"
+                    className="px-6 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 disabled:opacity-50 transition-all duration-300"
                   >
-                    {loading ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                    <span>{loading ? "Processing..." : "Approve Transaction"}</span>
+                    {loading ? "Processing..." : "Approve"}
                   </button>
                   <button
                     onClick={() => handleAction("reject")}
                     disabled={loading}
-                    className="w-full px-6 py-3 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 disabled:opacity-50 transition-all duration-300 flex items-center justify-center space-x-2"
+                    className="px-6 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 disabled:opacity-50 transition-all duration-300"
                   >
-                    {loading ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    )}
-                    <span>{loading ? "Processing..." : "Reject Transaction"}</span>
+                    {loading ? "Processing..." : "Reject"}
                   </button>
                 </div>
               </div>
