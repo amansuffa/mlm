@@ -19,9 +19,9 @@ export async function POST(req) {
         pay_currency: pay_currency,
         order_id: order_id,
         order_description: "Admin Fee Payment",
-        ipn_callback_url: `${process.env.NGROK_URL}/api/payment-callback`,
-        success_url: `${process.env.NGROK_URL}/success`,
-        cancel_url: `${process.env.NGROK_URL}/cancel`,
+        ipn_callback_url: `${process.env.APP_URL}/api/payment-callback`,
+        success_url: `${process.env.APP_URL}/success`,
+        cancel_url: `${process.env.APP_URL}/cancel`,
       },
       {
         headers: {
