@@ -56,34 +56,28 @@ export default function Navbar() {
               >
                 Home
               </Link>
-              {/* <Link 
-                href="/products" 
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: 'var(--text)' }}
-              >
-                Products
-              </Link>
+          
               <Link 
-                href="/mission" 
+                href="/about" 
                 className="font-medium transition-all duration-200 hover:opacity-80"
                 style={{ color: 'var(--text)' }}
               >
                 Mission
-              </Link> */}
+              </Link>
               <Link
                 href="/blogs"
                 className="font-medium transition-all duration-200 hover:opacity-80"
                 style={{ color: "var(--text)" }}
               >
-                Blog
+                Training
               </Link>
-              {/* <Link 
+              <Link 
                 href="/contact" 
                 className="font-medium transition-all duration-200 hover:opacity-80"
                 style={{ color: 'var(--text)' }}
               >
                 Contact
-              </Link> */}
+              </Link>
               {session?.user && (
                 <Link
                   href="/dashboard"
@@ -207,19 +201,9 @@ export default function Navbar() {
               >
                 Home
               </Link>
-              {/* <Link 
-                href="/products" 
-                className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
-                style={{ 
-                  backgroundColor: 'var(--card)',
-                  color: 'var(--text)'
-                }}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Products
-              </Link>
+            
               <Link 
-                href="/mission" 
+                href="/about" 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
                   backgroundColor: 'var(--card)',
@@ -228,7 +212,7 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Mission
-              </Link> */}
+              </Link>
               <Link
                 href="/blogs"
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
@@ -238,9 +222,9 @@ export default function Navbar() {
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Blog
+                Training
               </Link>
-              {/* <Link 
+              <Link 
                 href="/contact" 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
@@ -250,7 +234,7 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
-              </Link> */}
+              </Link>
               {session?.user && (
                 <Link
                   href="/dashboard"
