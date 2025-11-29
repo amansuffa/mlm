@@ -17,7 +17,6 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
     middleName: '',
@@ -100,52 +99,7 @@ export default function Signup() {
     }
   }
 
-  const validateStep = async (step) => {
-    if (step === 1) {
-      if (!formData.firstName || !formData.lastName || !formData.email) {
-        toast.error('Please fill in all required fields before proceeding');
-        return false;
-      }
-      
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        toast.error('Please enter a valid email address');
-        return false;
-      }
-      
-      try {
-        const res = await axios.post('/api/signup', { email: formData.email, checkEmail: true });
-        if (!res.data.available) {
-          toast.error('Email is already registered');
-          return false;
-        }
-      } catch (err) {
-        toast.error('Error checking email availability');
-        return false;
-      }
-      
-      return true;
-    }
-    if (step === 2) {
-      if (!formData.countryCode || !formData.phoneNumber || 
-          !formData.city || !formData.province || !formData.country) {
-        toast.error('Please fill in all required fields before proceeding');
-        return false;
-      }
-      return true;
-    }
-    return true;
-  };
-
-  const nextStep = async () => {
-    if (await validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(prev + 1, 3));
-    }
-  };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
+  // Step logic removed: the form now shows all sections on a single page.
 
   return (
     <div className="min-h-screen bg-[var(--background)] py-8 px-4">
@@ -163,29 +117,7 @@ export default function Signup() {
             </div>
           </div>
 
-          {/* Progress Steps */}
-          <div className="flex justify-center mb-8">
-            <div className="flex items-center space-x-4">
-              {[1, 2, 3].map((step) => (
-                <div key={step} className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300 ${
-                    step === currentStep 
-                      ? 'bg-[var(--primary)] text-white scale-110 shadow-lg' 
-                      : step < currentStep 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-gray-300 text-gray-600'
-                  }`}>
-                    {step < currentStep ? '✓' : step}
-                  </div>
-                  {step < 3 && (
-                    <div className={`w-12 h-1 transition-all duration-300 ${
-                      step < currentStep ? 'bg-green-500' : 'bg-gray-300'
-                    }`}></div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Progress steps removed — all sections are shown on one page */}
         </div>
 
         {/* Registration Form */}
@@ -195,12 +127,11 @@ export default function Signup() {
 
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Step 1: Personal Information */}
-              {currentStep === 1 && (
                 <div className="space-y-6 animate-slide-in-right">
                   {/* Instructions */}
                   <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
                     <p className="font-semibold mb-3 text-blue-800">Please carefully read the instructions below before creating your account:</p>
-                    <ul className="space-y-2 text-sm text-blue-700">
+                    <ul className="space-y-2 text-sm text-blue-800">
                       <li><strong>Step 1 – Create Your Account:</strong> Fill in the form on this page with your correct details to register. And confirm your email address. (Be sure to check inbox/spam box)</li>
                       <li><strong>Step 2 – Payment Page:</strong> After completing the form, you will be redirected to the payment page.</li>
                       <li>You will be required to pay a one-time $50 admin fee.</li>
@@ -285,10 +216,8 @@ export default function Signup() {
                     />
                   </div>
                 </div>
-              )}
 
               {/* Step 2: Contact & Location */}
-              {currentStep === 2 && (
                 <div className="space-y-6 animate-slide-in-right">
                   <h2 className="text-2xl font-bold text-[var(--text)] mb-6">Contact & Location</h2>
                   
@@ -383,10 +312,8 @@ export default function Signup() {
                     </div>
                   </div>
                 </div>
-              )}
 
               {/* Step 3: Account Security */}
-              {currentStep === 3 && (
                 <div className="space-y-6 animate-slide-in-right">
                   <h2 className="text-2xl font-bold text-[var(--text)] mb-6">Account Security</h2>
                   
@@ -476,8 +403,8 @@ export default function Signup() {
 
                     <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                       <h3 className="font-bold text-red-800 mb-2">⚠️ Important Reminder:</h3>
-                      <ul className="space-y-1 text-sm text-red-700">
-                        <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account &ndash; <a href="https://wise.com/invite/irhc/ranaa156" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Click Here</a>.</li>
+                      <ul className="space-y-1 text-sm text-red-800">
+                        <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account &ndash; <a href="https://wise.com/invite/irhc/ranaa156" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Click Here</a></li>
                         <li>• In addition to the admin fee, you will also need to pay the $500 membership fee directly to your sponsor to fully activate your account and access the system.</li>
                         <li>• If you are not prepared to make these payments, please do not create an account at this time.</li>
                         <li>• Due to local regulatory restrictions, PASH.CLUB does not provide services or accept registrations from residents of Pakistan, Somalia, Sudan, the Democratic Republic of Congo, and Yemen. By proceeding, you confirm that you are not a resident of these countries.</li>
@@ -516,64 +443,41 @@ export default function Signup() {
                     </div>
                   </div>
                 </div>
-              )}
 
-              {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6 border-[var(--border)]">
-                {currentStep > 1 ? (
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    className="px-8 py-3 border-2 border-[var(--border)] text-[var(--text)] rounded-xl hover:bg-[var(--cardSecondary)] hover:border-gray-400 transition-all duration-300 font-semibold"
-                  >
-                    ← Previous
-                  </button>
-                ) : (
-                  <div></div>
-                )}
-
-                {currentStep < 3 ? (
-                  <button
-                    type="button"
-                    onClick={nextStep}
-                    className="button-secondary px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
-                  >
-                    Next Step →
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={loading || !passwordValid || !agreedToTerms || !captchaVerified}
-                    className="button-secondary px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                  >
-                    {loading ? (
-                      <>
-                        <svg
-                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Creating Account...
-                      </>
-                    ) : (
-                      "Create Account"
-                    )}
-                  </button>
-                )}
+              {/* Submit Button */}
+              <div className="flex justify-end pt-6 border-[var(--border)]">
+                <button
+                  type="submit"
+                  disabled={loading || !passwordValid || !agreedToTerms || !captchaVerified}
+                  className="button-secondary px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Creating Account...
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
+                </button>
               </div>
             </form>
 
