@@ -27,11 +27,10 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4" style={{ color: 'var(--text)' }}>Explore</h4>
             <ul className="space-y-2 opacity-80">
-              <li><Link href="/privacy-policy" className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
+              <li><Link href="/privacy" className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:opacity-100 transition-opacity">Terms & Conditions</Link></li>
-              <li><Link href="/earnings-disclaimer" className="hover:opacity-100 transition-opacity">Earnings Disclaimer</Link></li>
-              <li><Link href="/refund-policy" className="hover:opacity-100 transition-opacity">Refund Policy</Link></li>
-              <li><Link href="/affiliate-agreement" className="hover:opacity-100 transition-opacity">Affiliate Agreement</Link></li>
+              <li><Link href="/payment-policies" className="hover:opacity-100 transition-opacity">Payment Policies</Link></li>
+              <li><Link href="/affiliate" className="hover:opacity-100 transition-opacity">Affiliate Agreement</Link></li>
               <li><Link href="/contact" className="hover:opacity-100 transition-opacity">Contact</Link></li>
             </ul>
           </div>
@@ -50,8 +49,8 @@ export default function Footer() {
             <ul className="space-y-2 opacity-80">
               <li><Link href="/faq" className="hover:opacity-100 transition-opacity">FAQ</Link></li>
               <li><Link href="/terms" className="hover:opacity-100 transition-opacity">Terms of Condition</Link></li>
-              <li><Link href="/privacy-policy" className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
-              <li><Link href="/changelog" className="hover:opacity-100 transition-opacity">Changelog</Link></li>
+              <li><Link href="/privacy" className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
+  
             </ul>
           </div>
         </div>

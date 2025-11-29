@@ -433,7 +433,7 @@ export default function Signup() {
                     <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                       <h3 className="font-bold text-red-800 mb-2">⚠️ Important Reminder:</h3>
                       <ul className="space-y-1 text-sm text-red-800">
-                        <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account &ndash; <a href="https://wise.com/invite/irhc/ranaa156" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Click Here</a></li>
+                        <li>• Only create your account if you are ready to make the $50 admin fee payment immediately. You can buy USDT from major exchanges i.e., Binance, Kucoin or pay the admin fee using Wise transfer using your debit/credit card or bank account. You can get a Wise account &ndash; <a href="https://wise.com/invite/irhc/ranaa156" target="_blank" rel="noopener noreferrer" className="text-blue-800 underline">Click Here</a></li>
                         <li>• In addition to the admin fee, you will also need to pay the $500 membership fee directly to your sponsor to fully activate your account and access the system.</li>
                         <li>• If you are not prepared to make these payments, please do not create an account at this time.</li>
                         <li>• Due to local regulatory restrictions, PASH.CLUB does not provide services or accept registrations from residents of Pakistan, Somalia, Sudan, the Democratic Republic of Congo, and Yemen. By proceeding, you confirm that you are not a resident of these countries.</li>
@@ -457,7 +457,8 @@ export default function Signup() {
                         className="mt-1 w-4 h-4 text-[var(--primary)] border-gray-300 rounded focus:ring-[var(--primary)]"
                       />
                       <label className="text-sm text-[var(--text)]">
-                        I agree to the privacy, Terms, affiliate and payment policies *
+                        
+                        I agree to the <Link href="/privacy" className="text-blue-800 hover:underline font-semibold transition-all duration-300" target="_blank">privacy</Link>, <Link href="/terms" className="text-blue-800 hover:underline font-semibold transition-all duration-300" target="_blank">Terms</Link>, <Link href="/affiliate" className="text-blue-800 hover:underline font-semibold transition-all duration-300" target="_blank">affiliate</Link> and <Link href="/payment-policies" className="text-blue-800 hover:underline font-semibold transition-all duration-300" target="_blank">payment policies</Link> *
                       </label>
                     </div>
 
