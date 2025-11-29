@@ -10,13 +10,43 @@ import { parseTemplate } from "@/lib/parseTemplate";
 
 export async function POST(req) {
   try {
-    const { email, password, firstName, middleName, lastName, username, sponsorUsername, countryCode, phoneNumber, city, province, country, checkEmail } = await req.json();
+    const { email, password, firstName, middleName, lastName, username, sponsorUsername, countryCode, phoneNumber, city, province, country, checkEmail, captchaToken } = await req.json();
     await connectDB();
 
     // Email availability check endpoint
     if (checkEmail) {
       const existingUser = await User.findOne({ email });
       return NextResponse.json({ available: !existingUser });
+    }
+
+    // Verify reCAPTCHA token server-side for full signup requests
+    try {
+      const secret = process.env.RECAPTCHA_SECRET || process.env.RECAPTCHA_SECRET_KEY;
+      if (!secret) {
+        console.warn('RECAPTCHA secret not set in environment; skipping verification.');
+      } else {
+        if (!captchaToken) {
+          return NextResponse.json({ error: 'Captcha token missing' }, { status: 400 });
+        }
+
+        const params = new URLSearchParams();
+        params.append('secret', secret);
+        params.append('response', captchaToken);
+
+        const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString(),
+        });
+
+        const verifyJson = await verifyRes.json();
+        if (!verifyJson.success) {
+          return NextResponse.json({ error: 'Captcha verification failed' }, { status: 400 });
+        }
+      }
+    } catch (recapErr) {
+      console.error('Error verifying recaptcha:', recapErr);
+      return NextResponse.json({ error: 'Captcha verification error' }, { status: 500 });
     }
 
     // Check for banned countries

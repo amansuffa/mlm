@@ -7,6 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import allowedCountries from "@/utils/countries.json";
 import countryCodes from "@/utils/countryCodes.json";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Signup() {
 
@@ -16,7 +17,9 @@ export default function Signup() {
   const [passwordValid, setPasswordValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaError, setCaptchaError] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
   const [formData, setFormData] = useState({
     firstName: '',
     middleName: '',
@@ -55,6 +58,22 @@ export default function Signup() {
     setPasswordValid(validatePassword(pwd));
   };
 
+  const validatePhoneNumber = (phone) => {
+    // Remove all non-digit characters
+    const cleaned = phone.replace(/\D/g, '');
+    // Phone number should be 7-15 digits
+    if (cleaned.length < 7 || cleaned.length > 15) {
+      return "Phone number must be between 7 and 15 digits";
+    }
+    return "";
+  };
+
+  const handlePhoneChange = (e) => {
+    const phone = e.target.value;
+    setFormData({...formData, phoneNumber: phone});
+    setPhoneError(validatePhoneNumber(phone));
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!passwordValid) {
@@ -65,8 +84,12 @@ export default function Signup() {
       toast.error("Please agree to the terms and policies");
       return;
     }
-    if (!captchaVerified) {
+    if (!captchaToken) {
       toast.error("Please complete the captcha verification");
+      return;
+    }
+    if (phoneError) {
+      toast.error(phoneError);
       return;
     }
 
@@ -86,6 +109,7 @@ export default function Signup() {
         country: formData.country,
         password,
         username: formData.username,
+        captchaToken,
       };
 
       const res = await axios.post("/api/signup", data);
@@ -249,14 +273,19 @@ export default function Signup() {
                         name="phoneNumber"
                         type="tel"
                         value={formData.phoneNumber}
-                        onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                        onChange={handlePhoneChange}
                         required
                         placeholder="(555) 123-4567"
-                        className="card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300"
-                        onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                        className={`card-secondary w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-1 transition-all duration-300 ${
+                          phoneError ? 'border-red-500 focus:ring-red-500/20' : ''
+                        }`}
+                        onFocus={(e) => (e.target.style.borderColor = phoneError ? "#ef4444" : "var(--primary)")}
                         onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
-                        style={{ "--tw-ring-color": "var(--primary)" }}
+                        style={{ "--tw-ring-color": phoneError ? "#ef4444" : "var(--primary)" }}
                       />
+                      {phoneError && (
+                        <p className="text-xs text-red-600 mt-1">{phoneError}</p>
+                      )}
                     </div>
                   </div>
 
@@ -432,14 +461,19 @@ export default function Signup() {
                       </label>
                     </div>
 
-                    <div className="flex items-center space-x-3">
-                      <input
-                        type="checkbox"
-                        checked={captchaVerified}
-                        onChange={(e) => setCaptchaVerified(e.target.checked)}
-                        className="w-4 h-4 text-[var(--primary)] border-gray-300 rounded focus:ring-[var(--primary)]"
+                    <div className="pt-2">
+                      <ReCAPTCHA
+                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                        onChange={(token) => setCaptchaToken(token)}
+                        onExpired={() => setCaptchaToken(null)}
+                        onErrored={() => setCaptchaError(true)}
                       />
-                      <span className="text-sm text-[var(--text)]">I&apos;m not a robot</span>
+                      {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
+                        <p className="text-sm text-red-600 mt-2">⚠️ reCAPTCHA is not configured. Please contact support.</p>
+                      )}
+                      {captchaError && (
+                        <p className="text-sm text-red-600 mt-2">⚠️ reCAPTCHA verification failed. Please try again.</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -448,7 +482,7 @@ export default function Signup() {
               <div className="flex justify-end pt-6 border-[var(--border)]">
                 <button
                   type="submit"
-                  disabled={loading || !passwordValid || !agreedToTerms || !captchaVerified}
+                  disabled={loading || !passwordValid || !agreedToTerms || !captchaToken}
                   className="button-secondary px-8 py-3 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
                   {loading ? (
