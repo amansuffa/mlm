@@ -223,7 +223,8 @@ export default function BlogsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            About <span className="text-yellow-300">PASH</span>.CLUB
+            The official <span className="text-yellow-300">PASH</span>.CLUB Blog
+     
           </motion.h1>
           <motion.p 
             className="text-xl md:text-2xl text-white opacity-90 max-w-2xl mx-auto mb-8"
@@ -231,7 +232,7 @@ export default function BlogsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Built for Freedom, Designed for Real People
+            Discover insights, strategies & success stories to help you build freedom, success and stability
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
@@ -312,6 +313,8 @@ export default function BlogsPage() {
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.3 }}
                   >
+                    <Link target="_blank"
+href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
                     <Image
                       src={featuredBlog.thumbnail}
                       alt={featuredBlog.title}
@@ -319,6 +322,7 @@ export default function BlogsPage() {
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                    </Link>
                   </motion.div>
                 )}
                 
@@ -345,7 +349,8 @@ export default function BlogsPage() {
                       <span>{getReadingTime(featuredBlog.content)} min read</span>
                     </div>
                   </motion.div>
-
+<Link target="_blank"
+href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
                   <motion.h2 
                     className="text-3xl lg:text-4xl font-bold mb-6 group-hover:opacity-90 transition-opacity"
                     style={{ color: 'var(--text)' }}
@@ -355,6 +360,7 @@ export default function BlogsPage() {
                   >
                     {featuredBlog.title}
                   </motion.h2>
+                  </Link>
                   
                   <motion.p 
                     className="text-lg opacity-80 mb-8 leading-relaxed"
@@ -397,7 +403,7 @@ export default function BlogsPage() {
                       </div>
                     </div>
                     
-                    <Link
+                    <Link target="_blank"
                       href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}
                       className="button px-8 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-xl flex items-center space-x-2 group"
                     >
@@ -522,8 +528,14 @@ export default function BlogsPage() {
                     }}
                     whileHover={{ y: -8, scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 300 }}
-                    onClick={() => window.location.href = `/blogs/${blog._id}?ref=${session?.user?.username || ""}`}
+                 
                   >
+                    <Link target="_blank"
+                      href={`/blogs/${blog._id}?ref=${session?.user?.username || ""}`}
+                  
+                    >
+                     
+                  
                     {/* Blog Thumbnail */}
                     {blog.thumbnail ? (
                       <motion.div 
@@ -633,6 +645,7 @@ export default function BlogsPage() {
                         </div>
                       </motion.div>
                     </div>
+                      </Link>
                   </motion.article>
                 </AnimatedCard>
               ))}
