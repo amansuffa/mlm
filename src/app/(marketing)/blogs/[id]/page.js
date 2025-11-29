@@ -9,6 +9,7 @@ import ToastProvider from "@/components/ToastProvider";
 import "@/Styling/style.scss";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import Link from "next/link";
 
 // Animation variants
 const fadeInUp = {
@@ -79,97 +80,10 @@ export default function SingleBlogPage() {
   const [likesCount, setLikesCount] = useState(0);
   const [showShareModal, setShowShareModal] = useState(false);
   
-  // Comment section states
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
-  const [replyingTo, setReplyingTo] = useState(null);
-  const [replyText, setReplyText] = useState("");
-  const [commentLoading, setCommentLoading] = useState(false);
+
 
   const searchParams = useSearchParams();
   const refId = searchParams.get("ref");
-
-  // Fetch comments for this blog
-  const fetchComments = useCallback(async () => {
-    try {
-      const response = await axios.get(`/api/blogs/${id}/comments`);
-      if (response.data.success) {
-        setComments(response.data.comments);
-      }
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  }, [id]);
-
-  // Add new comment
-  const handleAddComment = async () => {
-    if (!newComment.trim()) {
-      toast.error("Please enter a comment");
-      return;
-    }
-
-    setCommentLoading(true);
-    try {
-      const response = await axios.post(`/api/blogs/${id}/comments`, {
-        content: newComment.trim()
-      });
-
-      if (response.data.success) {
-        setNewComment("");
-        await fetchComments();
-        toast.success("Comment added successfully!");
-      }
-    } catch (error) {
-      console.error("Error adding comment:", error);
-      toast.error("Failed to add comment");
-    } finally {
-      setCommentLoading(false);
-    }
-  };
-
-  // Add reply to comment
-  const handleAddReply = async (parentId) => {
-    if (!replyText.trim()) {
-      toast.error("Please enter a reply");
-      return;
-    }
-
-    try {
-      const response = await axios.post(`/api/blogs/${id}/comments`, {
-        content: replyText.trim(),
-        parentId: parentId
-      });
-
-      if (response.data.success) {
-        setReplyText("");
-        setReplyingTo(null);
-        await fetchComments();
-        toast.success("Reply added successfully!");
-      }
-    } catch (error) {
-      console.error("Error adding reply:", error);
-      toast.error("Failed to add reply");
-    }
-  };
-
-  // Delete comment
-  const handleDeleteComment = async (commentId) => {
-    if (!window.confirm("Are you sure you want to delete this comment?")) {
-      return;
-    }
-
-    try {
-      const response = await axios.delete(`/api/blogs/${id}/comments/${commentId}`);
-      
-      if (response.data.success) {
-        await fetchComments();
-        toast.success("Comment deleted successfully!");
-      }
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-      toast.error("Failed to delete comment");
-    }
-  };
 
   // Strip markdown syntax for clean text display
   const stripMarkdown = (content) => {
@@ -439,8 +353,6 @@ export default function SingleBlogPage() {
         // Check like status after blog is loaded
         await checkLikeStatus();
 
-        // Fetch comments
-        await fetchComments();
 
         // Fetch related blogs based on category/tags
         if (data.blog.category || data.blog.tags?.length > 0) {
@@ -474,7 +386,7 @@ export default function SingleBlogPage() {
     }
 
     fetchBlog();
-  }, [id, checkLikeStatus, fetchComments]);
+  }, [id, checkLikeStatus]);
 
   if (loading) {
     return (
@@ -568,117 +480,7 @@ export default function SingleBlogPage() {
     <div className="min-h-screen pb-8" style={{ backgroundColor: 'var(--background)' }}>
       <ToastProvider />
       
-      {/* Join Modal */}
-      {showJoinModal && (
-        <motion.div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div 
-            className="rounded-2xl shadow-2xl max-w-md w-full"
-            style={{ backgroundColor: 'var(--card)' }}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            {/* Modal Header */}
-            <div className="p-6 border-b" style={{ borderColor: 'var(--border)' }}>
-              <div className="flex items-center space-x-3">
-                <motion.div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center"
-                  style={{ 
-                    background: `linear-gradient(135deg, var(--primary), var(--secondary))`
-                  }}
-                  whileHover={{ scale: 1.1, rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                    ></path>
-                  </svg>
-                </motion.div>
-                <div>
-                  <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
-                    Join Our Community
-                  </h3>
-                  <p className="opacity-70 text-sm">
-                    Start your journey with us
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* Modal Body */}
-            <div className="p-6">
-              <p className="opacity-90 mb-4">
-                Ready to take the next step? Join our MLM community and start
-                building your business today!
-              </p>
-              <div 
-                className="rounded-lg p-4 mb-4 border"
-                style={{ 
-                  backgroundColor: 'var(--primary)', 
-                  opacity: '0.1',
-                  borderColor: 'var(--primary)',
-                  opacity: '0.2'
-                }}
-              >
-                <p className="font-semibold text-sm" style={{ color: 'var(--primary)' }}>
-                  🎁 Special offer for blog readers!
-                </p>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="flex space-x-3 p-6 border-t" style={{ borderColor: 'var(--border)' }}>
-              <motion.button
-                onClick={() => setShowJoinModal(false)}
-                className="flex-1 px-4 py-3 rounded-xl font-semibold transition-all duration-300"
-                style={{ 
-                  backgroundColor: 'var(--cardSecondary)',
-                  color: 'var(--text)'
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Cancel
-              </motion.button>
-              <motion.button
-                onClick={copyAffiliateLink}
-                className="flex-1 px-4 py-3 rounded-xl font-semibold transition-all duration-300"
-                style={{ 
-                  backgroundColor: 'var(--card)',
-                  color: 'var(--text)',
-                  border: '1px solid var(--border)'
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Copy Link
-              </motion.button>
-              <motion.button
-                onClick={handleJoinClick}
-                className="flex-1 button text-white px-4 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Join Now
-              </motion.button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
 
       {/* Share Modal */}
       {showShareModal && (
@@ -794,115 +596,70 @@ export default function SingleBlogPage() {
       )}
 
       {/* Hero Section */}
-      <motion.div 
-        className="relative py-16 lg:py-24 overflow-hidden"
+         <section 
+        className="relative py-30 text-center overflow-hidden"
         style={{ 
-          background: `linear-gradient(135deg, var(--primary), var(--secondary))`
+          background: 'linear-gradient(135deg, var(--primary), var(--secondary))'
         }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
       >
         {/* Animated Background Elements */}
-        <div className="absolute inset-0 opacity-10">
-          <motion.div
-            className="absolute top-10 left-10 w-32 h-32 rounded-full"
-            style={{ backgroundColor: 'var(--background)' }}
-            animate={{
-              scale: [1, 1.5, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-          <motion.div
-            className="absolute bottom-10 right-10 w-24 h-24 rounded-full"
-            style={{ backgroundColor: 'var(--background)' }}
-            animate={{
-              scale: [1, 1.3, 1],
-              y: [0, 20, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1
-            }}
-          />
-        </div>
+        <motion.div
+          className="absolute top-10 left-10 w-24 h-24 rounded-full bg-white opacity-10"
+          animate={{
+            y: [0, -30, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 right-20 w-20 h-20 rounded-full bg-white opacity-10"
+          animate={{
+            y: [0, 25, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/3 w-16 h-16 rounded-full bg-white opacity-10"
+          animate={{
+            y: [0, -15, 0],
+            x: [0, 10, 0],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+        />
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top Right Buttons */}
-          <motion.div 
-            className="absolute top-6 right-6 flex flex-col space-y-3"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <motion.h1 
+            className="text-4xl lg:text-5xl font-bold text-white mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <motion.button
-              onClick={() => setShowJoinModal(true)}
-              className="bg-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 group"
-              style={{ color: 'var(--primary)' }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                whileHover={{ scale: 1.2 }}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                ></path>
-              </motion.svg>
-              <span>Join Now</span>
-            </motion.button>
-          </motion.div>
-
-          <div className="text-center text-white">
-            <motion.div 
-              className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2 mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <span className="text-sm font-semibold">
-                {blog.category || "Uncategorized"}
-              </span>
-            </motion.div>
-            <motion.h1 
-              className="text-4xl lg:text-5xl font-bold mb-6 leading-tight"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              {blog.title}
-            </motion.h1>
-            <motion.p 
-              className="text-xl text-white text-opacity-90 max-w-3xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              {blog.excerpt ? (
-                blog.excerpt
-              ) : (
-                <span className="text-gray-300 italic">
-                  No excerpt provided.
-                </span>
-              )}
-            </motion.p>
-          </div>
+            {blog.title}
+          </motion.h1>
+    
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="w-20 h-1 bg-yellow-300 mx-auto rounded-full mt-4"
+          />
         </div>
-      </motion.div>
+      </section>
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
@@ -925,7 +682,7 @@ export default function SingleBlogPage() {
                     style={{ 
                       background: `linear-gradient(135deg, var(--primary), var(--secondary))`
                     }}
-                    whileHover={{ scale: 1.1, rotate: 360 }}
+                    whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.5 }}
                   >
                     {blog.authorId?.profilePicture ? (
@@ -976,7 +733,6 @@ export default function SingleBlogPage() {
                     { label: "Views", value: blog.views || 0 },
                     { label: "Likes", value: likesCount },
                     { label: "Shares", value: blog.shares?.length || 0 },
-                    { label: "Comments", value: comments.length }
                   ].map((stat, index) => (
                     <motion.div 
                       key={stat.label}
@@ -1055,7 +811,7 @@ export default function SingleBlogPage() {
                     <motion.button
                       key={item.platform}
                       onClick={() => handleShare(item.platform)}
-                      className="flex items-center justify-center space-x-2 rounded-lg p-3 transition-all duration-300 group"
+                      className="flex items-center justify-center rounded-lg p-3 transition-all duration-300 group"
                       style={{ backgroundColor: 'var(--cardSecondary)' }}
                       variants={scaleIn}
                       whileHover={{ scale: 1.05, y: -2 }}
@@ -1215,15 +971,17 @@ export default function SingleBlogPage() {
                     whileHover={{ scale: 1.02 }}
                   >
                     <h3 className="text-2xl font-bold mb-4">
-                      Ready to Start Your Journey?
+                      GET PAID $500/Referral
                     </h3>
                     <p className="text-white text-opacity-90 mb-6 text-lg">
-                      Join our MLM community today and unlock your earning
-                      potential. Start building your business with our proven
-                      system.
+          {(session?.user) ? (
+           "Copy your affiliate link and make $500 per referral for sharing this blog article to your social media networks."
+           ) : (
+           "Join PASH.CLUB now and make $500 per referral for sharing this blog article to your social media networks."
+           )}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <motion.button
+                    <div className="flex justify-center">
+                      {(session?.user) ? (     <motion.button
                         onClick={copyAffiliateLink}
                         className="bg-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg"
                         style={{ color: 'var(--primary)' }}
@@ -1231,20 +989,17 @@ export default function SingleBlogPage() {
                         whileTap={{ scale: 0.95 }}
                       >
                         Copy Affiliate Link
-                      </motion.button>
-                      <motion.button
+                      </motion.button>):(        <motion.button
                         onClick={handleJoinClick}
-                        className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white transition-all duration-300"
-                        style={{ color: 'white' }}
-                        whileHover={{ 
-                          scale: 1.05,
-                          backgroundColor: 'white',
-                          color: 'var(--primary)'
-                        }}
+                className="bg-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg"
+                        style={{ color: 'var(--primary)' }}
+                        whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
                         Join Now
-                      </motion.button>
+                      </motion.button>)}
+                 
+              
                     </div>
                   </motion.div>
                 </motion.div>
@@ -1282,275 +1037,6 @@ export default function SingleBlogPage() {
               </motion.div>
             </AnimatedSection>
 
-            {/* Comments Section */}
-            <AnimatedSection>
-              <motion.div 
-                className="rounded-2xl shadow-lg p-8 mb-8"
-                style={{ 
-                  backgroundColor: 'var(--card)',
-                  border: `1px solid var(--border)`
-                }}
-                whileHover={{ y: -5 }}
-              >
-                <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>
-                  Comments ({comments.length})
-                </h3>
-
-                {/* Add Comment Form */}
-                <motion.div 
-                  className="mb-8"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <motion.textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Share your thoughts..."
-                    className="card-secondary w-full px-4 py-3 rounded-xl focus:ring-1 resize-none"
-                    style={{
-                      '--tw-ring-color': 'var(--accent)'
-                    }}
-                    onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
-                    onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
-                    rows="4"
-                    whileFocus={{ scale: 1.02 }}
-                  />
-                  <div className="flex justify-end mt-3">
-                    <motion.button
-                      onClick={handleAddComment}
-                      disabled={commentLoading || !newComment.trim()}
-                      className="button text-white px-6 py-2 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                      whileHover={{ scale: commentLoading || !newComment.trim() ? 1 : 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {commentLoading ? "Posting..." : "Post Comment"}
-                    </motion.button>
-                  </div>
-                </motion.div>
-
-                {/* Comments List */}
-                <motion.div 
-                  className="space-y-6"
-                  variants={staggerContainer}
-                  initial="initial"
-                  animate="animate"
-                >
-                  {comments.length === 0 ? (
-                    <motion.div 
-                      className="text-center py-8 opacity-70"
-                      variants={fadeInUp}
-                    >
-                      <motion.svg
-                        className="w-12 h-12 mx-auto mb-3 opacity-60"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                        />
-                      </motion.svg>
-                      <p>No comments yet. Be the first to comment!</p>
-                    </motion.div>
-                  ) : (
-                    comments.map((comment) => (
-                      <motion.div
-                        key={comment._id}
-                        variants={fadeInUp}
-                        className="pb-6 last:border-b-0"
-                        style={{ 
-                          borderBottom: `1px solid var(--border)`
-                        }}
-                      >
-                        {/* Main Comment */}
-                        <div className="flex space-x-3">
-                          <div className="flex-shrink-0">
-                            <motion.div 
-                              className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden text-xl font-bold text-white shadow-lg"
-                              style={{ 
-                                background: `linear-gradient(135deg, var(--primary), var(--secondary))`
-                              }}
-                              whileHover={{ scale: 1.1 }}
-                            >
-                              {comment.userId?.profilePicture ? (
-                                <Image
-                                  src={comment.userId.profilePicture}
-                                  alt={comment.userId.name || "Author"}
-                                  width={40}
-                                  height={40}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                comment.userId?.name?.charAt(0) || "U"
-                              )}
-                            </motion.div>
-                          </div>
-                          <div className="flex-1">
-                            <motion.div 
-                              className="rounded-xl p-4"
-                              style={{ backgroundColor: 'var(--cardSecondary)' }}
-                              whileHover={{ scale: 1.01 }}
-                            >
-                              <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-semibold" style={{ color: 'var(--text)' }}>
-                                  {comment.userId?.name || "Anonymous"}
-                                </h4>
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-xs opacity-70">
-                                    {new Date(comment.createdAt).toLocaleDateString()}
-                                  </span>
-                                  {/* Only show delete for comment author */}
-                                  {comment.userId?._id === session?.user?.id && (
-                                    <motion.button
-                                      onClick={() => handleDeleteComment(comment._id)}
-                                      className="text-red-500 hover:text-red-700 p-1"
-                                      whileHover={{ scale: 1.2 }}
-                                    >
-                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                      </svg>
-                                    </motion.button>
-                                  )}
-                                </div>
-                              </div>
-                              <p style={{ color: 'var(--text)' }}>{comment.content}</p>
-                              <motion.button
-                                onClick={() => setReplyingTo(replyingTo === comment._id ? null : comment._id)}
-                                className="text-sm font-semibold mt-2 transition-colors duration-200"
-                                style={{ color: 'var(--primary)' }}
-                                whileHover={{ scale: 1.05 }}
-                              >
-                                {replyingTo === comment._id ? "Cancel" : "Reply"}
-                              </motion.button>
-                            </motion.div>
-
-                            {/* Reply Form */}
-                            {replyingTo === comment._id && (
-                              <motion.div 
-                                className="ml-8 mt-4"
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: "auto" }}
-                                exit={{ opacity: 0, height: 0 }}
-                              >
-                                <motion.textarea
-                                  value={replyText}
-                                  onChange={(e) => setReplyText(e.target.value)}
-                                  placeholder="Write a reply..."
-                                  className="card-secondary w-full px-4 py-2 rounded-lg focus:ring-1 resize-none"
-                                  style={{
-                                    '--tw-ring-color': 'var(--accent)'
-                                  }}
-                                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
-                                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
-                                  rows="3"
-                                  whileFocus={{ scale: 1.02 }}
-                                />
-                                <div className="flex justify-end space-x-2 mt-2">
-                                  <motion.button
-                                    onClick={() => setReplyingTo(null)}
-                                    className="px-4 py-2 transition-colors duration-200"
-                                    style={{ color: 'var(--text)' }}
-                                    whileHover={{ scale: 1.05 }}
-                                  > 
-                                    Cancel
-                                  </motion.button>
-                                  <motion.button
-                                    onClick={() => handleAddReply(comment._id)}
-                                    disabled={!replyText.trim()}
-                                    className="button text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    whileHover={{ scale: !replyText.trim() ? 1 : 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                  >
-                                    Post Reply
-                                  </motion.button>
-                                </div>
-                              </motion.div>
-                            )}
-
-                            {/* Replies */}
-                            {comment.replies && comment.replies.length > 0 && (
-                              <motion.div 
-                                className="ml-8 mt-4 space-y-4"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                              >
-                                {comment.replies.map((reply) => (
-                                  <motion.div 
-                                    key={reply._id} 
-                                    className="flex space-x-3"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                  >
-                                    <div className="flex-shrink-0">
-                                      <motion.div 
-                                        className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden text-lg font-bold text-white shadow-lg"
-                                        style={{ backgroundColor: 'var(--primary)', opacity: '0.7' }}
-                                        whileHover={{ scale: 1.1 }}
-                                      >
-                                        {reply.userId?.profilePicture ? (
-                                          <Image
-                                            src={reply.userId.profilePicture}
-                                            alt={reply.userId.name || "Author"}
-                                            width={32}
-                                            height={32}
-                                            className="w-full h-full object-cover"
-                                          />
-                                        ) : (
-                                          reply.userId?.name?.charAt(0) || "U"
-                                        )}
-                                      </motion.div>
-                                    </div>
-                                    <div className="flex-1">
-                                      <motion.div 
-                                        className="rounded-lg p-3"
-                                        style={{ backgroundColor: 'var(--cardSecondary)' }}
-                                        whileHover={{ scale: 1.01 }}
-                                      >
-                                        <div className="flex items-center justify-between mb-1">
-                                          <h5 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>
-                                            {reply.userId?.name || "Anonymous"}
-                                          </h5>
-                                          <div className="flex items-center space-x-2">
-                                            <span className="text-xs opacity-70">
-                                              {new Date(reply.createdAt).toLocaleDateString()}
-                                            </span>
-                                            {/* Only show delete for reply author */}
-                                            {reply.userId?._id === session?.user?.id && (
-                                              <motion.button
-                                                onClick={() => handleDeleteComment(reply._id)}
-                                                className="text-red-500 hover:text-red-700 p-1"
-                                                whileHover={{ scale: 1.2 }}
-                                              >
-                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                              </motion.button>
-                                            )}
-                                          </div>
-                                        </div>
-                                        <p className="text-sm" style={{ color: 'var(--text)' }}>{reply.content}</p>
-                                      </motion.div>
-                                    </div>
-                                  </motion.div>
-                                ))}
-                              </motion.div>
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))
-                  )}
-                </motion.div>
-              </motion.div>
-            </AnimatedSection>
-
             {/* Related Blogs */}
             {relatedBlogs.length > 0 && (
               <AnimatedSection>
@@ -1577,14 +1063,13 @@ export default function SingleBlogPage() {
                           className="rounded-xl p-4 hover:shadow-md transition-shadow duration-300 flex flex-col h-full cursor-pointer"
                           style={{ backgroundColor: 'var(--cardSecondary)' }}
                           whileHover={{ y: -5, scale: 1.02 }}
-                          onClick={() => window.location.href = `/blogs/${relatedBlog._id}`}
+                    
                         >
+                          <Link target='_blank' href={`/blogs/${relatedBlog._id}`} aria-label={relatedBlog.title}>
                           <h4 className="font-semibold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
                             {relatedBlog.title}
                           </h4>
-                          <p className="text-sm line-clamp-2 opacity-80 flex-1 mb-3">
-                            {stripMarkdown(relatedBlog.excerpt || relatedBlog.content)?.substring(0, 80)}...
-                          </p>
+                    
                           <motion.button
                             className="text-sm font-semibold mt-auto transition-colors duration-200 flex items-center space-x-1"
                             style={{ color: 'var(--primary)' }}
@@ -1598,6 +1083,7 @@ export default function SingleBlogPage() {
                               →
                             </motion.span>
                           </motion.button>
+                          </Link>
                         </motion.div>
                       </AnimatedCard>
                     ))}

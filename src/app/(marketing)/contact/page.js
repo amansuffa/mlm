@@ -461,7 +461,7 @@ export default function ContactPage() {
                     className="w-full py-3 rounded-xl font-semibold transition-all duration-300"
                     style={{ 
                       backgroundColor: 'var(--primary)',
-                      color: 'var(--background)'
+                      color: 'white'
                     }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -507,7 +507,7 @@ export default function ContactPage() {
                     whileHover={{ 
                       scale: 1.05,
                       backgroundColor: 'var(--primary)',
-                      color: 'var(--background)'
+                      color: 'white'
                     }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -564,7 +564,7 @@ export default function ContactPage() {
                 <motion.button
                   className="px-8 py-4 font-bold rounded-lg transition-all duration-300 hover:shadow-xl text-lg"
                   style={{ 
-                    backgroundColor: 'var(--background)',
+                    backgroundColor: 'white',
                     color: 'var(--primary)'
                   }}
                   whileHover={{ scale: 1.05, y: -2 }}

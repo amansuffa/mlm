@@ -169,7 +169,7 @@ export default function BlogsPage() {
   }
 
   return (
-    <div className="min-h-screen py-8" style={{ backgroundColor: 'var(--background)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
        <section 
         className="relative py-20 text-center overflow-hidden"
         style={{ 
