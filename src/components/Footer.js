@@ -19,7 +19,7 @@ export default function Footer() {
             </p>
             <div className="opacity-80">
               <p>www.pash.club</p>
-              <p>support@pash.club</p>
+              <p>info@pash.club</p>
             </div>
           </div>
 

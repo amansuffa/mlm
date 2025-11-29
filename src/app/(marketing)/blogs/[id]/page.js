@@ -75,7 +75,6 @@ export default function SingleBlogPage() {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
-  const [showJoinModal, setShowJoinModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -214,7 +213,7 @@ export default function SingleBlogPage() {
     } else {
       window.location.href = `/signup`;
     }
-    setShowJoinModal(false);
+
   };
 
   // Copy affiliate link
@@ -229,7 +228,7 @@ export default function SingleBlogPage() {
       className: "my-custom-toast",
       toastId: "Affiliate link copied to clipboard!",
     });
-    setShowJoinModal(false);
+
   };
 
   // Handle Like functionality

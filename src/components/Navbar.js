@@ -5,11 +5,27 @@ import Image from "next/image";
 import { useState } from "react";
 import logo from "../assets/logo.png";
 import ThemeToggleButton from "./ThemeToggleButton";
+import { useSearchParams } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+    const searchParams = useSearchParams();
+    const refId = searchParams.get("ref");
+
+
+    const handleJoinClick = () => {
+
+    if (refId) {
+      window.location.href = `/signup?ref=${refId}`;
+    } else {
+      window.location.href = `/signup`;
+    }
+
+  };
 
   return (
     <nav
@@ -111,11 +127,11 @@ export default function Navbar() {
                       Log In
                     </button>
                   </Link>
-                  <Link href="/signup">
-                    <button className="button px-4 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg">
+         
+                    <button onClick={handleJoinClick} className="button px-4 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg">
                       Join now
                     </button>
-                  </Link>
+   
                 </>
               ) : (
                 <div className="flex items-center gap-4">
