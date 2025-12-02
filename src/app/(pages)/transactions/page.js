@@ -257,8 +257,7 @@ export default function TransactionsPage() {
                   </option>
                 ))}
               </select>
-
-              <select
+{currentUserRole === 'admin'? (    <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
                 onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
@@ -273,7 +272,8 @@ export default function TransactionsPage() {
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </select>):null}
+          
             </div>
           </div>
         </div>
