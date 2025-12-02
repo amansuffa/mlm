@@ -50,7 +50,9 @@ export default function PayoutSettingsCard() {
 
  
 
-  const primaryMethod = payouts.find((m) => m.isPrimary);
+  // const primaryMethod = payouts.all.find((m) => m.isPrimary);
+  const primaryMethod = payouts.primary;
+
 
   return (
     <div className="card rounded-2xl shadow-lg p-6 h-full flex flex-col">
@@ -61,14 +63,28 @@ export default function PayoutSettingsCard() {
         <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>Payout Settings</h3>
       </div>
 
-      <div className="flex-1 flex flex-col justify-between">
-        <div className="space-y-3">
+      <div className="flex flex-col h-full">
+        <div className="space-y-3 flex-1">
           {primaryMethod ? (
-            <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--cardSecondary)' }}>
+            <div className="p-3 flex flex-col gap-4 justify-between">
+              <div className="bg-[var(--cardSecondary)] p-3 rounded-lg">
               <p className="text-sm" style={{ color: 'var(--textSecondary)' }}>Primary Method</p>
               <p className="font-semibold capitalize" style={{ color: 'var(--text)' }}>
-                {primaryMethod.methodName}
+                {payouts.primary.methodName}
               </p>
+              </div>
+              {payouts.secondaries && payouts.secondaries.length > 0 && (
+                <>
+                  {payouts.secondaries.slice(0, 2).map((method, index) => (
+                    <div key={index} className="bg-[var(--cardSecondary)] p-3 rounded-lg">
+                    <p className="text-sm" style={{ color: 'var(--textSecondary)' }}>Secondary Method</p>
+                    <p className="font-semibold capitalize" style={{ color: 'var(--text)' }}>
+                      {method.methodName}
+                    </p>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
           ) : (
             <div className="p-3 rounded-lg border-2 border-dashed" style={{ borderColor: 'var(--error)', backgroundColor: 'var(--cardSecondary)' }}>

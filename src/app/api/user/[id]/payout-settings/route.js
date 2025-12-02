@@ -7,13 +7,24 @@ export async function GET(req, context) {
     await connectDB();
     const { id } = await context.params;
     const user = await User.findById(id).select("payoutMethods");
-    
+
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    
-    // Return empty array if payoutMethods doesn't exist
-    return NextResponse.json(user.payoutMethods || []);
+
+    const methods = Array.isArray(user.payoutMethods) ? user.payoutMethods : [];
+
+    // Determine primary method (the one with isPrimary === true). If none, pick first as primary.
+    let primary = methods.find((m) => m.isPrimary) || null;
+    if (!primary && methods.length > 0) {
+      primary = methods[0];
+    }
+
+    // Collect secondary methods (exclude the primary), limit to 2 entries
+    const secondaries = methods.filter((m) => m !== primary).slice(0, 2);
+
+    // Return structured response for UI convenience, include full list for backward compatibility
+    return NextResponse.json({ primary, secondaries, all: methods });
   } catch (error) {
     console.error('GET payout methods error:', error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

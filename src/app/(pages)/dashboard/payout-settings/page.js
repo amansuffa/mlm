@@ -28,7 +28,9 @@ export default function PayoutSettingsPage() {
           throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         }
         
-        const data = await res.json();
+        const r = await res.json();
+        const data = r.all;
+
         console.log('API Response:', data);
         
         const payoutMethods = Array.isArray(data) ? data : [];
@@ -462,8 +464,8 @@ export default function PayoutSettingsPage() {
             }}
           >
             <div 
-              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300"
-              style={{ backgroundColor: 'var(--primary)', opacity: '0.1' }}
+              className="w-24 h-24 rounded-full bg-[var(--primary)]/10 flex items-center justify-center mx-auto mb-4 transition-all duration-300"
+             
             >
               <svg
                 className="w-12 h-12 transition-colors duration-300"
