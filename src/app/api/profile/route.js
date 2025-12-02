@@ -16,9 +16,15 @@ export async function GET(req) {
     
     // Get sponsor info by referredBy username
     if (user && user.referredBy) {
+      if (user.isPassup && user.passupSponsor) {
+        const passupSponsor = await User.findById(user.passupSponsor)
+          .select('name username profilePicture socialMedia');
+        user.sponsor = passupSponsor;
+      } else {
       const sponsor = await User.findOne({ username: user.referredBy })
         .select('name username profilePicture socialMedia');
       user.sponsor = sponsor;
+    }
     }
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

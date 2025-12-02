@@ -6,7 +6,7 @@ import TopReferrers from "@/components/dashboard/TopReferrers";
 import EarningsChart from "@/components/dashboard/EarningsChart";
 import ReferralsOverview from "@/components/member/ReferralsOverview";
 import PayoutSettingsCard from "@/components/member/PayoutSettingsCard";
-import DownlineTree from "@/components/dashboard/DownlineTree";
+import RefferLink from "@/components/dashboard/RefferLink";
 import TransactionsTable from "@/components/dashboard/TransactionsTable";
 import SalesOverview from "./dashboard/SalesOverview";
 import PayToSponser from "./member/PayToSponser";
@@ -31,6 +31,9 @@ export default function DashboardMember({ session }) {
           {/* KPIs: Earnings, Referrals, Team, Rank */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-3">
             <KPISection />
+          </div>
+          <div className="col-span-1 space-y-6 sm:col-span-2 lg:col-span-3">
+            <RefferLink />
           </div>
 
           {/* Left/Main Section */}

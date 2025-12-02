@@ -3,6 +3,8 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
+import { Gift,Mail, Share2,MessageCircle,Twitter} from "lucide-react";
+
 
 export default function ReferralsPage() {
   const [referralData, setReferralData] = useState({
@@ -41,7 +43,21 @@ export default function ReferralsPage() {
     }
     fetchReferrals();
   }, []);
-
+  const shareReferral = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Join me!',
+          text: 'Check out this amazing platform!',
+          url: referralLink,
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      copyToClipboard();
+    }
+  };
   const copyLink = () => {
     navigator.clipboard.writeText(referralData.referralLink);
     setCopied(true);
@@ -209,7 +225,7 @@ export default function ReferralsPage() {
                 </div>
                 <div>
                   <p className="text-sm opacity-80 mb-2">Share your referral link</p>
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 mb-8">
                     <input
                       type="text"
                       value={referralData.referralLink}
@@ -237,14 +253,72 @@ export default function ReferralsPage() {
                       )}
                     </button>
                   </div>
+                            {/* Share Options */}
+            <div className="mb-8">
+              <h3 className="font-medium mb-4" style={{ color: 'var(--text)' }}>
+                Share via:
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <button
+                  onClick={shareReferral}
+                  className="flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 hover:shadow-lg group"
+                  style={{ 
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `1px solid var(--border)`
+                  }}
+                >
+                  <Share2 className="w-5 h-5 mb-2" style={{ color: 'var(--primary)' }} />
+                  <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>Share</span>
+                </button>
+                <a
+                  href={`mailto:?subject=Join me!&body=Check this out: ${referralData.referralLink}`}
+                  className="flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 hover:shadow-lg group"
+                  style={{ 
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `1px solid var(--border)`
+                  }}
+                >
+                  <Mail className="w-5 h-5 mb-2" style={{ color: 'var(--primary)' }} />
+                  <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>Email</span>
+                </a>
+                <a
+                  href={`https://wa.me/?text=Join me! ${referralData.referralLink}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 hover:shadow-lg group"
+                  style={{ 
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `1px solid var(--border)`
+                  }}
+                >
+                  <MessageCircle className="w-5 h-5 mb-2" style={{ color: 'var(--primary)' }} />
+                  <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>WhatsApp</span>
+                </a>
+                <a
+                  href={`https://twitter.com/intent/tweet?text=Join me!&url=${encodeURIComponent(referralData.referralLink)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 hover:shadow-lg group"
+                  style={{ 
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: `1px solid var(--border)`
+                  }}
+                >
+                  <Twitter className="w-5 h-5 mb-2" style={{ color: 'var(--primary)' }} />
+                  <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>Twitter</span>
+                </a>
+              </div>
+            </div>
+    
                 </div>
               </div>
             </div>
             
             <div 
-              className="rounded-xl p-6"
+              className="rounded-xl p-6 flex flex-col justify-between"
               style={{ backgroundColor: 'var(--cardSecondary)' }}
             >
+              <div>
               <h4 className="font-semibold mb-3" style={{ color: 'var(--text)' }}>How It Works</h4>
               <ul className="space-y-2 text-sm opacity-90">
                 <li className="flex items-center space-x-2">
@@ -266,6 +340,26 @@ export default function ReferralsPage() {
                   <span>Monitor their membership progress</span>
                 </li>
               </ul>
+              </div>
+                     {/* Rewards Info */}
+            <div 
+              className="rounded-xl p-4"
+              style={{ 
+                backgroundColor: 'var(--primary)',
+                backgroundImage: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
+                color: 'white'
+              }}
+            >
+              <div className="flex items-start space-x-3">
+                <Gift className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold mb-1">Referral Rewards</h4>
+                  <p className="text-sm opacity-90">
+                    Earn commissions for every successful referral. Higher tiers unlock better rewards!
+                  </p>
+                </div>
+              </div>
+            </div>
             </div>
           </div>
         </div>
@@ -344,8 +438,8 @@ export default function ReferralsPage() {
             }}
           >
             <div 
-              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: 'var(--primary)', opacity: '0.1' }}
+              className="w-24 h-24 rounded-full bg-[var(--primary)]/10 flex items-center justify-center mx-auto mb-4"
+              
             >
               <svg
                 className="w-12 h-12"
@@ -375,6 +469,7 @@ export default function ReferralsPage() {
             >
               <span>Copy Referral Link</span>
             </button>
+            
           </div>
         ) : (
           <div className="card rounded-xl shadow-lg overflow-hidden">

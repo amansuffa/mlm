@@ -6,7 +6,7 @@ import SalesOverview from "@/components/dashboard/SalesOverview";
 import VisitorsChart from "@/components/dashboard/EarningsChart";
 import TopReferrers from "@/components/dashboard/TopReferrers";
 import TransactionsTable from "@/components/dashboard/TransactionsTable";
-import DownlineTree from "@/components/dashboard/DownlineTree";
+import RefferLink from "@/components/dashboard/RefferLink";
 import AdminEarning from "@/components/dashboard/AdminEarningsChart";
 
 export default function DashboardAdmin({ session }) {
@@ -27,6 +27,9 @@ export default function DashboardAdmin({ session }) {
         <div className="col-span-1 sm:col-span-2 lg:col-span-3">
           <KPISection />
         </div>
+        {/* <div className="col-span-1 space-y-6 sm:col-span-2 lg:col-span-3">
+          <RefferLink />
+        </div> */}
 
         {/* Left/Main Section */}
         <div className="space-y-6 sm:col-span-2 lg:col-span-2">

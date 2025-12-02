@@ -63,7 +63,7 @@ export default function ReferralsOverview() {
   return (
     <div className="card rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text)' }}>
-        👥 My Direct Referrals
+        👥 My Referrals
       </h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
