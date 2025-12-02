@@ -24,6 +24,11 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   const [pendingCount, setPendingCount] = useState(0);
   const { data: session } = useSession();
 
+  const displayName =
+    session?.user?.name ||
+    session?.user?.firstName ||
+    (session?.user?.email ? session.user.email.split("@")[0] : "");
+
   console.log("Sidebar Status:", status, "Role:", role);
 
   // Fetch pending transactions count
@@ -148,11 +153,11 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
         </button>
 
         <div className="mb-8 flex items-center gap-2">
-          <div className="h-10 w-10 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg flex items-center justify-center font-bold text-lg shadow-md">
-            A
+          <div className="h-10 w-10 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg flex items-center justify-center font-bold text-lg shadow-md" aria-label={displayName || 'User'} title={displayName || 'User'}>
+            {displayName ? displayName.charAt(0).toUpperCase() : 'D'}
           </div>
           <h1 className="text-xl font-bold text-white">
-            {role === "admin" ? "Admin Panel" : "Client Dashboard"}
+            {role === "admin" ? "Admin Panel" : (displayName || "Member")}
           </h1>
         </div>
 

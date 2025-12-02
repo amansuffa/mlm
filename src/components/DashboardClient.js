@@ -21,7 +21,7 @@ export default function DashboardMember({ session }) {
         className="text-3xl md:text-4xl font-extrabold mb-6"
         style={{ color: "var(--text)" }}
       >
-        Welcome, {session?.user?.name || "Member"} 👋
+        Welcome 👋
       </h1>
 
       {session?.user?.status === "admin_fee_paid" ? (
