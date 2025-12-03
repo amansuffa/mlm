@@ -56,7 +56,8 @@ export async function POST(req) {
         FirstName: user.firstName || user.name,
         MemberFullName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.name,
         MemberEmail: user.email,
-        VerificationLink: verifyUrl
+        VerificationLink: verifyUrl,
+        UnsubscribeToken: user.unsubscribeToken,
       });
     } else {
       // Fallback to basic email if no template exists

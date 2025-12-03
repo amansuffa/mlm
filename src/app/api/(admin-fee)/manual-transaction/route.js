@@ -5,6 +5,7 @@ import { User } from "@/models/User";
 import { sendEmail } from "@/lib/sendEmail";
 import { EmailTemplate } from "@/models/EmailTemplate";
 import { parseTemplate } from "@/lib/parseTemplate";
+import { buildTemplateData } from "@/utils/emailTemplateData";
 
 export async function POST(req) {
   await connectDB();
@@ -72,13 +73,13 @@ export async function POST(req) {
           });
       
     
-          const templateData = {
+          const templateData = buildTemplateData(user,{
             MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
             MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
             MemberEmail: user.email,
             MemberUsername: user.username,
             SponsorName: sponsor?.name || "N/A",
-          };
+          });
     
     
           // Send email to admin

@@ -6,6 +6,7 @@ import { distributeMembershipFee } from "@/utils/feeDistribution";
 import { EmailTemplate } from "@/models/EmailTemplate";
 import { sendEmail } from "@/lib/sendEmail";
 import { parseTemplate } from "@/lib/parseTemplate";
+import { buildTemplateData } from "@/utils/emailTemplateData";
 
 export async function GET(request, context) {
   try {
@@ -81,7 +82,7 @@ export async function PATCH(req, context) {
           type: "sponsor_referral_admin_fee_paid",
         });
 
-        const templateData = {
+        const templateData = buildTemplateData(user,{
           MemberFirstName:
             user.firstName || user.name?.split(" ")[0] || "Member",
           MemberName:
@@ -99,7 +100,7 @@ export async function PATCH(req, context) {
           SponsorEmail: sponsor?.email || "N/A",
           LoginLink: `${process.env.NEXTAUTH_URL}/login`,
           SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
-        };
+        });
 
         // Send email to user
         if (userTemplate) {
@@ -267,7 +268,7 @@ export async function PATCH(req, context) {
             ? sponsor?.username
             : sponsorUpline?.username || "N/A";
         console.log("Paid To:", paidTo);
-        const templateData = {
+        const templateData =buildTemplateData(user, {
           MemberFirstName:
             updatedUser.firstName ||
             updatedUser.name?.split(" ")[0] ||
@@ -300,7 +301,7 @@ export async function PATCH(req, context) {
           PaidTo: paidTo?.name || paidTo?.firstName || "N/A",
           ActivatedBy: activatedBy,
           ActivationDate: new Date().toLocaleDateString(),
-        };
+        });
 
         // Send email to user
         if (userTemplate) {

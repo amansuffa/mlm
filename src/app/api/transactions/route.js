@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { EmailTemplate } from "@/models/EmailTemplate";
 import { sendEmail } from "@/lib/sendEmail";
 import { parseTemplate } from "@/lib/parseTemplate";
+import { buildTemplateData } from "@/utils/emailTemplateData";
 
 // ✅ Get All Transactions
 export async function GET(req) {
@@ -182,7 +183,7 @@ export async function POST(req) {
       type: "sponsor_of_sponsor_passed_up_sale",
     });
     const paidTo = await User.findById(finalReceiver);
-    const templateData = {
+    const templateData = buildTemplateData(user,{
       MemberFirstName: user.firstName || user.name?.split(" ")[0] || "Member",
       MemberName:
         user.name ||
@@ -202,7 +203,7 @@ export async function POST(req) {
       LoginLink: `${process.env.NEXTAUTH_URL}/login`,
       PaymentDate: new Date().toLocaleDateString(),
       PaidTo: paidTo?.name || paidTo?.firstName || "N/A",
-    };
+    });
 
     // Send email to user
     if (userTemplate) {

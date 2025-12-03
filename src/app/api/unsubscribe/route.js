@@ -1,11 +1,12 @@
-import User from "@/models/User";
+import {User} from "@/models/User";
+import { connectDB } from "@/lib/mongodb";
 
-export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-  const email = searchParams.get("email");
-  const token = searchParams.get("token");
 
-  const user = await User.findOne({ email, unsubscribeToken: token });
+export async function POST(req) {
+  await connectDB();
+  const { token } = await req.json();
+
+  const user = await User.findOne({ unsubscribeToken: token });
   if (!user) {
     return Response.json({ error: "Invalid link" }, { status: 400 });
   }
@@ -13,5 +14,5 @@ export async function GET(req) {
   user.isUnsubscribed = true;
   await user.save();
 
-  return Response.json({ message: "You have been unsubscribed successfully." });
+  return Response.json({ message: "You have been unsubscribed successfully.",success: true }, { status: 200 });
 }

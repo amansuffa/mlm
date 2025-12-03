@@ -6,6 +6,7 @@ import crypto from "crypto";
 import { sendEmail } from "@/lib/sendEmail";
 import { EmailTemplate } from "@/models/EmailTemplate";
 import { parseTemplate } from "@/lib/parseTemplate";
+import { buildTemplateData } from "@/utils/emailTemplateData";
 
 
 export async function POST(req) {
@@ -131,7 +132,7 @@ const unsubscribeToken = crypto.randomBytes(32).toString("hex");
     const adminTemplate = await EmailTemplate.findOne({ type: "admin_new_signup" });
     
     const fullName = `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`.trim();
-    const templateData = {
+    const templateData = buildTemplateData(newUser, {
       MemberFirstName: firstName,
       MemberName: fullName,
       MemberEmail: email,
@@ -140,7 +141,7 @@ const unsubscribeToken = crypto.randomBytes(32).toString("hex");
       SponsorFirstName: sponsor?.firstName || 'N/A',
       VerificationLink: verifyUrl,
       ConfirmEmailLink: verifyUrl
-    };
+    });
     
     // Send email to user
     if (userTemplate) {

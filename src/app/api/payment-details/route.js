@@ -60,7 +60,7 @@ export async function POST(req) {
         
         if (sponsorUpline) {
           recipientUser = sponsorUpline;
-          recipientLabel = `Sponsor (1-Up Pass-Up): ${
+          recipientLabel = `Sponsor (Pass-Up): ${
             sponsorUpline.username || "Not found"
           }`;
         } else {
@@ -93,7 +93,7 @@ export async function POST(req) {
         
       if (sponsorUpline) {
         recipientUser = sponsorUpline;
-        recipientLabel = `Sponsor (1-Up Pass-Up): ${
+        recipientLabel = `Sponsor (Pass-Up): ${
           sponsorUpline.username || "Not found"
         }`;
       } else {

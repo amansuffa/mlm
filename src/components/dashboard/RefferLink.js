@@ -12,7 +12,7 @@ export default function ReferralDashboard() {
     const [showSponsorModal, setShowSponsorModal] = useState(false);
       const [user, setUser] = useState(null);
 
-  const referralLink = `${window.location.origin}/register?ref=${session?.user?.username || "user"}`;
+  const referralLink = `${window.location.origin}/signup?ref=${session?.user?.username || "user"}`;
 
   useEffect(() => {
     fetchSponsor();

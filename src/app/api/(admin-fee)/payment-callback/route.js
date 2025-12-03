@@ -4,6 +4,7 @@ import { User } from "@/models/User";
 import { sendEmail } from "@/lib/sendEmail";
 import { EmailTemplate } from "@/models/EmailTemplate";
 import { parseTemplate } from "@/lib/parseTemplate";
+import { buildTemplateData } from "@/utils/emailTemplateData";
 
 export async function POST(request) {
   try {
@@ -32,7 +33,7 @@ export async function POST(request) {
         type: "admin_fee_paid_crypto",
       });
 
-      const templateData = {
+      const templateData = buildTemplateData(user,{
         MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
         MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
         MemberEmail: user.email,
@@ -41,18 +42,20 @@ export async function POST(request) {
         SponsorFirstName: sponsor?.firstName || sponsor?.name?.split(' ')[0] || "N/A",
         LoginLink: `${process.env.NEXTAUTH_URL}/login`,
         SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
-      };
+      });
 
       // Send email to user
       if (userTemplate) {
         const userHtml = parseTemplate(userTemplate.body, templateData);
-        await sendEmail(user.email, userTemplate.subject, userHtml);
+        if (!user.isUnsubscribed) {
+        await sendEmail(user.email, userTemplate.subject, userHtml);}
       }
 
       // Send email to sponsor
       if (sponsorTemplate && sponsor) {
         const sponsorHtml = parseTemplate(sponsorTemplate.body, templateData);
-        await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);
+        if (!sponsor.isUnsubscribed) {
+        await sendEmail(sponsor.email, sponsorTemplate.subject, sponsorHtml);}
       }
 
       // Send email to admin

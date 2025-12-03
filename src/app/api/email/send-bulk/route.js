@@ -33,10 +33,13 @@ export async function POST(req) {
       );
     }
 
-     const template = await EmailTemplate.findById(templateId);
-    
+    const template = await EmailTemplate.findById(templateId);
+
     if (!template) {
-      return NextResponse.json({ error: "Template not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Template not found" },
+        { status: 404 }
+      );
     }
 
     let users = [];
@@ -87,7 +90,7 @@ export async function POST(req) {
 
     let successCount = 0;
     let errorCount = 0;
-    
+
     for (const user of users) {
       try {
         const verifyUrl = user.verificationToken
@@ -96,22 +99,27 @@ export async function POST(req) {
 
         const html = parseTemplate(template.body, {
           FirstName: user.firstName,
-          MemberFirstName: user.name, //yehn first name add krna h abi name kiya h
+          MemberFirstName: user.firstName, 
           MemberFullName: `${user.firstName} ${user.lastName}`,
           MemberEmail: user.email,
           MemberUsername: user.username,
           SponsorName: user.referredBy || "", //yahn abi usernam store ho rha h ise object me convert kr k uska name fetch krna h
+          UnsubscribeToken: user.unsubscribeToken,
           LoginLink: `${process.env.NEXTAUTH_URL}/login`,
           AdminFeeLink: `${process.env.NEXTAUTH_URL}/payment/?uid=${user._id}`,
           SponsorPaymentLink: `${process.env.NEXTAUTH_URL}/user/pay-to-sponser`,
           ConfirmEmailLink: verifyUrl,
         });
-
-        await sendEmail(user.email, template.subject, html);
-        console.log(`✅ Bulk email sent to ${user.email}`);
-        successCount++;
+        if (!user.isUnsubscribed) {
+          await sendEmail(user.email, template.subject, html);
+          console.log(`✅ Bulk email sent to ${user.email}`);
+          successCount++;
+        }
       } catch (emailError) {
-        console.error(`❌ Failed to send bulk email to ${user.email}:`, emailError);
+        console.error(
+          `❌ Failed to send bulk email to ${user.email}:`,
+          emailError
+        );
         errorCount++;
       }
     }
@@ -119,7 +127,7 @@ export async function POST(req) {
     return NextResponse.json({
       success: true,
       message: `Bulk email completed: ${successCount} sent, ${errorCount} failed.`,
-      details: { successCount, errorCount, totalUsers: users.length }
+      details: { successCount, errorCount, totalUsers: users.length },
     });
   } catch (error) {
     console.error(error);

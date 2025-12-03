@@ -4,6 +4,7 @@ import { User } from "@/models/User";
 import { sendEmail } from "@/lib/sendEmail";
 import { EmailTemplate } from "@/models/EmailTemplate";
 import { parseTemplate } from "@/lib/parseTemplate";
+import { buildTemplateData } from "@/utils/emailTemplateData";
 
 export async function GET(req) {
   try {
@@ -42,14 +43,14 @@ export async function GET(req) {
     const sponsor = await User.findOne({ username: user.referredBy });
         const adminFeeLink = `${process.env.NEXTAUTH_URL}/payment?uid=${user._id}`;
 
-        const templateData = {
+        const templateData = buildTemplateData(user,{
           MemberFirstName: user.firstName || user.name?.split(' ')[0] || 'Member',
           MemberName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
           MemberEmail: user.email,
           MemberUsername: user.username,
           SponsorName: sponsor?.name || 'N/A',
           AdminFeeLink: adminFeeLink
-        };
+        });
         
         // Send email to user
         if (userTemplate) {
