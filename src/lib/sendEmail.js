@@ -5,6 +5,11 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
 export async function sendEmail(to, subject, html) {
+  if (to.isUnsubscribed) {
+  console.log("User unsubscribed — skipping email");
+  return;
+}
+
   const msg = {
     to,
     from: `${process.env.SENDGRID_FROM_EMAIL}`,

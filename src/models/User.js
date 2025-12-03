@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema(
     password: String,
     username: { type: String, unique: true },
     referredBy: { type: String, default: null },
+    unsubscribeToken: String,
+    isUnsubscribed: { type: Boolean, default: false },
 
     sponsor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     hasFirstSale: { type: Boolean, default: false },
@@ -16,9 +18,13 @@ const userSchema = new mongoose.Schema(
     firstSaleLockedAt: { type: Date, default: null },
 
     passupSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    directSales:[{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+    directSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     isPassup: { type: Boolean, default: false },
-    passupSponsor: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    passupSponsor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
 
     status: {
       type: String,
@@ -37,7 +43,7 @@ const userSchema = new mongoose.Schema(
     membershipFeePaid: { type: Boolean, default: false },
 
     payoutMethods: [payoutMethodSchema],
-    
+
     firstName: { type: String, default: "" },
     middleName: { type: String, default: "" },
     lastName: { type: String, default: "" },
@@ -62,19 +68,18 @@ const userSchema = new mongoose.Schema(
     emailChangeExpires: { type: Date, default: null },
 
     // Fee Distribution Fields
-    directInvitesCount: { type: Number, default: 0 }, 
+    directInvitesCount: { type: Number, default: 0 },
     earnings: {
-      total: { type: Number, default: 0 }, 
-       history: [
-    {
-      amount: { type: Number, required: true },
-      date: { type: Date, default: Date.now },
-      source: { type: String, default: "sale" }, // optional: "direct" | "passup"
+      total: { type: Number, default: 0 },
+      history: [
+        {
+          amount: { type: Number, required: true },
+          date: { type: Date, default: Date.now },
+          source: { type: String, default: "sale" }, // optional: "direct" | "passup"
+        },
+      ],
     },
-  ],
-    },
-    
-    
+
     //   notifications: [{
     //     type: { type: String },
     //     message: String,
@@ -86,9 +91,9 @@ const userSchema = new mongoose.Schema(
 );
 
 // Pre-save middleware to ensure admin users have correct first sale status
-userSchema.pre('save', function(next) {
+userSchema.pre("save", function (next) {
   // If user is admin, ensure they have correct first sale status
-  if (this.role === 'admin') {
+  if (this.role === "admin") {
     this.hasFirstSale = true; // Admin is always qualified
     this.firstSaleLocked = false; // Admin can never be locked
     this.firstSaleLockedBy = null;

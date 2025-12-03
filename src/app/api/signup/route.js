@@ -92,6 +92,9 @@ export async function POST(req) {
     }
     const token = crypto.randomBytes(20).toString("hex");
 
+const unsubscribeToken = crypto.randomBytes(32).toString("hex");
+
+
     const newUser = await User.create({
       name: `${firstName} ${lastName}`,
       firstName,
@@ -110,6 +113,7 @@ export async function POST(req) {
       },
       password: hashedPassword,
       referredBy: finalReferredBy,
+      unsubscribeToken : unsubscribeToken,
       isVerified: false,
       verificationToken: token,
     });

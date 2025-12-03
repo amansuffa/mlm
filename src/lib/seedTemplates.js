@@ -8,6 +8,7 @@ export async function seedEmailTemplates() {
   }
 
   console.log("🚀 Seeding default email templates...");
+  const href = process.env.NEXTAUTH_URL || "https://pash.club";
 
   const disclaimer = `
  
@@ -20,6 +21,18 @@ export async function seedEmailTemplates() {
   Important: To ensure our emails are delivered to your inbox, please add <strong>info@pash.club</strong> 
   to your contacts list.
   </small>
+  <br><br>
+
+<a href="${href}/unsubscribe?email={{MemberEmail}}&token={{UnsubscribeToken}}"
+   style="display:inline-block;
+          padding:10px 18px;
+          background:#e74c3c;
+          color:#ffffff;
+          text-decoration:none;
+          border-radius:5px;
+          font-size:14px;">
+  Unsubscribe
+</a>
   `;
 
   const defaults = [
