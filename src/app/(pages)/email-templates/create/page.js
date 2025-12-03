@@ -77,11 +77,43 @@ export default function CreateEmailTemplate() {
     setError("");
 
     try {
-      // Convert the markdown body to HTML before saving
+      // Get URL from server
+      const urlResponse = await axios.get('/api/app-url');
+      const href = urlResponse.data.url;
+      
+      // Convert the markdown body to HTML first
+      const convertedBody = convertToHtml(form.body);
+      
+      // Add unsubscribe button after HTML conversion
+      const unsubscribeButton = `
+<hr>
+<small>
+DISCLAIMER: This e-mail is NOT spam. You registered to receive this. Our system is tied to your email, 
+so if you unsubscribe, we can't deliver your training, tips, and updates anymore — even those you paid for. 
+If you ever want to stop receiving email from us, simply click the unsubscribe link below. 
+<br><br>
+Important: To ensure our emails are delivered to your inbox, please add <strong>info@pash.club</strong> 
+to your contacts list.
+</small>
+<br><br>
+
+<a href="${href}/unsubscribe?token={{UnsubscribeToken}}"
+   style="display:inline-block;
+          padding:10px 18px;
+          background:#e74c3c;
+          color:#ffffff;
+          text-decoration:none;
+          border-radius:5px;
+          font-size:14px;">
+  Unsubscribe
+</a>`;
+
+      const finalBody = convertedBody + unsubscribeButton;
+      
       const formData = {
         ...form,
-        body: convertToHtml(form.body),
-        body_markdown: form.body // Optional: save markdown version too
+        body: finalBody,
+        body_markdown: form.body + unsubscribeButton // Optional: save markdown version too
       };
 
       await axios.post("/api/email-templates", formData);

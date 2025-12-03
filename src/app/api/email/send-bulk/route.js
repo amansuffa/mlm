@@ -114,6 +114,8 @@ export async function POST(req) {
           await sendEmail(user.email, template.subject, html);
           console.log(`✅ Bulk email sent to ${user.email}`);
           successCount++;
+        }else{
+          console.log(`❌ User ${user.email} is unsubscribed and will not receive the email.`);
         }
       } catch (emailError) {
         console.error(
