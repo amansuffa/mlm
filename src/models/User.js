@@ -38,6 +38,8 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: { type: Boolean, default: false },
     verificationToken: { type: String, default: null },
+    resetPasswordToken: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
 
     adminFeePaid: { type: Boolean, default: false },
     membershipFeePaid: { type: Boolean, default: false },
