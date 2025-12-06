@@ -25,7 +25,7 @@
 
 // src/components/layout/Layout.jsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Nav from "../dashboard/Nav";
 import Sidebar from "../Sidebar";
 import { useTheme } from "next-themes";
@@ -33,7 +33,26 @@ import { useTheme } from "next-themes";
 
 export default function Layout({ children, role , status}) {
   const [isOpen, setIsOpen] = useState(false);
-    const { theme } = useTheme();
+  const { theme } = useTheme();
+
+  // Prevent main content scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      if (isOpen && window.innerWidth < 768) { // md breakpoint
+        mainElement.style.overflow = 'hidden';
+      } else {
+        mainElement.style.overflow = '';
+      }
+    }
+
+    return () => {
+      if (mainElement) {
+        mainElement.style.overflow = '';
+      }
+    };
+  }, [isOpen]);
   
 
   return (

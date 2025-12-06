@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 
 import { useEffect, useState } from "react";
 import ThemeToggleButton from "../ThemeToggleButton";
+import TranslateWidget from "../TranslateWidget";
 
 const Nav = ({ setIsOpen }) => {
   const { data: session } = useSession();
@@ -35,11 +36,11 @@ const Nav = ({ setIsOpen }) => {
 
   return (
     <div
-      className="h-[68px] px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50"
+      className="h-[68px] px-3 sm:px-6 flex items-center justify-between shadow-md md:sticky top-0 z-50"
       style={{ backgroundColor: "var(--card)" }}
     >
       {/* Logo */}
-      <div className="flex justify-center overflow-hidden h-full">
+      <div className="flex justify-center overflow-hidden h-full flex-shrink-0">
         <Image
           className="object-cover mb-1"
           src={logo}
@@ -49,8 +50,8 @@ const Nav = ({ setIsOpen }) => {
         />
       </div>
 
-      {/* Right section */}
-      <div className="flex items-center gap-3">
+      {/* Desktop Right section - visible on md and up */}
+      <div className="hidden md:flex items-center gap-3">
         <Link
           href="/"
           style={{ color: "var(--text)" }}
@@ -58,14 +59,14 @@ const Nav = ({ setIsOpen }) => {
         >
           Home
         </Link>
+        <TranslateWidget />
         <ThemeToggleButton />
-                <Logout />
-        <Link href="/user/profile" className="hidden md:block">
+        <Logout />
+        <Link href="/user/profile">
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm overflow-hidden"
             style={{ backgroundColor: "var(--primary)" }}
           >
-
             {session?.user?.profilePicture ? (
               <Image
                 src={session.user.profilePicture}
@@ -82,12 +83,14 @@ const Nav = ({ setIsOpen }) => {
             )}
           </div>
         </Link>
+      </div>
 
-
-        {/* Hamburger (mobile only) */}
+      {/* Mobile Right section - theme toggle and hamburger menu button */}
+      <div className="md:hidden flex items-center gap-2">
+        <ThemeToggleButton />
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="md:hidden p-2 rounded-lg hover:opacity-80"
+          className="p-2 rounded-lg hover:opacity-80"
           style={{ backgroundColor: "var(--cardsec)" }}
         >
           <svg

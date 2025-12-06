@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import logo from "../assets/logo.png";
 import ThemeToggleButton from "./ThemeToggleButton";
+import TranslateWidget from "./TranslateWidget";
 import { useSearchParams } from "next/navigation";
 
 import { useSession } from "next-auth/react";
@@ -108,11 +109,13 @@ export default function Navbar() {
 
           {/* Right Side - Actions */}
           <div className="flex items-center gap-4">
+     
             {/* Theme Toggle */}
             <ThemeToggleButton />
 
             {/* Auth Buttons - Desktop */}
             <div className="hidden sm:flex items-center gap-3">
+            <TranslateWidget />
               {!session?.user ? (
                 <>
                   <Link href="/login">
@@ -264,6 +267,11 @@ export default function Navbar() {
                   Dashboard
                 </Link>
               )}
+
+              {/* Mobile Translation Widget */}
+              <div className="py-2 px-4">
+                <TranslateWidget />
+              </div>
 
               {/* Mobile Auth Buttons */}
               <div

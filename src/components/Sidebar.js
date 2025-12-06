@@ -17,7 +17,11 @@ import {
   FaHospitalUser,
   FaCreditCard,
   FaCheckCircle,
+  FaHome,
+  FaSignOutAlt,
 } from "react-icons/fa";
+import TranslateWidget from "./TranslateWidget";
+import Logout from "./Logout";
 
 export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   const pathname = usePathname();
@@ -141,9 +145,9 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
   return (
     <>
       <aside
-        className={`sidebar fixed top-0 left-0 min-h-screen w-64 p-6 border-r border-t border-[var(--border)] flex flex-col z-40 transform transition-transform duration-300 text-white shadow-2xl
-        ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-        md:translate-x-0 md:static md:block`}
+        className={`sidebar fixed top-0 left-0 h-screen w-64 p-6 border-r border-[var(--border)] flex flex-col transform transition-transform duration-300 text-white shadow-2xl overflow-y-auto bg-[var(--sidebar-bg)]
+        ${isOpen ? "translate-x-0 z-60" : "-translate-x-full"} 
+        md:translate-x-0 md:fixed md:top-[68px] md:h-[calc(100vh-68px)] md:static md:h-auto md:overflow-y-auto`}
       >
         <button
           className="md:hidden self-end mb-6 text-gray-300 hover:text-white"
@@ -184,11 +188,38 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
             </Link>
           ))}
         </nav>
+
+        {/* Mobile-only bottom section */}
+        <div className="md:hidden mt-auto pt-6 border-t border-gray-600">
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2 rounded-xl font-medium transition-colors
+              ${
+                pathname === "/"
+                  ? "bg-gradient-to-r from-gray-700 to-gray-600 text-white shadow-md"
+                  : "text-gray-300 hover:bg-white/10 hover:text-white"
+              }`}
+            >
+              <FaHome />
+              <span className="flex-1">Home</span>
+            </Link>
+            
+            <div className="px-4 py-2">
+              <TranslateWidget />
+            </div>
+            
+            <div className="px-4 py-2">
+              <Logout />
+            </div>
+          </div>
+        </div>
       </aside>
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          className="fixed inset-0 bg-black/40 z-55 md:hidden"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
