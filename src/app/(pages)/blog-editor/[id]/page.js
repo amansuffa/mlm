@@ -833,7 +833,11 @@ export default function EditBlogPage() {
             <div className="flex space-x-4">
               <button
                 type="button"
-                onClick={() => router.push(`/blogs/${id}`)}
+                onClick={() => {
+                  const url = `/blogs/${id}`;
+                  if (typeof window !== 'undefined') window.open(url, '_blank', 'noopener,noreferrer');
+                  else router.push(url);
+                }}
                 className="px-8 py-3 rounded-xl transition-all duration-300 font-semibold"
                 style={{
                   backgroundColor: 'transparent',

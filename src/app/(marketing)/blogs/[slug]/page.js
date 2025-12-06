@@ -71,7 +71,7 @@ function AnimatedCard({ children, delay = 0 }) {
 
 export default function SingleBlogPage() {
   const { data: session } = useSession();
-  const { id } = useParams();
+  const { slug } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
@@ -202,7 +202,7 @@ export default function SingleBlogPage() {
   // Generate affiliate link with user reference
   const generateAffiliateLink = () => {
     if (!refId) return null;
-    return `${window.location.origin}/blogs/${blog._id}?ref=${refId}`;
+    return `${window.location.origin}/blogs/${blog.slug}?ref=${refId}`;
   };
 
   // Handle Join button click
@@ -234,7 +234,7 @@ export default function SingleBlogPage() {
   // Handle Like functionality
   const handleLike = async () => {
     try {
-      const response = await axios.post(`/api/blogs/${id}/like`);
+      const response = await axios.post(`/api/blogs/${slug}/like`);
       
       if (response.data.success) {
         setIsLiked(response.data.liked);
@@ -264,7 +264,7 @@ export default function SingleBlogPage() {
   // Check if user has already liked the blog
   const checkLikeStatus = useCallback(async () => {
     try {
-      const response = await axios.get(`/api/blogs/${id}/like`);
+      const response = await axios.get(`/api/blogs/${slug}/like`);
       
       if (response.data.success) {
         setIsLiked(response.data.liked);
@@ -273,13 +273,13 @@ export default function SingleBlogPage() {
     } catch (error) {
       console.error("Like status check error:", error);
     }
-  }, [id]);
+  }, [slug]);
 
   // Share functionality
   const handleShare = async (platform) => {
     if (!blog) return;
 
-    const url = `${window.location.origin}/blogs/${blog._id}${refId ? `?ref=${refId}` : ''}`;
+    const url = `${window.location.origin}/blogs/${blog.slug}${refId ? `?ref=${refId}` : ''}`;
     const title = blog.title;
     const text = blog.excerpt || blog.content?.substring(0, 100) + "...";
 
@@ -344,7 +344,7 @@ export default function SingleBlogPage() {
   useEffect(() => {
     async function fetchBlog() {
       try {
-        const res = await axios.get(`/api/blogs/${id}`);
+        const res = await axios.get(`/api/blogs/${slug}`);
         const data = res.data;
         setBlog(data.blog);
         setLikesCount(data.blog.likes || 0);
@@ -374,7 +374,7 @@ export default function SingleBlogPage() {
           queryParams.append("category", currentBlog.category);
         if (currentBlog.tags?.[0])
           queryParams.append("tag", currentBlog.tags[0]);
-        queryParams.append("limit", "4");
+        queryParams.append("limit", "3");
         queryParams.append("exclude", currentBlog._id);
 
         const res = await axios.get(`/api/blogs?${queryParams}`);
@@ -385,7 +385,7 @@ export default function SingleBlogPage() {
     }
 
     fetchBlog();
-  }, [id, checkLikeStatus]);
+  }, [slug, checkLikeStatus]);
 
   if (loading) {
     return (
@@ -1056,34 +1056,33 @@ export default function SingleBlogPage() {
                     initial="initial"
                     animate="animate"
                   >
-                    {relatedBlogs.filter(relatedBlog => relatedBlog._id !== blog._id).map((relatedBlog, index) => (
-                      <AnimatedCard key={relatedBlog._id} delay={index * 0.1}>
-                        <motion.div
-                          className="rounded-xl p-4 hover:shadow-md transition-shadow duration-300 flex flex-col h-full cursor-pointer"
-                          style={{ backgroundColor: 'var(--cardSecondary)' }}
-                          whileHover={{ y: -5, scale: 1.02 }}
-                    
-                        >
-                          <Link target='_blank' href={`/blogs/${relatedBlog._id}`} aria-label={relatedBlog.title}>
-                          <h4 className="font-semibold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
-                            {relatedBlog.title}
-                          </h4>
-                    
-                          <motion.button
-                            className="text-sm font-semibold mt-auto transition-colors duration-200 flex items-center space-x-1"
-                            style={{ color: 'var(--primary)' }}
-                            whileHover={{ x: 5 }}
+                    {relatedBlogs.filter(relatedBlog => relatedBlog.slug !== blog.slug).map((relatedBlog, index) => (
+                      <AnimatedCard key={relatedBlog.slug} delay={index * 0.1}>
+                        <Link target='_blank' rel="noopener noreferrer" href={`/blogs/${relatedBlog.slug}${refId ? `?ref=${refId}` : ''}`} aria-label={relatedBlog.title}>
+                          <motion.div
+                            className="rounded-xl p-4 hover:shadow-md transition-shadow duration-300 flex flex-col h-full cursor-pointer"
+                            style={{ backgroundColor: 'var(--cardSecondary)' }}
+                            whileHover={{ y: -5, scale: 1.02 }}
                           >
-                            <span>Read More</span>
-                            <motion.span
-                              animate={{ x: [0, 5, 0] }}
-                              transition={{ duration: 1.5, repeat: Infinity }}
+                            <h4 className="font-semibold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
+                              {relatedBlog.title}
+                            </h4>
+                      
+                            <motion.button
+                              className="text-sm font-semibold mt-auto transition-colors duration-200 flex items-center space-x-1"
+                              style={{ color: 'var(--primary)' }}
+                              whileHover={{ x: 5 }}
                             >
-                              →
-                            </motion.span>
-                          </motion.button>
-                          </Link>
-                        </motion.div>
+                              <span>Read More</span>
+                              <motion.span
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                              >
+                                →
+                              </motion.span>
+                            </motion.button>
+                          </motion.div>
+                        </Link>
                       </AnimatedCard>
                     ))}
                   </motion.div>

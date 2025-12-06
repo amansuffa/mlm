@@ -314,7 +314,7 @@ export default function BlogsPage() {
                     transition={{ duration: 0.3 }}
                   >
                     <Link target="_blank"
-href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
+  href={`/blogs/${featuredBlog.slug}?ref=${session?.user?.username || ""}`} rel="noopener noreferrer">
                     <Image
                       src={featuredBlog.thumbnail}
                       alt={featuredBlog.title}
@@ -350,7 +350,7 @@ href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
                     </div>
                   </motion.div>
 <Link target="_blank"
-href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
+href={`/blogs/${featuredBlog.slug}?ref=${session?.user?.username || ""}`} rel="noopener noreferrer">
                   <motion.h2 
                     className="text-3xl lg:text-4xl font-bold mb-6 group-hover:opacity-90 transition-opacity"
                     style={{ color: 'var(--text)' }}
@@ -404,7 +404,7 @@ href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
                     </div>
                     
                     <Link target="_blank"
-                      href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}
+                      href={`/blogs/${featuredBlog.slug}?ref=${session?.user?.username || ""}`}
                       className="button px-8 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-xl flex items-center space-x-2 group"
                     >
                       <span>Read Full Article</span>
@@ -518,8 +518,8 @@ href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
               initial="initial"
               animate="animate"
             >
-              {(searchTerm ? filteredBlogs : filteredBlogs.filter(blog => blog._id !== featuredBlog?._id)).map((blog, index) => (
-                <AnimatedCard key={blog._id} delay={index * 0.1}>
+              {(searchTerm ? filteredBlogs : filteredBlogs.filter(blog => blog.slug !== featuredBlog?.slug)).map((blog, index) => (
+                <AnimatedCard key={blog.slug} delay={index * 0.1}>
                   <motion.article
                     className="rounded-2xl shadow-lg overflow-hidden hover:shadow-xl group flex flex-col h-full cursor-pointer"
                     style={{ 
@@ -531,7 +531,7 @@ href={`/blogs/${featuredBlog._id}?ref=${session?.user?.username || ""}`}>
                  
                   >
                     <Link target="_blank"
-                      href={`/blogs/${blog._id}?ref=${session?.user?.username || ""}`}
+                      href={`/blogs/${blog.slug}?ref=${session?.user?.username || ""}`}
                   
                     >
                      

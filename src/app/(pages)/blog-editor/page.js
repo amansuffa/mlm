@@ -84,12 +84,13 @@ export default function BlogEditorPage() {
     router.push(`/blog-editor/${blogId}`);
   }
 
-  function handleViewBlog(id) {
+  function handleViewBlog(slug) {
     const refId = session?.user?.username;
-    if (refId) {
-      router.push(`/blogs/${id}?ref=${refId}`);
+    const url = refId ? `/blogs/${slug}?ref=${refId}` : `/blogs/${slug}`;
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank', 'noopener,noreferrer');
     } else {
-      router.push(`/blogs/${id}`);
+      router.push(url);
     }
   }
 
@@ -415,7 +416,7 @@ export default function BlogEditorPage() {
                     style={{ borderTop: `1px solid var(--border)` }}
                   >
                     <button
-                      onClick={() => handleViewBlog(blog._id)}
+                      onClick={() => handleViewBlog(blog.slug)}
                       className="p-2 hover:opacity-70 transition-opacity duration-200"
                       style={{ color: 'var(--text)' }}
                       title="View Blog"

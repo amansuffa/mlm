@@ -4,6 +4,7 @@ import { User } from "@/models/User";
 import { auth } from "@/auth";
 import { connectDB } from "@/lib/mongodb";
 import { uploadToCloudinary } from "@/lib/uploadCloudinary";
+import { generateSlug } from "@/lib/slug";
 
 import { hasPermission } from "@/app/actions/hasPermission";
 
@@ -189,6 +190,7 @@ export async function POST(request) {
     const newBlog = new Blog({
       authorId: userId,
       title,
+      slug: generateSlug(title),
       content,
       excerpt,
       tags,

@@ -8,7 +8,7 @@ export async function POST(request, context) {
   const { id } = await context.params;
 
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findOne({ slug: id }) || await Blog.findById(id);
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
@@ -19,11 +19,11 @@ export async function POST(request, context) {
       "unknown";
 
     // Check if already liked
-    const existingLike = await BlogLike.findOne({ blogId: id, ip });
+    const existingLike = await BlogLike.findOne({ blogId: blog._id, ip });
     
     if (existingLike) {
       // Unlike - remove the like
-      await BlogLike.deleteOne({ blogId: id, ip });
+      await BlogLike.deleteOne({ blogId: blog._id, ip });
       
       // Update blog likes count
       blog.likes = Math.max(0, (blog.likes || 0) - 1);
@@ -42,7 +42,7 @@ export async function POST(request, context) {
       });
     } else {
       // Like - add new like
-      await BlogLike.create({ blogId: id, ip });
+      await BlogLike.create({ blogId: blog._id, ip });
 
       // Update blog likes count
       blog.likes = (blog.likes || 0) + 1;
@@ -75,7 +75,7 @@ export async function GET(request, context) {
   const { id } = await context.params;
 
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findOne({ slug: id }) || await Blog.findById(id);
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
@@ -85,7 +85,7 @@ export async function GET(request, context) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    const existingLike = await BlogLike.findOne({ blogId: id, ip });
+    const existingLike = await BlogLike.findOne({ blogId: blog._id, ip });
     const liked = !!existingLike;
 
     return NextResponse.json({

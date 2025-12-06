@@ -3,6 +3,9 @@ import { connectDB } from "@/lib/mongodb";
 import { Blog } from "@/models/Blog";
 import { BlogView } from "@/models/BlogView";
 import { uploadToCloudinary } from "@/lib/uploadCloudinary";
+import { generateSlug } from "@/lib/slug";
+import mongoose from "mongoose";
+
 
 export async function GET(request, context) {
   try {
@@ -10,7 +13,13 @@ export async function GET(request, context) {
 
     const { id } = await context.params;
 
-    const blog = await Blog.findById(id).populate("authorId", "name username profilePicture");
+    // Try to find by slug first, then by ID
+    let blog = await Blog.findOne({ slug: id }).populate("authorId", "name username profilePicture");
+    
+    if (!blog && mongoose.Types.ObjectId.isValid(id)) {
+      // Try to find by ID if slug doesn't match
+      blog = await Blog.findById(id).populate("authorId", "name username profilePicture");
+    }
 
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
@@ -100,6 +109,11 @@ export async function PUT(req, { params }) {
       videos,
       videoLinks,
     };
+
+    // Generate slug from title
+    if (title) {
+      updateData.slug = generateSlug(title);
+    }
 
     // Only update thumbnail if a new one was uploaded
     if (thumbnailUrl) {

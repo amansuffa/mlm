@@ -14,6 +14,12 @@ const blogSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    slug: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+    },
     excerpt: {
       type: String,
       trim: true,
