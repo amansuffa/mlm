@@ -1,6 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import Image from "next/image";
+import pashaImage from "../../../assets/pasha.png";
 
 // Animation variants
 const fadeInUp = {
@@ -368,26 +370,33 @@ export default function AboutPage() {
                 />
               </div>
 
-              <div className="flex items-center gap-4 mb-8 justify-center">
-                <motion.div 
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
-                  style={{ backgroundColor: 'var(--primary)' }}
+              <div className="flex flex-col items-center mb-8">
+                <motion.div
+                  className="w-48 h-48 rounded-full overflow-hidden mb-6 relative"
+                  style={{ border: '4px solid var(--primary)' }}
+                  whileHover={{ scale: 1.05, rotate: 5 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  ⭐
+                  <Image
+                    src={pashaImage}
+                    alt="Pasha Rana"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
                 </motion.div>
-                <h2 className="text-3xl font-bold" style={{ color: 'var(--text)' }}>
+                <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
                   About the Founder: Pasha Rana
                 </h2>
+                <motion.p 
+                  className="text-xl font-semibold opacity-90"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  Entrepreneur | Mentor | Visionary | 6-Figure Earner
+                </motion.p>
               </div>
-              
-              <motion.p 
-                className="text-xl font-semibold mb-6 opacity-90"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.6 }}
-              >
-                Entrepreneur | Mentor | Visionary | 6-Figure Earner
-              </motion.p>
               
               <motion.div
                 variants={staggerContainer}
