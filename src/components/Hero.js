@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { useState } from "react";
+import { useRef } from "../contexts/RefContext";
 import { 
   Play, 
   Download, 
@@ -99,6 +99,8 @@ function AnimatedCard({ children, delay = 0 }) {
 }
 
 export default function HomePage() {
+  const { getUrlWithRef } = useRef();
+
   const stats = [
     { icon: Users, value: "1k+", label: "Active Members", delay: 0.1 },
     { icon: DollarSign, value: "$500", label: "Direct Commission", delay: 0.2 },
@@ -251,7 +253,7 @@ export default function HomePage() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Link
-                      href="/signup"
+                      href={getUrlWithRef("/signup")}
                       className="group px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300"
                       style={{ 
                         backgroundColor: 'var(--primary)',
@@ -550,7 +552,7 @@ export default function HomePage() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
-                  href="/signup"
+                  href={getUrlWithRef("/signup")}
                   className="inline-flex items-center px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300"
                   style={{ 
                     backgroundColor: 'var(--primary)',
@@ -773,7 +775,7 @@ export default function HomePage() {
                 transition={{ duration: 0.3 }}
               >
                 <Link
-                  href="/signup"
+                  href={getUrlWithRef("/signup")}
                   className="group px-10 py-5 rounded-2xl font-bold text-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:shadow-2xl"
                   style={{ 
                     backgroundColor: 'var(--primary)',

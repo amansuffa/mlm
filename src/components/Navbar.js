@@ -6,27 +6,13 @@ import { useState } from "react";
 import logo from "../assets/logo.png";
 import ThemeToggleButton from "./ThemeToggleButton";
 import TranslateWidget from "./TranslateWidget";
-import { useSearchParams } from "next/navigation";
-
+import { useRef } from "../contexts/RefContext";
 import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-    const searchParams = useSearchParams();
-    const refId = searchParams.get("ref");
-
-
-    const handleJoinClick = () => {
-
-    if (refId) {
-      window.location.href = `/signup?ref=${refId}`;
-    } else {
-      window.location.href = `/signup`;
-    }
-
-  };
+  const { getUrlWithRef } = useRef();
 
   return (
     <nav
@@ -67,7 +53,7 @@ export default function Navbar() {
             {/* Navigation Links - Desktop */}
             <div className="hidden md:flex items-center gap-6">
               <Link
-                href="/"
+                href={getUrlWithRef("/")}
                 className="font-medium transition-all duration-200 hover:opacity-80"
                 style={{ color: "var(--text)" }}
               >
@@ -75,21 +61,21 @@ export default function Navbar() {
               </Link>
           
               <Link 
-                href="/about" 
+                href={getUrlWithRef("/about")} 
                 className="font-medium transition-all duration-200 hover:opacity-80"
                 style={{ color: 'var(--text)' }}
               >
                 Mission
               </Link>
               <Link
-                href="/blogs"
+                href={getUrlWithRef("/blogs")}
                 className="font-medium transition-all duration-200 hover:opacity-80"
                 style={{ color: "var(--text)" }}
               >
                 Training
               </Link>
               <Link 
-                href="/contact" 
+                href={getUrlWithRef("/contact")} 
                 className="font-medium transition-all duration-200 hover:opacity-80"
                 style={{ color: 'var(--text)' }}
               >
@@ -97,7 +83,7 @@ export default function Navbar() {
               </Link>
               {session?.user && (
                 <Link
-                  href="/dashboard"
+                  href={getUrlWithRef("/dashboard")}
                   className="font-medium transition-all duration-200 hover:opacity-80"
                   style={{ color: "var(--text)" }}
                 >
@@ -118,7 +104,7 @@ export default function Navbar() {
             <TranslateWidget />
               {!session?.user ? (
                 <>
-                  <Link href="/login">
+                  <Link href={getUrlWithRef("/login")}>
                     <button
                       className="px-4 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg"
                       style={{
@@ -131,15 +117,17 @@ export default function Navbar() {
                     </button>
                   </Link>
          
-                    <button onClick={handleJoinClick} className="button px-4 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg">
+                  <Link href={getUrlWithRef("/signup")}>
+                    <button className="button px-4 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg">
                       Join now
                     </button>
+                  </Link>
    
                 </>
               ) : (
                 <div className="flex items-center gap-4">
                   <Logout />
-                  <Link href="/user/profile" className="hidden md:block">
+                  <Link href={getUrlWithRef("/user/profile")} className="hidden md:block">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm overflow-hidden"
                       style={{ backgroundColor: "var(--primary)" }}
@@ -210,7 +198,7 @@ export default function Navbar() {
           >
             <div className="px-4 py-3 space-y-3">
               <Link
-                href="/"
+                href={getUrlWithRef("/")}
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{
                   backgroundColor: "var(--card)",
@@ -222,7 +210,7 @@ export default function Navbar() {
               </Link>
             
               <Link 
-                href="/about" 
+                href={getUrlWithRef("/about")} 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
                   backgroundColor: 'var(--card)',
@@ -233,7 +221,7 @@ export default function Navbar() {
                 Mission
               </Link>
               <Link
-                href="/blogs"
+                href={getUrlWithRef("/blogs")}
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{
                   backgroundColor: "var(--card)",
@@ -244,7 +232,7 @@ export default function Navbar() {
                 Training
               </Link>
               <Link 
-                href="/contact" 
+                href={getUrlWithRef("/contact")} 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
                   backgroundColor: 'var(--card)',
@@ -256,7 +244,7 @@ export default function Navbar() {
               </Link>
               {session?.user && (
                 <Link
-                  href="/dashboard"
+                  href={getUrlWithRef("/dashboard")}
                   className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                   style={{
                     backgroundColor: "var(--card)",
@@ -280,7 +268,7 @@ export default function Navbar() {
               >
                 {!session?.user ? (
                   <div className="flex flex-col gap-2">
-                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                    <Link href={getUrlWithRef("/login")} onClick={() => setIsMenuOpen(false)}>
                       <button
                         className="w-full py-2 px-4 font-medium rounded-lg transition-all duration-200"
                         style={{
@@ -292,7 +280,7 @@ export default function Navbar() {
                         Log In
                       </button>
                     </Link>
-                    <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
+                    <Link href={getUrlWithRef("/signup")} onClick={() => setIsMenuOpen(false)}>
                       <button
                         className="w-full py-2 px-4 font-medium rounded-lg transition-all duration-200"
                         style={{
@@ -307,7 +295,7 @@ export default function Navbar() {
                 ) : (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Link href="/user/profile">
+                      <Link href={getUrlWithRef("/user/profile")}>
                         <div
                           className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm overflow-hidden"
                           style={{ backgroundColor: "var(--primary)" }}

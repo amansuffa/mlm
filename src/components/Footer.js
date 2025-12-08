@@ -1,6 +1,9 @@
+"use client";
 import Link from "next/link";
+import { useRef } from "../contexts/RefContext";
 
 export default function Footer() {
+  const { getUrlWithRef } = useRef();
   return (
     <footer 
       className="border-t"
@@ -27,11 +30,11 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4" style={{ color: 'var(--text)' }}>Explore</h4>
             <ul className="space-y-2 opacity-80">
-              <li><Link href="/privacy" className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:opacity-100 transition-opacity">Terms & Conditions</Link></li>
-              <li><Link href="/payment-policies" className="hover:opacity-100 transition-opacity">Payment Policies</Link></li>
-              <li><Link href="/affiliate" className="hover:opacity-100 transition-opacity">Affiliate Agreement</Link></li>
-              <li><Link href="/contact" className="hover:opacity-100 transition-opacity">Contact</Link></li>
+              <li><Link href={getUrlWithRef("/privacy")} className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
+              <li><Link href={getUrlWithRef("/terms")} className="hover:opacity-100 transition-opacity">Terms & Conditions</Link></li>
+              <li><Link href={getUrlWithRef("/payment-policies")} className="hover:opacity-100 transition-opacity">Payment Policies</Link></li>
+              <li><Link href={getUrlWithRef("/affiliate")} className="hover:opacity-100 transition-opacity">Affiliate Agreement</Link></li>
+              <li><Link href={getUrlWithRef("/contact")} className="hover:opacity-100 transition-opacity">Contact</Link></li>
             </ul>
           </div>
 
@@ -47,9 +50,9 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4" style={{ color: 'var(--text)' }}>Legal</h4>
             <ul className="space-y-2 opacity-80">
-              <li><Link href="/faq" className="hover:opacity-100 transition-opacity">FAQ</Link></li>
-              <li><Link href="/terms" className="hover:opacity-100 transition-opacity">Terms of Condition</Link></li>
-              <li><Link href="/privacy" className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
+              <li><Link href={getUrlWithRef("/faq")} className="hover:opacity-100 transition-opacity">FAQ</Link></li>
+              <li><Link href={getUrlWithRef("/terms")} className="hover:opacity-100 transition-opacity">Terms of Condition</Link></li>
+              <li><Link href={getUrlWithRef("/privacy")} className="hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
   
             </ul>
           </div>
