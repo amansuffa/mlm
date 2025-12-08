@@ -1,13 +1,47 @@
 "use client";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Link from "next/link";
+
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { useState } from "react";
+import { 
+  Play, 
+  Download, 
+  ChevronRight, 
+  CheckCircle, 
+  Star, 
+  Zap, 
+  Users, 
+  Bot, 
+  TrendingUp, 
+  Globe, 
+  Shield,
+  Sparkles,
+  Clock,
+  Award,
+  DollarSign,
+  Target,
+  Briefcase,
+  Cpu,
+  ArrowRight,
+  ShieldCheck,
+  Trophy,
+  UserPlus,
+  Mail,
+  Phone,
+  Building,
+  FileText
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import VideoSection from "./VideoSection";
+import pashaImage from "../assets/pasha.png";
+import compImage from "../assets/comp-image.JPG";
 
 // Animation variants
 const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
+  initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
 };
 
@@ -20,11 +54,12 @@ const staggerContainer = {
 };
 
 const scaleIn = {
-  initial: { opacity: 0, scale: 0.8 },
+  initial: { opacity: 0, scale: 0.95 },
   animate: { opacity: 1, scale: 1 },
 };
 
-function AnimatedSection({ children, className = "" }) {
+// Animation Components
+function AnimatedSection({ children, className = "", delay = 0 }) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -36,7 +71,7 @@ function AnimatedSection({ children, className = "" }) {
       initial="initial"
       animate={inView ? "animate" : "initial"}
       variants={fadeInUp}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.6, delay }}
       className={className}
     >
       {children}
@@ -64,944 +99,732 @@ function AnimatedCard({ children, delay = 0 }) {
 }
 
 export default function HomePage() {
+  const stats = [
+    { icon: Users, value: "1k+", label: "Active Members", delay: 0.1 },
+    { icon: DollarSign, value: "$500", label: "Direct Commission", delay: 0.2 },
+    { icon: Clock, value: "48hrs", label: "First Sale Time", delay: 0.3 },
+    { icon: Globe, value: "100+", label: "Countries", delay: 0.4 },
+  ];
+
+  const features = [
+    {
+      icon: Zap,
+      title: "Plug-and-Play Funnels",
+      description: "Professionally built, high-converting funnels designed to turn visitors into active members — automatically."
+    },
+    {
+      icon: TrendingUp,
+      title: "Step-by-Step Training",
+      description: "Clear, beginner-friendly training that shows you exactly how to start generating results ASAP."
+    },
+    {
+      icon: Award,
+      title: "High-Paying Referral Structure",
+      description: "Earn commissions when your referrals activate their membership. Simple. Transparent. Rewarding."
+    },
+    {
+      icon: Bot,
+      title: "AI Chatbot Automation",
+      description: "Let the system educate, explain, and close your prospects with the help of powerful AI technology."
+    },
+    {
+      icon: Users,
+      title: "Team Support & Mentoring",
+      description: "Access guidance from experienced online entrepreneurs who've been in the industry for years."
+    },
+    {
+      icon: Globe,
+      title: "Global Opportunity",
+      description: "Work from anywhere. Invite anyone. Get paid directly."
+    }
+  ];
+
+  const benefits = [
+    "A complete done-for-you income system",
+    "Automated sales funnels created by professionals",
+    "Ready-to-share promotional tools that convert",
+    "A powerful AI-powered chatbot, available 24/7",
+    "A high-paying referral structure that rewards fast action",
+    "Premium training from a 6-figure entrepreneur",
+    "Support from a private global community",
+    "A simple duplication model that anybody can follow"
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah M.",
+      role: "Member",
+      text: "I've tried many online programs, and nothing compares to PASH.CLUB. Everything is done-for-you. I made my first referral in 48 hours.",
+      rating: 5
+    },
+    {
+      name: "Ahmed R.",
+      role: "Entrepreneur",
+      text: "The system is simple, powerful, and very professional. The tools saved me months of work.",
+      rating: 5
+    },
+    {
+      name: "Lisa D.",
+      role: "Digital Creator",
+      text: "Finally, a system that delivers what it promises. The training and chatbot alone are worth more than the entire membership fee.",
+      rating: 5
+    },
+    {
+      name: "John P.",
+      role: "Business Owner",
+      text: "I love the support and the automation. This is the future of online business.",
+      rating: 5
+    }
+  ];
+
+  const faqItems = [
+    {
+      question: "What is PASH.CLUB?",
+      answer: "PASH.CLUB is a premium digital membership platform that provides tools, training, automation, and a high-paying referral structure to help individuals build income online."
+    },
+    {
+      question: "Do I need experience?",
+      answer: "No. The system is beginner-friendly and includes step-by-step guidance."
+    },
+    {
+      question: "How do I earn?",
+      answer: "You earn commissions when people you refer activate their membership. All details are explained in the Compensation Plan PDF."
+    },
+    {
+      question: "Is this a global system?",
+      answer: "Yes. Anyone from anywhere can join."
+    }
+  ];
+
   return (
     <>
       <Navbar />
       
-      {/* Hero Section */}
-      <section 
-        className="min-h-screen flex flex-col items-center justify-center text-center p-6 relative overflow-hidden"
-        style={{ backgroundColor: 'var(--background)' }}
-      >
-        {/* Animated Background Elements */}
-        <motion.div
-          className="absolute top-20 left-10 w-24 h-24 rounded-full opacity-10"
-          style={{ backgroundColor: 'var(--primary)' }}
-          animate={{
-            y: [0, -30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut"
+      {/* 🚀 Hero Section */}
+      <section className="min-h-screen flex items-center relative overflow-hidden">
+        {/* Subtle Background */}
+        <div className="absolute inset-0" 
+          style={{ 
+            backgroundColor: 'var(--primary)',
+            opacity: 0.05
           }}
         />
-        <motion.div
-          className="absolute bottom-32 right-20 w-20 h-20 rounded-full opacity-10"
-          style={{ backgroundColor: 'var(--primary)' }}
-          animate={{
-            y: [0, 25, 0],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1
-          }}
-        />
-        <motion.div
-          className="absolute top-1/3 right-1/4 w-16 h-16 rounded-full opacity-10"
-          style={{ backgroundColor: 'var(--primary)' }}
-          animate={{
-            y: [0, -20, 0],
-            x: [0, 15, 0],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
-          }}
-        />
-
-        <div className="max-w-4xl mx-auto relative z-10">
-          <motion.h1 
-            className="text-4xl md:text-6xl font-bold mb-6"
-            style={{ color: 'var(--text)' }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            An Invitation to an <span style={{ color: 'var(--primary)' }}>Elevated</span> Lifestyle.
-          </motion.h1>
-          
-          <motion.p 
-            className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto font-semibold"
-            style={{ color: 'var(--text)' }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Earn Unlimited $100 Instant Commissions
-          </motion.p>
-          
-          <motion.p 
-            className="text-lg mb-8 max-w-2xl mx-auto opacity-90"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Join PASH.CLUB and build your financial freedom with our simple, proven 
-            system that pays you $100 directly and instantly for every active member in 
-            your team.
-          </motion.p>
-
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <Link href="/signup">
-              <motion.button 
-                className="px-8 py-4 font-semibold rounded-lg transition-all duration-300 hover:shadow-lg text-lg"
-                style={{ 
-                  backgroundColor: 'var(--primary)',
-                  color: 'var(--background)'
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Join now
-              </motion.button>
-            </Link>
-            <Link href="/about">
-              <motion.button 
-                className="px-8 py-4 font-semibold rounded-lg border transition-all duration-300 hover:shadow-lg text-lg"
-                style={{ 
-                  borderColor: 'var(--primary)',
-                  color: 'var(--primary)',
-                  backgroundColor: 'transparent'
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Learn More
-              </motion.button>
-            </Link>
-          </motion.div>
-
-          {/* Animated scroll indicator */}
-          <motion.div
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <div className="w-6 h-10 border-2 rounded-full border-gray-400 flex justify-center">
+        
+        <div className="relative z-10 w-full">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col gap-12 items-center py-20">
+              {/* Left Content */}
               <motion.div
-                className="w-1 h-3 bg-gray-400 rounded-full mt-2"
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="py-20" style={{ backgroundColor: 'var(--card)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <AnimatedSection>
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold text-center mb-4"
-              style={{ color: 'var(--text)' }}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.6 }}
-            >
-              Our Best Services
-            </motion.h2>
-            <motion.div
-              className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-12 rounded-full"
-              initial={{ width: 0 }}
-              whileInView={{ width: 80 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            />
-          </AnimatedSection>
-          
-          <motion.div 
-            className="grid md:grid-cols-3 gap-8"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-          >
-            {[
-              {
-                title: "One-up Affiliate System",
-                description: "Earn direct commissions through our powerful and easy-to-understand 1-Up MLM model.",
-                icon: "🚀",
-                gradient: "from-blue-500 to-cyan-500"
-              },
-              {
-                title: "Digital Marketing Tools",
-                description: "Access ready-to-use resources to promote, grow, and manage your online business.",
-                icon: "🛠️",
-                gradient: "from-green-500 to-teal-500"
-              },
-              {
-                title: "Step-by-Step Training",
-                description: "Get guided digital training to sharpen your skills and succeed in affiliate marketing.",
-                icon: "📚",
-                gradient: "from-orange-500 to-red-500"
-              }
-            ].map((service, index) => (
-              <AnimatedCard key={index} delay={index * 0.2}>
+                initial={{ opacity: 0, x: -40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >  <div className="flex flex-col items-center justify-center text-center">
                 <motion.div 
-                  className={`rounded-2xl p-8 text-center h-full relative overflow-hidden group bg-gradient-to-br ${service.gradient} text-white`}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" 
+                  style={{ 
+                    backgroundColor: 'rgba(var(--primary-rgb, 59, 130, 246), 0.1)',
+                    color: 'var(--text)',
+                    border: '1px solid rgba(var(--primary-rgb, 59, 130, 246), 0.2)'
+                  }}
+                  whileHover={{ scale: 1.05 }}
                 >
-                  <div className="absolute inset-0 bg-black/10" />
-                  <div className="relative z-10">
-                    <motion.div 
-                      className="text-5xl mb-6"
-                      whileHover={{ scale: 1.2, rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      {service.icon}
-                    </motion.div>
-                    <motion.h3 
-                      className="text-xl font-semibold mb-4"
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      {service.title}
-                    </motion.h3>
-                    <motion.p 
-                      className="opacity-90 leading-relaxed"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      transition={{ delay: 0.3 + index * 0.1 }}
-                    >
-                      {service.description}
-                    </motion.p>
-                  </div>
+                
+                  <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                  <span className="text-sm font-medium">Limited Time Launch Offer</span>
                 </motion.div>
-              </AnimatedCard>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+                
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold lg:px-16 mb-6" style={{ color: 'var(--text)' }}>
+                  Unlock a Life-Changing Income System Designed for People Who Want <span style={{ color: 'var(--primary)' }}>Real Results</span>
+                </h1>
+                
+                <p className="text-xl opacity-90 mb-8" style={{ color: 'var(--text)' }}>
+                  Without Tech Skills, Experience, or Paid Ads.
+                </p>
 
-      {/* About Section */}
-      <section className="py-20" style={{ backgroundColor: 'var(--background)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <AnimatedSection>
-              <motion.h2 
-                className="text-3xl md:text-4xl font-bold mb-6"
-                style={{ color: 'var(--text)' }}
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                About us
-              </motion.h2>
-              <motion.div
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="animate"
-              >
-                <motion.p variants={fadeInUp} className="text-lg mb-6 opacity-90 leading-relaxed">
-                  At PASH.CLUB, we make online earning simple with our 1-Up affiliate system. You'll get access to digital tools and 
-                  easy training designed to help you grow your income fast, even if you're just starting out.
-                </motion.p>
-                <motion.p variants={fadeInUp} className="text-lg mb-8 opacity-90 leading-relaxed">
-                  We offer direct member-to-member payments, so you get paid instantly with no middleman. With 24/7 access to your dashboard, you're always in control of 
-                  your business—anytime, anywhere.
-                </motion.p>
-                <motion.div variants={fadeInUp}>
-                  <Link href="/about">
-                    <motion.button 
-                      className="px-6 py-3 font-semibold rounded-lg transition-all duration-300 hover:shadow-lg"
+                <p className="text-lg opacity-90 mb-8 lg:px-16" style={{ color: 'var(--text)' }}>
+                  Join the private PASH.CLUB membership and get access to a proven, done-for-you business system trusted by growing global entrepreneurs.
+                </p>
+                
+                <div className="flex flex-col justify-center sm:flex-row gap-4 mb-12">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link
+                      href="/signup"
+                      className="group px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300"
                       style={{ 
                         backgroundColor: 'var(--primary)',
-                        color: 'var(--background)'
+                        color: 'white'
                       }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
                     >
-                      Learn More
-                    </motion.button>
-                  </Link>
-                </motion.div>
-              </motion.div>
-            </AnimatedSection>
-            
-            {/* Team Visualization */}
-            <AnimatedSection>
-              <motion.div 
-                className="flex justify-center"
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <div className="relative w-full max-w-md">
-                  {/* Background Pattern */}
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl opacity-50"
-                    whileHover={{ rotate: 2 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  />
+                      <span>Get Instant Access Now</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                    </Link>
+                  </motion.div>
                   
-                  {/* Team Network Visualization */}
-                  <div className="relative p-8">
-                    {/* You */}
-                    <motion.div 
-                      className="absolute left-1/2 top-4 transform -translate-x-1/2"
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      <div 
-                        className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold shadow-lg border-4 border-white"
-                        style={{ backgroundColor: 'var(--primary)' }}
-                      >
-                        You
-                      </div>
-                    </motion.div>
-                    
-                    {/* First Level */}
-                    <motion.div 
-                      className="absolute left-1/2 top-28 transform -translate-x-1/2 flex gap-6"
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                    >
-                      <motion.div 
-                        className="w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold shadow-lg border-4 border-white"
-                        style={{ backgroundColor: 'var(--accent)' }}
-                        whileHover={{ scale: 1.1 }}
-                      >
-                        RB
-                      </motion.div>
-                    </motion.div>
-                    
-                    {/* Second Level */}
-                    <motion.div 
-                      className="absolute left-1/2 top-52 transform -translate-x-1/2 flex gap-3"
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                    >
-                      {['JM', 'JA', '+5'].map((initial, index) => (
-                        <motion.div
-                          key={initial}
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg border-4 border-white"
-                          style={{ backgroundColor: 'var(--accent)' }}
-                          whileHover={{ scale: 1.1 }}
-                          initial={{ opacity: 0, scale: 0 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.7 + index * 0.1 }}
-                        >
-                          {initial}
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                    
-                    {/* Animated Connecting Lines */}
-                    <svg className="w-full h-64 absolute top-0 left-0" style={{ zIndex: -1 }}>
-                      <motion.line 
-                        x1="50%" y1="20" x2="50%" y2="100" 
-                        stroke="var(--border)" strokeWidth="2"
-                        initial={{ pathLength: 0 }}
-                        whileInView={{ pathLength: 1 }}
-                        transition={{ duration: 1, delay: 0.2 }}
-                      />
-                      <motion.line 
-                        x1="50%" y1="100" x2="50%" y2="180" 
-                        stroke="var(--border)" strokeWidth="2"
-                        initial={{ pathLength: 0 }}
-                        whileInView={{ pathLength: 1 }}
-                        transition={{ duration: 1, delay: 0.4 }}
-                      />
-                    </svg>
-                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => document.getElementById('video-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-300"
+                    style={{ 
+                      backgroundColor: 'var(--card)',
+                      border: `1px solid var(--border)`,
+                      color: 'var(--text)'
+                    }}
+                  >
+                    <Play className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+                    <span>Watch Explainer Video</span>
+                  </motion.button>
+                </div>
                 </div>
               </motion.div>
-            </AnimatedSection>
+              
+              {/* Right Content - Smaller Stats */}
+              {/* <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="relative"
+              >
+                <div className="flex gap-4">
+                  {stats.map((stat, index) => (
+                    <motion.div 
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: stat.delay }}
+                      whileHover={{ y: -3 }}
+                      className="p-4 rounded-xl text-center transition-all duration-300"
+                      style={{ 
+                        backgroundColor: 'var(--card)',
+                        border: '1px solid var(--border)'
+                      }}
+                    >
+                      <stat.icon className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--primary)' }} />
+                      <div className="text-xl font-bold mb-1" style={{ color: 'var(--text)' }}>
+                        {stat.value}
+                      </div>
+                      <div className="text-xs opacity-70" style={{ color: 'var(--text)' }}>{stat.label}</div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div> */}
+            </div>
+          </div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <ChevronRight className="w-6 h-6 opacity-50 transform rotate-90" style={{ color: 'var(--text)' }} />
+          </motion.div>
+        </div>
+      </section>
+
+      <VideoSection />
+
+      {/* 📄 Comp Plan PDF */}
+      <section className="py-20" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <div 
+              className="rounded-2xl p-8 md:p-12"
+              style={{
+                backgroundColor: 'var(--card)',
+                border: '1px solid var(--border)'
+              }}
+            >
+              <div className="grid lg:grid-cols-2 gap-8 items-center">
+                <div className="flex flex-col justify-center items-center">
+                  <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                    Download the Official Compensation Plan PDF
+                  </h2>
+                  <p className="text-lg opacity-80 mb-8" style={{ color: 'var(--text)' }}>
+                    Go through the full compensation structure, how earnings are generated, and how the PASH.CLUB membership pays you. This PDF breaks down everything in a transparent and easy-to-understand format.
+                  </p>
+                  <motion.a
+                    href={compImage}
+                    download="pash-club-comp-plan.pdf"
+                    className="w-70 flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
+                    style={{ 
+                      backgroundColor: 'var(--primary)',
+                      color: 'white'
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Download className="w-5 h-5" />
+                    <span>Download Comp Plan PDF</span>
+                  </motion.a>
+                </div>
+                <div className="flex justify-center">
+                  <motion.a
+                    href={compImage}
+                    download="pash-club-comp-plan.pdf"
+                    className="rounded-xl overflow-hidden relative cursor-pointer"
+                    style={{ 
+                      border: '3px solid var(--primary)',
+                      width: 'fit-content',
+                      height: 'fit-content'
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Image
+                      src={compImage}
+                      alt="Compensation Plan"
+                      width={400}
+                      height={500}
+                      className="object-contain"
+                      priority
+                    />
+                  </motion.a>
+                </div>
+              </div>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* 🔥 Why PASH.CLUB? */}
+      <section className="py-20" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                A Modern Digital Business System Built for the Future
+              </h2>
+              <p className="text-lg opacity-80 mb-8" style={{ color: 'var(--text)' }}>
+                PASH.CLUB gives you everything you need to start, grow, and scale your digital income from anywhere in the world. No experience. No guesswork. No complicated tech.
+              </p>
+            </div>
+          </AnimatedSection>
+          
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <AnimatedCard>
+              <div 
+                className="rounded-2xl p-8 h-full"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: '1px solid var(--border)'
+                }}
+              >
+                <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                  You Get:
+                </h3>
+                <ul className="space-y-4">
+                  {benefits.map((item, index) => (
+                    <motion.li 
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="flex items-start space-x-3"
+                    >
+                      <CheckCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'var(--primary)' }} />
+                      <span style={{ color: 'var(--text)' }}>{item}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+            </AnimatedCard>
+            
+            <AnimatedCard delay={0.2}>
+              <div 
+                className="rounded-2xl p-8 h-full flex flex-col justify-center"
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: '1px solid var(--border)'
+                }}
+              >
+                <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                  Designed for Real People
+                </h3>
+                <p className="text-lg opacity-80 mb-6" style={{ color: 'var(--text)' }}>
+                  PASH.CLUB is designed to help everyday people start earning online with confidence — even if they've failed before.
+                </p>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3 p-4 rounded-xl" style={{ backgroundColor: 'var(--cardSecondary)' }}>
+                    <Shield className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+                    <span style={{ color: 'var(--text)' }}>Beginner-Friendly System</span>
+                  </div>
+                  <div className="flex items-center space-x-3 p-4 rounded-xl" style={{ backgroundColor: 'var(--cardSecondary)' }}>
+                    <Zap className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+                    <span style={{ color: 'var(--text)' }}>No Technical Skills Required</span>
+                  </div>
+                  <div className="flex items-center space-x-3 p-4 rounded-xl" style={{ backgroundColor: 'var(--cardSecondary)' }}>
+                    <Users className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+                    <span style={{ color: 'var(--text)' }}>Community Support Included</span>
+                  </div>
+                </div>
+              </div>
+            </AnimatedCard>
           </div>
         </div>
       </section>
 
-      {/* Interface Section */}
+      {/* 📈 Features Section */}
       <section className="py-20" style={{ backgroundColor: 'var(--card)' }}>
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-6"
-              style={{ color: 'var(--text)' }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              Work Smarter with a Clean and User-Friendly Interface
-            </motion.h2>
-            <motion.p 
-              className="text-lg mb-8 max-w-2xl mx-auto opacity-90"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              With an intuitive layout and streamlined design, you can work more efficiently without the hassle of complicated menus.
-            </motion.p>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                Everything in One High-End System
+              </h2>
+              <p className="text-lg opacity-80" style={{ color: 'var(--text)' }}>
+                Six powerful components that work together to create your success system
+              </p>
+            </div>
           </AnimatedSection>
           
-          {/* Dashboard Mockup */}
-          <AnimatedSection>
-            <motion.div 
-              className="mt-12 max-w-4xl mx-auto rounded-2xl p-8 shadow-2xl"
-              style={{ 
-                backgroundColor: 'var(--background)',
-                border: '1px solid var(--border)'
-              }}
-              whileHover={{ y: -5 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              {/* Header */}
-              <motion.div 
-                className="flex justify-between items-center mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <div className="flex items-center gap-4">
-                  <motion.div 
-                    className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600"
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  />
-                  <span className="font-bold text-lg">PASH Dashboard</span>
-                </div>
-                <div className="flex gap-2">
-                  {[1, 2, 3].map((dot) => (
-                    <motion.div
-                      key={dot}
-                      className="w-8 h-8 rounded-full bg-gray-300"
-                      whileHover={{ scale: 1.2 }}
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: dot * 0.2 }}
-                    />
-                  ))}
-                </div>
-              </motion.div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <AnimatedCard key={index} delay={index * 0.1}>
+                <motion.div 
+                  className="p-8 rounded-2xl transition-all duration-300 hover:shadow-lg h-full"
+                  style={{ 
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: '1px solid var(--border)'
+                  }}
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: 'var(--primary)' }}>
+                    <feature.icon className="w-6 h-6 text-white" />
+                  </div>
+            
+                  <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--text)' }}>
+                    {feature.title}
+                  </h3>
+                  <p className="opacity-80" style={{ color: 'var(--text)' }}>{feature.description}</p>
+                </motion.div>
+              </AnimatedCard>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              {/* Participants Grid */}
-              <motion.div 
-                className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="animate"
-              >
-                {[
-                  { name: 'Olivia Fiona', email: 'oliviona@gmail.com', role: 'Host' },
-                  { name: 'Dani Noer', email: 'daninoer@gmail.com', role: 'Participant' },
-                  { name: 'Dave Crea', email: 'davecre4@gmail.com', role: 'Participant' },
-                  { name: 'Ruth Haliza', email: 'ruthaliza21@gmail.com', role: 'Participant' }
-                ].map((person, index) => (
-                  <motion.div 
-                    key={index} 
-                    className="text-center"
-                    variants={scaleIn}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <motion.div 
-                      className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-semibold border-4 border-white shadow-lg"
-                      style={{ backgroundColor: 'var(--accent)' }}
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      {person.name.split(' ').map(n => n[0]).join('')}
-                    </motion.div>
-                    <p className="font-medium text-sm">{person.name}</p>
-                    <p className="text-xs opacity-70 truncate">{person.email}</p>
-                    <motion.span 
-                      className="inline-block px-2 py-1 text-xs rounded-full mt-1"
-                      style={{ 
-                        backgroundColor: person.role === 'Host' ? 'var(--primary)' : 'var(--border)',
-                        color: person.role === 'Host' ? 'white' : 'var(--text)'
-                      }}
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      {person.role}
-                    </motion.span>
-                  </motion.div>
-                ))}
-              </motion.div>
-              
-              {/* Invite Section */}
-              <motion.div 
-                className="text-center p-6 rounded-lg"
-                style={{ backgroundColor: 'var(--card)' }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-              >
-                <p className="text-sm font-medium mb-3">Invite Guests</p>
-                <div className="flex gap-2 justify-center items-center">
-                  <motion.div 
-                    className="px-4 py-2 rounded-lg font-mono text-sm border"
-                    style={{ 
-                      backgroundColor: 'var(--background)',
-                      borderColor: 'var(--border)'
-                    }}
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    crean.ce/XHJ293ZH
-                  </motion.div>
-                  <motion.button 
-                    className="px-4 py-2 rounded-lg text-white text-sm font-medium"
-                    style={{ backgroundColor: 'var(--primary)' }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Copy
-                  </motion.button>
-                </div>
-              </motion.div>
-            </motion.div>
-          </AnimatedSection>
-          
+      {/* Urgency Section */}
+      <section className="py-20" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <Link href="/features">
-              <motion.button 
-                className="mt-8 px-6 py-3 font-semibold rounded-lg transition-all duration-300 hover:shadow-lg"
+            <div className="text-center max-w-3xl mx-auto">
+              <div className="inline-flex items-center px-4 py-2 rounded-full mb-6"
                 style={{ 
-                  backgroundColor: 'var(--primary)',
-                  color: 'var(--background)'
-                }}
+                  backgroundColor: 'rgba(var(--primary-rgb, 59, 130, 246), 0.1)',
+                  border: '1px solid rgba(var(--primary-rgb, 59, 130, 246), 0.2)',
+                  color: 'var(--text)'
+                }}>
+                <Clock className="w-4 h-4 mr-2" style={{ color: 'var(--primary)' }} />
+                Limited Time Opportunity
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                This Is Your Moment — Don't Let It Pass.
+              </h2>
+              <p className="text-xl opacity-90 mb-8" style={{ color: 'var(--text)' }}>
+                The digital world is moving fast. Opportunities like this don't stay open forever.
+              </p>
+              
+              <div className="p-8 rounded-2xl mb-8"
+                style={{ 
+                  backgroundColor: 'var(--card)',
+                  border: '1px solid var(--border)'
+                }}>
+                <p className="text-lg italic mb-4" style={{ color: 'var(--text)' }}>
+                  "Every day you wait, someone else takes the spot you could have taken."
+                </p>
+                <p className="text-lg italic mb-4" style={{ color: 'var(--text)' }}>
+                  "Most people see a winning system… but only a few take action."
+                </p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>
+                  If you want 2025 to be different — you must act differently.
+                </p>
+              </div>
+
+              <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Learn More
-              </motion.button>
-            </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300"
+                  style={{ 
+                    backgroundColor: 'var(--primary)',
+                    color: 'white'
+                  }}
+                >
+                  <span>Join PASH.CLUB Now – Limited Spots</span>
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Link>
+              </motion.div>
+            </div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* Case Study Section */}
-      <section className="py-20" style={{ backgroundColor: 'var(--background)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <AnimatedSection className="text-center mb-16">
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
-              style={{ color: 'var(--text)' }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              Our Portfolios of cases
-            </motion.h2>
-            <motion.h3 
-              className="text-2xl font-bold mb-4"
-              style={{ color: 'var(--primary)' }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Featured Case Study
-            </motion.h3>
+      {/* ✨ Testimonials */}
+      <section className="py-20" style={{ backgroundColor: 'var(--card)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                What Members Are Saying
+              </h2>
+              <p className="text-lg opacity-80" style={{ color: 'var(--text)' }}>
+                Join thousands of satisfied members who have transformed their income
+              </p>
+            </div>
           </AnimatedSection>
           
-          <motion.div 
-            className="grid md:grid-cols-4 gap-6"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-          >
-            {[
-              {
-                title: "New Member",
-                subtitle: "Started with Zero Experience",
-                description: "A new member joined PASH.CLUB with no background in online business or marketing.",
-                gradient: "from-blue-400 to-cyan-500",
-                icon: "👤"
-              },
-              {
-                title: "Fastest Income Stream", 
-                subtitle: "Earned Within Days",
-                description: "By following our simple 1-Up system and training, they made their first $100 in just a few days.",
-                gradient: "from-green-400 to-emerald-500",
-                icon: "💰"
-              },
-              {
-                title: "Weekly Earnings",
-                subtitle: "Consistent Progress", 
-                description: "With regular effort and the support of our tools, weekly earnings became steady",
-                gradient: "from-yellow-400 to-orange-500",
-                icon: "📈"
-              },
-              {
-                title: "Collaborative Culture",
-                subtitle: "Helping Others Grow",
-                description: "Now, they actively share the opportunity and help others achieve similar results.",
-                gradient: "from-purple-400 to-pink-500",
-                icon: "🤝"
-              }
-            ].map((caseItem, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {testimonials.map((testimonial, index) => (
               <AnimatedCard key={index} delay={index * 0.1}>
                 <motion.div 
-                  className="text-center p-6 rounded-xl h-full group cursor-pointer"
+                  className="p-6 rounded-2xl transition-all duration-300 hover:shadow-lg h-full flex flex-col"
                   style={{ 
-                    backgroundColor: 'var(--card)',
+                    backgroundColor: 'var(--cardSecondary)',
                     border: '1px solid var(--border)'
                   }}
-                  whileHover={{ 
-                    y: -8,
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
-                  }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  whileHover={{ y: -8, scale: 1.02, rotate: 1 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {/* Image Placeholder */}
                   <motion.div 
-                    className={`w-full h-32 rounded-lg mb-4 bg-gradient-to-r ${caseItem.gradient} flex items-center justify-center relative overflow-hidden`}
-                    whileHover={{ scale: 1.05 }}
+                    className="flex mb-4"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.1 }}
                   >
-                    <motion.span 
-                      className="text-white font-bold text-4xl"
-                      whileHover={{ scale: 1.2 }}
-                    >
-                      {caseItem.icon}
-                    </motion.span>
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ rotate: 0 }}
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Star className="w-4 h-4" style={{ color: 'var(--primary)' }} fill="var(--primary)" />
+                      </motion.div>
+                    ))}
                   </motion.div>
-                  
-                  <motion.h4 
-                    className="font-bold text-lg mb-2"
-                    style={{ color: 'var(--text)' }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {caseItem.title}
-                  </motion.h4>
-                  <motion.p 
-                    className="text-sm font-semibold mb-3 opacity-80"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    {caseItem.subtitle}
-                  </motion.p>
-                  <motion.p 
-                    className="text-sm opacity-70"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 0.7 }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                  >
-                    {caseItem.description}
-                  </motion.p>
+                  <p className="italic mb-4 text-sm opacity-90 flex-grow" style={{ color: 'var(--text)' }}>
+                    "{testimonial.text}"
+                  </p>
+                  <div className="mt-auto">
+                    <p className="font-bold" style={{ color: 'var(--text)' }}>{testimonial.name}</p>
+                    <p className="text-xs opacity-70" style={{ color: 'var(--text)' }}>{testimonial.role}</p>
+                  </div>
                 </motion.div>
               </AnimatedCard>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Steps Section */}
-      <section className="py-20" style={{ backgroundColor: 'var(--card)' }}>
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <AnimatedSection>
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-6"
-              style={{ color: 'var(--text)' }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              Take The First Step Toward A Life of Freedom, Purpose, and Elevation.
-            </motion.h2>
-            <motion.p 
-              className="text-lg mb-12 opacity-90"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Follow these simple steps to join now
-            </motion.p>
-          </AnimatedSection>
-          
-          <motion.div 
-            className="grid md:grid-cols-4 gap-8"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-          >
-            {[
-              { step: "Visit the Registration Page", color: "from-blue-500 to-cyan-600", icon: "🌐" },
-              { step: "Fill Out the Registration Form", color: "from-purple-500 to-pink-600", icon: "📝" },
-              { step: "Verify Your Email", color: "from-green-500 to-emerald-600", icon: "✉️" },
-              { step: "Complete Your Profile", color: "from-orange-500 to-red-600", icon: "✅" }
-            ].map((item, index) => (
-              <AnimatedCard key={index} delay={index * 0.2}>
-                <div className="text-center">
-                  {/* Step Image Placeholder */}
-                  <motion.div 
-                    className={`w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-r ${item.color} flex items-center justify-center text-white font-bold text-2xl shadow-lg border-8 border-white relative overflow-hidden group`}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <motion.span
-                      className="text-3xl"
-                      whileHover={{ scale: 1.2 }}
-                    >
-                      {item.icon}
-                    </motion.span>
-                    <motion.div 
-                      className="absolute -inset-4 bg-white/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500"
-                    />
-                  </motion.div>
-                  <motion.h3 
-                    className="font-semibold text-lg mb-2"
-                    style={{ color: 'var(--text)' }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {item.step}
-                  </motion.h3>
-                  <motion.div 
-                    className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold mx-auto mt-2"
-                    style={{ backgroundColor: 'var(--primary)', color: 'var(--background)' }}
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                  >
-                    {index + 1}
-                  </motion.div>
-                </div>
-              </AnimatedCard>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
+      {/* 🔵 About Section */}
       <section className="py-20" style={{ backgroundColor: 'var(--background)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <AnimatedSection className="text-center mb-16">
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-6"
-              style={{ color: 'var(--text)' }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              Real Stories from Our Satisfied Clients
-            </motion.h2>
-            <motion.p 
-              className="text-lg text-center mb-8 opacity-90 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Experience the real-world impact of our platform through user insights
-            </motion.p>
-          </AnimatedSection>
-          
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <motion.div 
-              className="max-w-3xl mx-auto rounded-2xl p-8 relative overflow-hidden group"
-              style={{ 
+            <div 
+              className="rounded-2xl p-8 md:p-12"
+              style={{
                 backgroundColor: 'var(--card)',
                 border: '1px solid var(--border)'
               }}
-              whileHover={{ y: -5 }}
-              transition={{ type: "spring", stiffness: 300 }}
             >
-              {/* Floating elements */}
-              <motion.div
-                className="absolute top-4 right-4 w-6 h-6 rounded-full opacity-20"
-                style={{ backgroundColor: 'var(--primary)' }}
-                animate={{ scale: [1, 1.5, 1] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              />
-              
-              {/* Client Photo Placeholder */}
-              <motion.div 
-                className="flex items-center gap-6 mb-6"
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <motion.div 
-                  className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-xl shadow-lg"
-                  whileHover={{ scale: 1.1, rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  JI
-                </motion.div>
+              <div className="grid lg:grid-cols-2 gap-12">
                 <div>
-                  <div className="font-semibold text-lg">Jessya Inn</div>
-                  <div className="opacity-70">New Affiliate Partner</div>
+                  <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                    About PASH.CLUB
+                  </h2>
+                  <p className="text-lg opacity-80 mb-6" style={{ color: 'var(--text)' }}>
+                    PASH.CLUB is founded by Pasha Rana, a successful entrepreneur and 6-figure earner who has been in online business since 2013.
+                  </p>
+                  <p className="opacity-80 mb-6" style={{ color: 'var(--text)' }}>
+                    Registered as PASH CLUB LLC in New Mexico, USA, with additional operations in Toronto, Canada — the platform is built on trust, professionalism, and long-term stability.
+                  </p>
+                  
+                  <div className="mb-6">
+                    <h4 className="font-bold text-lg mb-4" style={{ color: 'var(--text)' }}>
+                      After helping thousands of people, Pasha realized most beginners fail because they don't have:
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        "A system",
+                        "A mentor",
+                        "A plan",
+                        "Automation",
+                        "Proper tools"
+                      ].map((item, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <CheckCircle className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                          <span style={{ color: 'var(--text)' }}>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <p className="text-lg font-semibold" style={{ color: 'var(--primary)' }}>
+                    So he built PASH.CLUB, a modern solution designed to eliminate confusion and give anyone the tools to win online.
+                  </p>
                 </div>
-              </motion.div>
-              
-              <motion.p 
-                className="text-lg italic mb-6 leading-relaxed"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                "I tried other platforms before, but nothing clicked. With PASH.CLUB, I made my first sale 
-                within days. The 1-Up system really works, and the direct payments are a game-changer."
-              </motion.p>
-              
-              {/* Success Metrics */}
-              <motion.div 
-                className="grid grid-cols-3 gap-4 mt-6"
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="animate"
-              >
-                {[
-                  { value: "$100", label: "First Commission" },
-                  { value: "3 days", label: "Time to Earn" },
-                  { value: "5", label: "Team Members" }
-                ].map((metric, index) => (
+                
+                <div className="flex items-center justify-center">
                   <motion.div 
-                    key={index}
-                    variants={scaleIn}
-                    className="text-center p-4 rounded-lg group cursor-pointer"
-                    style={{ backgroundColor: 'var(--background)' }}
-                    whileHover={{ scale: 1.05 }}
+                    className="w-80 h-80 rounded-2xl overflow-hidden relative"
+                    style={{ border: '3px solid var(--primary)' }}
+                    whileHover={{ scale: 1.05, rotate: 2 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <motion.div 
-                      className="font-bold text-lg mb-1"
-                      style={{ color: 'var(--primary)' }}
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      {metric.value}
-                    </motion.div>
-                    <div className="text-xs opacity-70">{metric.label}</div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section 
-        className="py-20 text-center relative overflow-hidden"
-        style={{ 
-          background: 'linear-gradient(135deg, var(--primary), var(--secondary))'
-        }}
-      >
-        {/* Animated Background Pattern */}
-        <motion.div
-          className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white opacity-10"
-          animate={{
-            y: [0, -30, 0],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div
-          className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white opacity-10"
-          animate={{
-            y: [0, 25, 0],
-            scale: [1, 1.4, 1],
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-white opacity-10"
-          animate={{
-            scale: [1, 1.5, 1],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <AnimatedSection>
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-6 text-white"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              Start Collaborating Today with Pash Club
-            </motion.h2>
-            <motion.p 
-              className="text-xl mb-8 text-white opacity-90"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Join now and experience effortless video meetings, seamless file sharing, and powerful collaboration tools.
-            </motion.p>
-          </AnimatedSection>
-          
-          {/* App Screenshot Placeholder */}
-          <AnimatedSection>
-            <motion.div 
-              className="mb-8 max-w-2xl mx-auto"
-              whileHover={{ y: -5 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <div className="bg-white/20 rounded-2xl p-8 backdrop-blur-sm">
-                <div className="bg-white rounded-lg p-4 shadow-lg">
-                  <motion.div 
-                    className="w-full h-48 bg-gradient-to-r from-blue-400 to-purple-500 rounded flex items-center justify-center relative overflow-hidden"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <motion.span 
-                      className="text-white font-bold text-lg"
-                      animate={{ opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      App Interface Preview
-                    </motion.span>
-                    <motion.div 
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"
+                    <Image
+                      src={pashaImage}
+                      alt="Pasha Rana"
+                      width={320}
+                      height={320}
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                   </motion.div>
                 </div>
               </div>
-            </motion.div>
-          </AnimatedSection>
-
-          <AnimatedSection>
-            <Link href="/signup">
-              <motion.button 
-                className="px-8 py-4 font-bold rounded-lg transition-all duration-300 hover:shadow-xl text-lg"
-                style={{ 
-                  backgroundColor: 'var(--background)',
-                  color: 'var(--primary)'
-                }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                animate={{
-                  boxShadow: [
-                    "0 10px 30px rgba(0,0,0,0.2)",
-                    "0 15px 40px rgba(0,0,0,0.3)",
-                    "0 10px 30px rgba(0,0,0,0.2)"
-                  ]
-                }}
-                transition={{
-                  boxShadow: {
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }
-                }}
-              >
-                Get Started
-              </motion.button>
-            </Link>
+            </div>
           </AnimatedSection>
         </div>
       </section>
 
+      {/* ❓ FAQ Section */}
+      <section className="py-20" style={{ backgroundColor: 'var(--card)' }}>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
+                Frequently Asked Questions
+              </h2>
+              <p className="text-lg opacity-80" style={{ color: 'var(--text)' }}>
+                Everything you need to know about PASH.CLUB
+              </p>
+            </div>
+          </AnimatedSection>
+          
+          <div className="space-y-4">
+            {faqItems.map((faq, index) => (
+              <AnimatedCard key={index} delay={index * 0.1}>
+                <motion.div 
+                  className="p-6 rounded-xl transition-all duration-300"
+                  style={{ 
+                    backgroundColor: 'var(--cardSecondary)',
+                    border: '1px solid var(--border)'
+                  }}
+                  whileHover={{ y: -5, scale: 1.02, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--text)' }}>
+                    {faq.question}
+                  </h3>
+                  <p className="opacity-80" style={{ color: 'var(--text)' }}>{faq.answer}</p>
+                </motion.div>
+              </AnimatedCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 🎯 Final CTA */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0" 
+          style={{ 
+            backgroundColor: 'var(--primary)',
+            opacity: 0.03
+          }}
+        />
+
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <AnimatedSection>
+            <motion.div 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
+              style={{ 
+                backgroundColor: 'rgba(var(--primary-rgb, 59, 130, 246), 0.1)',
+                color: 'var(--text)',
+                border: '1px solid rgba(var(--primary-rgb, 59, 130, 246), 0.2)'
+              }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+              <span className="font-medium">Your Journey Starts Here</span>
+            </motion.div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold mb-8" style={{ color: 'var(--text)' }}>
+              Take the First Step Toward a Better Future
+            </h2>
+            
+            <p className="text-xl opacity-90 mb-12 max-w-3xl mx-auto" style={{ color: 'var(--text)' }}>
+              You're one decision away from unlocking a powerful system, a supportive community, and a real opportunity to earn online.
+              <br />
+              <span className="font-bold">Don't wait. Start today.</span>
+            </p>
+          </AnimatedSection>
+          
+          <AnimatedSection delay={0.3}>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+              <motion.div
+                whileHover={{ scale: 1.08, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Link
+                  href="/signup"
+                  className="group px-10 py-5 rounded-2xl font-bold text-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:shadow-2xl"
+                  style={{ 
+                    backgroundColor: 'var(--primary)',
+                    color: 'white'
+                  }}
+                >
+                  <span>Activate Your PASH.CLUB Membership</span>
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                </Link>
+              </motion.div>
+              
+              <motion.div
+                whileHover={{ scale: 1.08, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Link
+                  href="/about"
+                  className="px-10 py-5 rounded-2xl font-semibold text-xl flex items-center justify-center gap-3 transition-all duration-300"
+                  style={{ 
+                    backgroundColor: 'var(--card)',
+                    border: `1px solid var(--border)`,
+                    color: 'var(--text)'
+                  }}
+                >
+                  <span>Learn More</span>
+                </Link>
+              </motion.div>
+            </div>
+          </AnimatedSection>
+          
+          {/* Final FOMO */}
+          <AnimatedSection delay={0.5}>
+            <div className="pt-12 border-t" style={{ borderColor: 'var(--border)' }}>
+              <p className="text-2xl font-bold mb-4 opacity-90" style={{ color: 'var(--text)' }}>
+                Success loves speed.
+              </p>
+              <p className="text-2xl font-bold mb-4 opacity-90" style={{ color: 'var(--text)' }}>
+                Opportunities reward action.
+              </p>
+              <p className="text-3xl font-bold" style={{ color: 'var(--primary)' }}>
+                Your moment is right now.
+              </p>
+              <p className="text-lg opacity-80 mt-4" style={{ color: 'var(--text)' }}>
+                Join PASH.CLUB before you miss it.
+              </p>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+      
       <Footer />
     </>
   );
