@@ -448,7 +448,7 @@ export default function HomePage() {
                   Designed for Real People
                 </h3>
                 <p className="text-lg opacity-80 mb-6" style={{ color: 'var(--text)' }}>
-                  PASH.CLUB is designed to help everyday people start earning online with confidence — even if they've failed before.
+                  PASH.CLUB is designed to help everyday people start earning online with confidence — even if {"they've"} failed before.
                 </p>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3 p-4 rounded-xl" style={{ backgroundColor: 'var(--cardSecondary)' }}>
@@ -525,10 +525,10 @@ export default function HomePage() {
                 Limited Time Opportunity
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
-                This Is Your Moment — Don't Let It Pass.
+                This Is Your Moment — {"Don't"} Let It Pass.
               </h2>
               <p className="text-xl opacity-90 mb-8" style={{ color: 'var(--text)' }}>
-                The digital world is moving fast. Opportunities like this don't stay open forever.
+                The digital world is moving fast. Opportunities like this {"don't"} stay open forever.
               </p>
               
               <div className="p-8 rounded-2xl mb-8"
@@ -537,10 +537,10 @@ export default function HomePage() {
                   border: '1px solid var(--border)'
                 }}>
                 <p className="text-lg italic mb-4" style={{ color: 'var(--text)' }}>
-                  "Every day you wait, someone else takes the spot you could have taken."
+                  &ldquo;Every day you wait, someone else takes the spot you could have taken.&rdquo;
                 </p>
                 <p className="text-lg italic mb-4" style={{ color: 'var(--text)' }}>
-                  "Most people see a winning system… but only a few take action."
+                  &ldquo;Most people see a winning system… but only a few take action.&rdquo;
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>
                   If you want 2025 to be different — you must act differently.
@@ -611,7 +611,7 @@ export default function HomePage() {
                     ))}
                   </motion.div>
                   <p className="italic mb-4 text-sm opacity-90 flex-grow" style={{ color: 'var(--text)' }}>
-                    "{testimonial.text}"
+                    &ldquo;{testimonial.text}&rdquo;
                   </p>
                   <div className="mt-auto">
                     <p className="font-bold" style={{ color: 'var(--text)' }}>{testimonial.name}</p>
@@ -649,7 +649,7 @@ export default function HomePage() {
                   
                   <div className="mb-6">
                     <h4 className="font-bold text-lg mb-4" style={{ color: 'var(--text)' }}>
-                      After helping thousands of people, Pasha realized most beginners fail because they don't have:
+                      After helping thousands of people, Pasha realized most beginners fail because they {"don't"} have:
                     </h4>
                     <div className="grid grid-cols-2 gap-3">
                       {[
@@ -761,9 +761,9 @@ export default function HomePage() {
             </h2>
             
             <p className="text-xl opacity-90 mb-12 max-w-3xl mx-auto" style={{ color: 'var(--text)' }}>
-              You're one decision away from unlocking a powerful system, a supportive community, and a real opportunity to earn online.
+              {"You're"} one decision away from unlocking a powerful system, a supportive community, and a real opportunity to earn online.
               <br />
-              <span className="font-bold">Don't wait. Start today.</span>
+              <span className="font-bold">{"Don't"} wait. Start today.</span>
             </p>
           </AnimatedSection>
           

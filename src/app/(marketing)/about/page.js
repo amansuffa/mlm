@@ -261,7 +261,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
               >
-                "To provide real people with a real system to build real income — without confusion, pressure, or false promises."
+                &ldquo;To provide real people with a real system to build real income — without confusion, pressure, or false promises.&rdquo;
               </motion.p>
               
               <motion.div
@@ -307,7 +307,7 @@ export default function AboutPage() {
                 },
                 {
                   icon: "🚀",
-                  text: "Built by someone who's been through the journey - Pasha Rana knows the struggle personally."
+                  text: "Built by someone who&apos;s been through the journey - Pasha Rana knows the struggle personally."
                 },
                 {
                   icon: "🤝",
@@ -417,7 +417,7 @@ export default function AboutPage() {
                     {[
                       "Opportunities should be accessible to everyone.",
                       "Success should not depend on your location or background.",
-                      "A supportive community can change someone's life."
+                      "A supportive community can change someone&apos;s life."
                     ].map((belief, index) => (
                       <motion.div 
                         key={index} 
@@ -444,7 +444,7 @@ export default function AboutPage() {
                     backgroundColor: 'var(--primary)/5'
                   }}
                 >
-                  Pasha Rana built PASH.CLUB so others don't have to go through the confusion and struggle he faced. His mission is to provide a fair, sustainable pathway for people who want financial independence but don't know where to start.
+                  Pasha Rana built PASH.CLUB so others don&apos;t have to go through the confusion and struggle he faced. His mission is to provide a fair, sustainable pathway for people who want financial independence but don&apos;t know where to start.
                 </motion.p>
               </motion.div>
             </motion.div>
@@ -572,26 +572,49 @@ export default function AboutPage() {
                 variants={staggerContainer}
               >
                 <motion.p variants={fadeInUp} className="opacity-90 leading-relaxed text-lg italic">
-                  "If you're reading this, I want to say something from my heart:"
+                  &ldquo;If you&apos;re reading this, I want to say something from my heart:&rdquo;
                 </motion.p>
                 
-                {[
-                  "I know what it feels like to want more out of life.",
-                  "I know how hard it is to find something real online.",
-                  "And I know the courage it takes to start.",
-                  "That's why PASH.CLUB exists — to be your turning point.",
-                  "Whether you're a student, job seeker, stay-at-home parent, business owner, or simply someone who wants change… you're welcome here."
-                ].map((text, index) => (
-                  <motion.p 
-                    key={index}
-                    variants={fadeInUp}
-                    className="opacity-90 leading-relaxed text-lg"
-                    whileHover={{ x: 10 }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  >
-                    {text}
-                  </motion.p>
-                ))}
+                <motion.p 
+                  variants={fadeInUp}
+                  className="opacity-90 leading-relaxed text-lg"
+                  whileHover={{ x: 10 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  I know what it feels like to want more out of life.
+                </motion.p>
+                <motion.p 
+                  variants={fadeInUp}
+                  className="opacity-90 leading-relaxed text-lg"
+                  whileHover={{ x: 10 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  I know how hard it is to find something real online.
+                </motion.p>
+                <motion.p 
+                  variants={fadeInUp}
+                  className="opacity-90 leading-relaxed text-lg"
+                  whileHover={{ x: 10 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  And I know the courage it takes to start.
+                </motion.p>
+                <motion.p 
+                  variants={fadeInUp}
+                  className="opacity-90 leading-relaxed text-lg"
+                  whileHover={{ x: 10 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  That&apos;s why PASH.CLUB exists — to be your turning point.
+                </motion.p>
+                <motion.p 
+                  variants={fadeInUp}
+                  className="opacity-90 leading-relaxed text-lg"
+                  whileHover={{ x: 10 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  Whether you&apos;re a student, job seeker, stay-at-home parent, business owner, or simply someone who wants change… you&apos;re welcome here.
+                </motion.p>
 
                 <motion.div 
                   className="mt-8 p-6 rounded-xl border-l-4"
@@ -608,15 +631,15 @@ export default function AboutPage() {
                     <motion.span 
                       className="block"
                       whileHover={{ scale: 1.05 }}
-                    >Let's grow together.</motion.span>
+                    >Let&apos;s grow together.</motion.span>
                     <motion.span 
                       className="block"
                       whileHover={{ scale: 1.05 }}
-                    >Let's achieve together.</motion.span>
+                    >Let&apos;s achieve together.</motion.span>
                     <motion.span 
                       className="block"
                       whileHover={{ scale: 1.05 }}
-                    >Let's build your future — starting today.</motion.span>
+                    >Let&apos;s build your future — starting today.</motion.span>
                   </motion.p>
                 </motion.div>
 

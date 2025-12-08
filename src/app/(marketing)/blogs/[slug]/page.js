@@ -460,7 +460,7 @@ export default function SingleBlogPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            The blog you're looking for may have been deleted or doesn't exist.
+            The blog you&apos;re looking for may have been deleted or doesn&apos;t exist.
           </motion.p>
           <motion.button
             onClick={() => window.history.back()}

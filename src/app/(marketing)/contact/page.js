@@ -129,7 +129,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            We're here to help!
+            We&apos;re here to help!
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
@@ -367,7 +367,7 @@ export default function ContactPage() {
                   🌍
                 </motion.div>
                 <h2 className="text-3xl font-bold" style={{ color: 'var(--text)' }}>
-                  We're Here for You
+                  We&apos;re Here for You
                 </h2>
               </div>
               

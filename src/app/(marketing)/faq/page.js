@@ -423,7 +423,7 @@ export default function FAQPage() {
                 <button
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
-                  className={`p-6 rounded-2xl text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${activeCategory === category.id ? 'ring-2' : ''}`}
+                  className={`p-6 rounded-2xl text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${activeCategory === category.id ? 'ring-2 ring-[var(--primary)]' : ''}`}
                   style={{ 
                     backgroundColor: 'var(--card)',
                     border: '1px solid var(--border)',
@@ -575,7 +575,7 @@ export default function FAQPage() {
             </div>
 
             {/* Stats */}
-            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+            {/* <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
                 { label: "FAQs", value: "40+" },
                 { label: "Categories", value: "6" },
@@ -598,7 +598,7 @@ export default function FAQPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </section>
       </div>

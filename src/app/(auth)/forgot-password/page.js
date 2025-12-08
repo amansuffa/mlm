@@ -90,7 +90,7 @@ export default function ForgotPasswordPage() {
                   Check Your Email
                 </h3>
                 <p className="text-lg opacity-80 mb-6">
-                  We've sent a password reset link to your email address.
+                  We&apos;ve sent a password reset link to your email address.
                 </p>
                 <div 
                   className="rounded-xl p-4 mb-6"
@@ -190,7 +190,7 @@ export default function ForgotPasswordPage() {
                         <ul className="text-xs opacity-70 space-y-1 list-disc list-inside">
                           <li>A secure password reset link will be sent to your email</li>
                           <li>The link will expire in 1 hour for security</li>
-                          <li>If you don't receive the email, check your spam folder</li>
+                          <li>If you don&apos;t receive the email, check your spam folder</li>
                         </ul>
                       </div>
                     </div>
