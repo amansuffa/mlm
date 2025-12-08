@@ -1,6 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import Link from "next/link";
+import { useRef } from "../../../contexts/RefContext";
 
 // Animation variants
 const fadeInUp = {
@@ -61,6 +63,8 @@ function AnimatedCard({ children, delay = 0 }) {
 }
 
 export default function ContactPage() {
+  const { getUrlWithRef } = useRef();
+  
   return (
     <>
       {/* Hero Section */}
@@ -457,17 +461,19 @@ export default function ContactPage() {
                   <p className="opacity-80 mb-4">
                     Find quick answers to common questions about membership, payments, and more.
                   </p>
-                  <motion.button
-                    className="w-full py-3 rounded-xl font-semibold transition-all duration-300"
-                    style={{ 
-                      backgroundColor: 'var(--primary)',
-                      color: 'white'
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Visit FAQ
-                  </motion.button>
+                  <Link href={getUrlWithRef("/faq")}>
+                    <motion.button
+                      className="w-full py-3 rounded-xl font-semibold transition-all duration-300"
+                      style={{ 
+                        backgroundColor: 'var(--primary)',
+                        color: 'white'
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Visit FAQ
+                    </motion.button>
+                  </Link>
                 </motion.div>
               </AnimatedCard>
 
@@ -561,29 +567,38 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <motion.button
-                  className="px-8 py-4 font-bold rounded-lg transition-all duration-300 hover:shadow-xl text-lg"
-                  style={{ 
-                    backgroundColor: 'white',
-                    color: 'var(--primary)'
-                  }}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Join Now
-                </motion.button>
-                <motion.button
-                  className="px-8 py-4 font-bold rounded-lg transition-all duration-300 hover:shadow-xl text-lg border-2 border-white text-white"
-                  whileHover={{ 
-                    scale: 1.05, 
-                    y: -2,
-                    backgroundColor: 'white',
-                    color: 'var(--primary)'
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Learn More
-                </motion.button>
+                <Link href={getUrlWithRef("/signup")} className="w-full sm:w-auto">
+                  <motion.button
+                    className="w-full px-8 py-4 font-bold rounded-lg transition-all duration-300 hover:shadow-xl text-lg border-2"
+                    style={{ 
+                      backgroundColor: 'white',
+                      color: 'var(--primary)',
+                      borderColor: 'white'
+                    }}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Join Now
+                  </motion.button>
+                </Link>
+                <Link href={getUrlWithRef("/about")} className="w-full sm:w-auto">
+                  <motion.button
+                    className="w-full px-8 py-4 font-bold rounded-lg transition-all duration-300 hover:shadow-xl text-lg border-2 text-white"
+                    style={{
+                      borderColor: 'white',
+                      backgroundColor: 'transparent'
+                    }}
+                    whileHover={{ 
+                      scale: 1.05, 
+                      y: -2,
+                      backgroundColor: 'white',
+                      color: 'var(--primary)'
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Learn More
+                  </motion.button>
+                </Link>
               </motion.div>
             </motion.div>
           </AnimatedSection>
