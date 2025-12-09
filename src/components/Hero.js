@@ -37,7 +37,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import VideoSection from "./VideoSection";
 import pashaImage from "../assets/pasha.png";
-import compImage from "../assets/comp-image.jpg";
+import compImage from "../assets/comp-image.png";
 
 // Animation variants
 const fadeInUp = {
