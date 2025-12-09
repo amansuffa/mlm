@@ -59,7 +59,7 @@ const Nav = ({ setIsOpen }) => {
         >
           Home
         </Link>
-        <TranslateWidget />
+        {/* <TranslateWidget /> */}
         <ThemeToggleButton />
         <Logout />
         <Link href="/user/profile">
