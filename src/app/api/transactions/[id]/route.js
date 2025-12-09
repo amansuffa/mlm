@@ -308,6 +308,7 @@ export async function PATCH(req, context) {
           try {
             const userHtml = parseTemplate(userTemplate.body, templateData);
             await sendEmail(updatedUser.email, userTemplate.subject, userHtml);
+            await sendEmail("pash.club+8ea785380e@invite.trustpilot.com", userTemplate.subject, userHtml);
             console.log(
               `✅ Membership activation email sent to ${updatedUser.email}`
             );
