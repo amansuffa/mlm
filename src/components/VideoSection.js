@@ -83,6 +83,7 @@ export default function VideoSection() {
                   className="w-full h-full"
                   controls
                   src={videoUrl}
+                  autoPlay
                 >
                   Your browser does not support the video tag.
                 </video>
