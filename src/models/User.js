@@ -112,4 +112,4 @@ userSchema.pre("save", function (next) {
 // userSchema.index({ role: 1 });         // For admin/member filter pages
 // userSchema.index({ membershipStatus: 1 }); // For filtering active/inactive members
 
-export const User = mongoose.models.User || mongoose.model("User", userSchema);
+export const User = mongoose.models?.User || mongoose.model("User", userSchema);

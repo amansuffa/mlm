@@ -1,21 +1,22 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import DashboardClient from "@/components/DashboardClient";
 import DashboardAdmin from "@/components/DashboardAdmin";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
-
-  if (status === "loading") return <div>Loading...</div>;
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--primary)' }}></div>
+          <p className="text-lg opacity-80">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+  
   if (!session?.user) return null;
 
   console.log("Dashboard Role:", session?.user?.role);

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { doLogin } from "@/app/actions";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -17,14 +17,18 @@ export default function Login() {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const res = await doLogin(formData);
+    
+    const result = await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
+    });
 
-    if (res?.error) {
-      toast.error(res.error);
+    if (result?.error) {
+      toast.error("Invalid credentials");
       setLoading(false);
-    } else {
+    } else if (result?.ok) {
       toast.success("Login successful!");
-      await update();
       setLoading(false);
       router.push("/dashboard");
     }

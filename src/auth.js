@@ -2,9 +2,9 @@ export const runtime = "nodejs";
 
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { User } from "./models/User";
 import bcrypt from "bcryptjs";
 import { connectDB } from "./lib/mongodb";
+import { User } from "./models/User";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: {
@@ -90,25 +90,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async session({ session, token }) {
-      if (token?.id) {
-        try {
-          await connectDB();
-          const user = await User.findById(token.id);
-          if (user) {
-            session.user.id = user._id.toString();
-            session.user.role = user.role;
-            session.user.status = user.status;
-            session.user.username = user.username;
-            session.user.referredBy = user.referredBy;
-            session.user.adminFeePaid = user.adminFeePaid;
-            session.user.membershipFeePaid = user.membershipFeePaid;
-            session.user.profilePicture = user.profilePicture;
-          }
-        } catch (error) {
-          console.error("Session callback error:", error);
-        }
+      if (token) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.status = token.status;
+        session.user.username = token.username;
+        session.user.referredBy = token.referredBy;
+        session.user.adminFeePaid = token.adminFeePaid;
+        session.user.membershipFeePaid = token.membershipFeePaid;
+        session.user.profilePicture = token.profilePicture;
       }
       return session;
+    },
+
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return `${baseUrl}/dashboard`;
     },
   },
 

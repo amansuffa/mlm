@@ -1,13 +1,54 @@
-export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
-};
-
-export { auth as middleware } from "@/auth";
-
-export const runtime = "nodejs";
-
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+
+export async function middleware(request) {
+  const token = await getToken({ 
+    req: request, 
+    secret: process.env.AUTH_SECRET 
+  });
+
+  const { pathname } = request.nextUrl;
+
+  // Protected routes
+  const protectedRoutes = [
+    '/dashboard', 
+    '/user', 
+    '/manage-users', 
+    '/blog-editor', 
+    '/email-templates', 
+    '/transactions', 
+    '/confirm-payments'
+  ];
+  
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+  // If accessing protected route without token, redirect to login
+  if (!token && isProtectedRoute) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('callbackUrl', request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // If logged in and accessing login page, redirect to dashboard
+  if (token && pathname === '/login') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: [
+    '/dashboard/:path*',
+    '/user/:path*', 
+    '/manage-users/:path*',
+    '/blog-editor/:path*',
+    '/email-templates/:path*',
+    '/transactions/:path*',
+    '/confirm-payments/:path*',
+    '/login'
+  ]
+};
 
 // export async function middleware(request) {
 //   const token = await getToken({ 
