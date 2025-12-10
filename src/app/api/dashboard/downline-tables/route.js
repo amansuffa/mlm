@@ -26,10 +26,11 @@ export async function GET() {
     // Get first sale locked by information
     const firstSaleLockedBy = currentUser.firstSaleLockedBy ? 
       await User.findById(currentUser.firstSaleLockedBy) : null;
+      const passupSponsor = await User.findById(currentUser.passupSponsor)
+      const firstSalePassedUpTo= currentUser.passupSponsor ?  passupSponsor.username : currentUser.referredBy;
 
     // Table 1: 1st Sale (Qualifying Sale - Passed Up)
     const qualifyingSales = [];
-    const passUpTo= await User.findById(currentUser.passupSponsor);
     if (firstSaleLockedBy) {
       qualifyingSales.push({
         sr: 1,
@@ -38,7 +39,7 @@ export async function GET() {
         email: firstSaleLockedBy.email,
         originalSponsor: currentUser.name || currentUser.username,
         saleType: "Qualifying (1st Sale)",
-        passedUpTo: passUpTo.username || "Unknown",
+        passedUpTo: firstSalePassedUpTo || "Unknown",
         status: "Active",
         joinedAt: firstSaleLockedBy.createdAt
       });
