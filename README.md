@@ -91,6 +91,9 @@ The project uses several secrets and external services. Create a `.env.local` (d
   - `IPN_SECRET_KEY`
   - `APP_URL`  — Application URL
 
+- **Google Recaptcha**:
+  - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
+  - `RECAPTCHA_SECRET`
 
 
 Add other provider keys as required by the services you enable. Keep these private.
