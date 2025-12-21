@@ -43,7 +43,8 @@ export const config = {
     '/transactions/:path*',
     '/confirm-payments/:path*',
     '/login'
-  ]
+  ],
+  runtime: 'nodejs'
 };
 
 // export async function middleware(request) {
