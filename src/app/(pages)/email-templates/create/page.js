@@ -332,8 +332,8 @@ to your contacts list.
               <MDEditor 
                 value={form.body}
                 onChange={handleEditorChange}
-                height={400}
-                preview="edit"
+                height={500}
+                preview="live"
                 textareaProps={{
                   placeholder: "Write your email content here...\n\nPress Enter for new lines\nUse **bold** for emphasis\nAdd variables like {{FirstName}}"
                 }}
