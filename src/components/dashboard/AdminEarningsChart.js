@@ -77,7 +77,7 @@ export default function EarningsChart() {
           <div className="flex justify-between items-start mb-3">
             <div>
               <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
-                📊 Platform Revenue
+                📊 Platform Activity Summary
               </h3>
          
               <p className="text-xl font-bold" style={{ color: 'var(--accent)' }}>${total.toLocaleString()}</p>

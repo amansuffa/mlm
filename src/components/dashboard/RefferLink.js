@@ -56,10 +56,10 @@ export default function ReferralDashboard() {
         >
           <div className="px-6 py-4" style={{ borderColor: 'var(--border)' }}>
             <h2 className="text-xl font-semibold" style={{ color: 'var(--text)' }}>
-              Your Referral Link
+              Your Partner Link
             </h2>
             <p className="text-sm opacity-70 mt-1">
-              Share this link to invite friends and earn rewards
+              Share this link to invite peers to join the learning network
             </p>
           </div>
 

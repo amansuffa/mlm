@@ -39,10 +39,10 @@ export default function VideoSection() {
         <AnimatedSection>
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
-              See Exactly How the PASH.CLUB System Works — In Less Than 5 Minutes
+              See Exactly How the PASH.CLUB System Works, In Less Than 5 Minutes
             </h2>
             <p className="text-lg opacity-80" style={{ color: 'var(--text)' }}>
-              Watch this short explainer video to understand how thousands of people are starting real digital income systems using our automated platform, step-by-step guidance, and simple duplication process.
+              Watch this short explainer video to understand how thousands of learners are building practical digital skills using our structured training, implementation tools, and supportive community.
             </p>
           </div>
         </AnimatedSection>

@@ -102,9 +102,9 @@ export default function HomePage() {
   const { getUrlWithRef } = useRef();
 
   const stats = [
-    { icon: Users, value: "1k+", label: "Active Members", delay: 0.1 },
-    { icon: DollarSign, value: "$500", label: "Direct Commission", delay: 0.2 },
-    { icon: Clock, value: "48hrs", label: "First Sale Time", delay: 0.3 },
+    { icon: Users, value: "1k+", label: "Active Learners", delay: 0.1 },
+    { icon: DollarSign, value: "Trusted Curriculum", label: "Structured Tracks", delay: 0.2 },
+    { icon: Clock, value: "48hrs", label: "Quick Start Guidance", delay: 0.3 },
     { icon: Globe, value: "100+", label: "Countries", delay: 0.4 },
   ];
 
@@ -112,69 +112,69 @@ export default function HomePage() {
     {
       icon: Zap,
       title: "Plug-and-Play Funnels",
-      description: "Professionally built, high-converting funnels designed to turn visitors into active members — automatically."
+      description: "Implementation-ready funnels and systems to help translate training into practical results."
     },
     {
       icon: TrendingUp,
       title: "Step-by-Step Training",
-      description: "Clear, beginner-friendly training that shows you exactly how to start generating results ASAP."
+      description: "Clear, beginner-friendly training that guides skill development and practical application."
     },
     {
       icon: Award,
-      title: "High-Paying Referral Structure",
-      description: "Earn commissions when your referrals activate their membership. Simple. Transparent. Rewarding."
+      title: "Peer-to-peer Partner Contribution Structure",
+      description: "An optional Partner Program that supports peer contributions between members; participation is optional and managed directly by members."
     },
     {
       icon: Bot,
-      title: "AI Chatbot Automation",
-      description: "Let the system educate, explain, and close your prospects with the help of powerful AI technology."
+      title: "AI Learning Assistant",
+      description: "An AI assistant to help explain lessons, provide implementation guidance, and support learner questions."
     },
     {
       icon: Users,
-      title: "Team Support & Mentoring",
-      description: "Access guidance from experienced online entrepreneurs who've been in the industry for years."
+      title: "Mentorship & Peer Support",
+      description: "Access guidance from experienced professionals and peers focused on skill development and best practices."
     },
     {
       icon: Globe,
-      title: "Global Opportunity",
-      description: "Work from anywhere. Invite anyone. Get paid directly."
+      title: "Global Learning Network",
+      description: "Collaborate with learners around the world and access resources from anywhere."
     }
   ];
 
   const benefits = [
-    "A complete done-for-you income system",
-    "Automated sales funnels created by professionals",
-    "Ready-to-share promotional tools that convert",
-    "A powerful AI-powered chatbot, available 24/7",
-    "A high-paying referral structure that rewards fast action",
-    "Premium training from a 6-figure entrepreneur",
-    "Support from a private global community",
-    "A simple duplication model that anybody can follow"
+    "A complete, structured training curriculum",
+    "Implementation tools and productivity systems",
+    "Ready-to-use resources for practical application",
+    "An AI learning assistant to support progress",
+    "Optional Partner Program for peer contributions",
+    "Premium instruction from experienced professionals",
+    "Support from a private global learning community",
+    "Clear pathways for digital skill development"
   ];
 
   const testimonials = [
     {
       name: "Sarah M.",
       role: "Member",
-      text: "I've tried many online programs, and nothing compares to PASH.CLUB. Everything is done-for-you. I made my first referral in 48 hours.",
+      text: "The curriculum and implementation tools helped me build useful digital skills quickly.",
       rating: 5
     },
     {
       name: "Ahmed R.",
       role: "Entrepreneur",
-      text: "The system is simple, powerful, and very professional. The tools saved me months of work.",
+      text: "The structured lessons and practical templates saved me months of development time.",
       rating: 5
     },
     {
       name: "Lisa D.",
       role: "Digital Creator",
-      text: "Finally, a system that delivers what it promises. The training and chatbot alone are worth more than the entire membership fee.",
+      text: "The training and AI assistant made implementation clear and manageable.",
       rating: 5
     },
     {
       name: "John P.",
       role: "Business Owner",
-      text: "I love the support and the automation. This is the future of online business.",
+      text: "The support and productivity systems improved our team's digital capabilities.",
       rating: 5
     }
   ];
@@ -182,19 +182,19 @@ export default function HomePage() {
   const faqItems = [
     {
       question: "What is PASH.CLUB?",
-      answer: "PASH.CLUB is a premium digital membership platform that provides tools, training, automation, and a high-paying referral structure to help individuals build income online."
+      answer: "PASH.CLUB is a professional training platform focused on digital skills development, practical implementation tools, and ongoing mentorship."
     },
     {
       question: "Do I need experience?",
-      answer: "No. The system is beginner-friendly and includes step-by-step guidance."
+      answer: "No. The platform provides beginner-friendly, step-by-step training and implementation guidance."
     },
     {
-      question: "How do I earn?",
-      answer: "You earn commissions when people you refer activate their membership. All details are explained in the Compensation Plan PDF."
+      question: "Is this an income guarantee program?",
+      answer: "No. This is a professional training platform focused on skill development. There is no income guarantee; outcomes depend on individual effort and application. Participation in the Partner Program is optional and does not guarantee income."
     },
     {
       question: "Is this a global system?",
-      answer: "Yes. Anyone from anywhere can join."
+      answer: "Yes. Learners from around the world can join and access training resources." 
     }
   ];
 
@@ -236,15 +236,15 @@ export default function HomePage() {
                 </motion.div>
                 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold lg:px-16 mb-6" style={{ color: 'var(--text)' }}>
-                  Unlock a Life-Changing Income System Designed for People Who Want <span style={{ color: 'var(--primary)' }}>Real Results</span>
+                  Build Real Digital Skills for Today’s Professional World
                 </h1>
-                
+
                 <p className="text-xl opacity-90 mb-8" style={{ color: 'var(--text)' }}>
-                  Without Tech Skills, Experience, or Paid Ads.
+                  Structured training, clear pathways, and guided support for practical skill development.
                 </p>
 
                 <p className="text-lg opacity-90 mb-8 lg:px-16" style={{ color: 'var(--text)' }}>
-                  Join the private PASH.CLUB membership and get access to a proven, done-for-you business system trusted by growing global entrepreneurs.
+                  Join PASH.CLUB to access professional training, implementation tools, and mentorship — Partner Program participation is optional and not required to access training.
                 </p>
                 
                 <div className="flex flex-col justify-center sm:flex-row gap-4 mb-12">
@@ -344,15 +344,15 @@ export default function HomePage() {
               <div className="grid lg:grid-cols-2 gap-8 items-center">
                 <div className="flex flex-col justify-center items-center">
                   <h2 className="text-3xl font-bold mb-6" style={{ color: 'var(--text)' }}>
-                    Download the Official Compensation Plan PDF
+                    Download the Program Overview PDF
                   </h2>
                   <p className="text-lg opacity-80 mb-8" style={{ color: 'var(--text)' }}>
-                    Go through the full compensation structure, how earnings are generated, and how the PASH.CLUB membership pays you. This PDF breaks down everything in a transparent and easy-to-understand format.
+                    Review the program overview, Partner Program details (optional), and how membership access and any peer contributions are managed. This PDF explains access, expectations, and policies in clear terms.
                   </p>
                   <motion.a
                     href={compImage}
                     download="pash-club-comp-plan.pdf"
-                    className="w-70 flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
+                    className="w-80 flex items-center justify-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
                     style={{ 
                       backgroundColor: 'var(--primary)',
                       color: 'white'
@@ -361,7 +361,7 @@ export default function HomePage() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Download className="w-5 h-5" />
-                    <span>Download Comp Plan PDF</span>
+                    <span>Download Program Overview</span>
                   </motion.a>
                 </div>
                 <div className="flex justify-center">
@@ -379,7 +379,7 @@ export default function HomePage() {
                   >
                     <Image
                       src={compImage}
-                      alt="Compensation Plan"
+                      alt="Program Overview"
                       width={400}
                       height={500}
                       className="object-contain"
@@ -399,10 +399,10 @@ export default function HomePage() {
           <AnimatedSection>
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
-                A Modern Digital Business System Built for the Future
+                A Modern Professional Training Ecosystem Built for the Future
               </h2>
               <p className="text-lg opacity-80 mb-8" style={{ color: 'var(--text)' }}>
-                PASH.CLUB gives you everything you need to start, grow, and scale your digital income from anywhere in the world. No experience. No guesswork. No complicated tech.
+                PASH.CLUB gives you training, implementation tools, and mentorship to build practical digital skills from anywhere. No experience required — just a willingness to learn and apply.
               </p>
             </div>
           </AnimatedSection>
@@ -448,7 +448,7 @@ export default function HomePage() {
                   Designed for Real People
                 </h3>
                 <p className="text-lg opacity-80 mb-6" style={{ color: 'var(--text)' }}>
-                  PASH.CLUB is designed to help everyday people start earning online with confidence — even if {"they've"} failed before.
+                  PASH.CLUB is designed to help everyday people build practical digital skills and apply them with confidence — even if they’ve struggled before.
                 </p>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3 p-4 rounded-xl" style={{ backgroundColor: 'var(--cardSecondary)' }}>
@@ -522,13 +522,13 @@ export default function HomePage() {
                   color: 'var(--text)'
                 }}>
                 <Clock className="w-4 h-4 mr-2" style={{ color: 'var(--primary)' }} />
-                Limited Time Opportunity
+                Early-stage Access Available
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
-                This Is Your Moment — {"Don't"} Let It Pass.
+                Early Access - Platform Evolving with New Features
               </h2>
               <p className="text-xl opacity-90 mb-8" style={{ color: 'var(--text)' }}>
-                The digital world is moving fast. Opportunities like this {"don't"} stay open forever.
+                The platform is evolving. Early-stage access offers a chance to shape the experience and receive guided support.
               </p>
               
               <div className="p-8 rounded-2xl mb-8"
@@ -537,13 +537,13 @@ export default function HomePage() {
                   border: '1px solid var(--border)'
                 }}>
                 <p className="text-lg italic mb-4" style={{ color: 'var(--text)' }}>
-                  &ldquo;Every day you wait, someone else takes the spot you could have taken.&rdquo;
+                  Early participants help shape the platform and gain closer support from mentors and peers.
                 </p>
                 <p className="text-lg italic mb-4" style={{ color: 'var(--text)' }}>
-                  &ldquo;Most people see a winning system… but only a few take action.&rdquo;
+                  The platform is designed for steady progress — focused learning and consistent application lead to the best outcomes.
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>
-                  If you want 2025 to be different — you must act differently.
+                  Consider early access if you want structured support and a collaborative learning experience.
                 </p>
               </div>
 
@@ -559,7 +559,7 @@ export default function HomePage() {
                     color: 'white'
                   }}
                 >
-                  <span>Join PASH.CLUB Now – Limited Spots</span>
+                  <span>Request Early Access</span>
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Link>
               </motion.div>
@@ -577,7 +577,7 @@ export default function HomePage() {
                 What Members Are Saying
               </h2>
               <p className="text-lg opacity-80" style={{ color: 'var(--text)' }}>
-                Join thousands of satisfied members who have transformed their income
+                Join thousands of learners who have strengthened their digital skills and applied them to real projects
               </p>
             </div>
           </AnimatedSection>
@@ -621,6 +621,26 @@ export default function HomePage() {
               </AnimatedCard>
             ))}
           </div>
+          
+          <div className="text-center mt-16">
+            <AnimatedSection>
+              <p className="opacity-80 mb-4" style={{ color: 'var(--text)' }}>Read verified reviews from our members</p>
+              <a 
+                href="https://www.trustpilot.com/review/pash.club" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-lg font-semibold transition-opacity hover:opacity-80"
+                style={{ 
+                  backgroundColor: 'var(--card)',
+                  border: '2px solid var(--primary)',
+                  color: 'var(--text)'
+                }}
+              >
+                <span className="text-2xl">⭐</span>
+                <span>See All Reviews on Trustpilot</span>
+              </a>
+            </AnimatedSection>
+          </div>
         </div>
       </section>
 
@@ -641,7 +661,7 @@ export default function HomePage() {
                     About PASH.CLUB
                   </h2>
                   <p className="text-lg opacity-80 mb-6" style={{ color: 'var(--text)' }}>
-                    PASH.CLUB is founded by Pasha Rana, a successful entrepreneur and 6-figure earner who has been in online business since 2013.
+                    PASH.CLUB is founded by Pasha Rana, an experienced entrepreneur and educator who has worked in online business and training since 2013.
                   </p>
                   <p className="opacity-80 mb-6" style={{ color: 'var(--text)' }}>
                     Registered as PASH CLUB LLC in New Mexico, USA, with additional operations in Toronto, Canada — the platform is built on trust, professionalism, and long-term stability.
@@ -668,8 +688,13 @@ export default function HomePage() {
                   </div>
                   
                   <p className="text-lg font-semibold" style={{ color: 'var(--primary)' }}>
-                    So he built PASH.CLUB, a modern solution designed to eliminate confusion and give anyone the tools to win online.
+                    So he built PASH.CLUB, a modern solution designed to eliminate confusion and give anyone the tools to apply skills and grow professionally.
                   </p>
+                  
+                  <Link href={getUrlWithRef("/about")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-opacity hover:opacity-80 mt-8" style={{ backgroundColor: 'var(--primary)', color: 'white' }}>
+                    Learn More About PASH.CLUB
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
                 </div>
                 
                 <div className="flex items-center justify-center">
@@ -729,6 +754,13 @@ export default function HomePage() {
               </AnimatedCard>
             ))}
           </div>
+          
+          <div className="text-center mt-12">
+            <Link href={getUrlWithRef("/faq")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-opacity hover:opacity-80" style={{ backgroundColor: 'var(--primary)', color: 'white' }}>
+              View Full FAQ
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -761,9 +793,9 @@ export default function HomePage() {
             </h2>
             
             <p className="text-xl opacity-90 mb-12 max-w-3xl mx-auto" style={{ color: 'var(--text)' }}>
-              {"You're"} one decision away from unlocking a powerful system, a supportive community, and a real opportunity to earn online.
+              {"You're"} one decision away from accessing structured training, practical tools, and a supportive community for professional growth.
               <br />
-              <span className="font-bold">{"Don't"} wait. Start today.</span>
+              <span className="font-bold">Begin your learning journey today.</span>
             </p>
           </AnimatedSection>
           

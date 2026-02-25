@@ -17,10 +17,10 @@ export default function KPISection() {
   if (!kpis) return <p>Loading KPIs...</p>;
 
   const cards = [
-    { label: "Direct", value: kpis.directSales, icon: <UserPlus />, color: "from-blue-500 to-blue-600" },
-    { label: "Pass Ups", value: kpis.passupSales, icon: <Users />, color: "from-green-500 to-green-600" },
-    { label: "Total Downline", value: kpis.totalSales, icon: <Users />, color: "from-[var(--primary)] to-[var(--secondary)]" },
-    { label: "Total Earnings", value: kpis.totalEarnings, icon: <DollarSign />, color: "from-orange-500 to-orange-600"},
+    { label: "Direct Activations", value: kpis.directSales, icon: <UserPlus />, color: "from-blue-500 to-blue-600" },
+    { label: "Network Activations", value: kpis.passupSales, icon: <Users />, color: "from-green-500 to-green-600" },
+    { label: "Network Size", value: kpis.totalSales, icon: <Users />, color: "from-[var(--primary)] to-[var(--secondary)]" },
+    { label: "Network Contributions", value: kpis.totalEarnings, icon: <DollarSign />, color: "from-orange-500 to-orange-600"},
   ];
 
   return (

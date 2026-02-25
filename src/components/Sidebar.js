@@ -94,7 +94,7 @@ export default function Sidebar({ isOpen, setIsOpen, status, role }) {
     },
     {
       href: "/user/referrals",
-      label: "My Referrals",
+      label: "My Network",
       icon: <FaUserFriends />,
       statuses: ["fully_active"],
     },

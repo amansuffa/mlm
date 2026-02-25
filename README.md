@@ -1,8 +1,8 @@
 **Project Overview**
 
-- **Name:** `mlm`
+- **Name:** `PASH.CLUB Affiliate Program`
 - **Type:** Next.js (App Router) full-stack application
-- **Purpose:** A multi-level marketing (MLM) platform with referral tracking, admin dashboards, payments, blog editor, and user management.
+- **Purpose:** The PASH.CLUB Affiliate Program — a partner-focused learning and training platform with network tracking, admin dashboards, payments, blog editor, and user management.
 
 **Quick Start (Windows PowerShell)**
 

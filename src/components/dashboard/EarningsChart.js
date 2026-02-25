@@ -58,8 +58,8 @@ export default function EarningsChart() {
     <div className="card p-6 rounded-2xl shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>💰 Earnings Overview</h3>
-        <span className="text-sm font-medium" style={{ color: 'var(--textSecondary)' }}>USD</span>
+        <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>Learning Activity Overview</h3>
+        <span className="text-sm font-medium" style={{ color: 'var(--textSecondary)' }}>Activity</span>
       </div>
 
       {/* Date Range Filters */}

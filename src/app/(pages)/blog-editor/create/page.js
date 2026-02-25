@@ -417,7 +417,7 @@ export default function CreateBlogPage() {
                 <option value="team-building">
                   Team Building & Leadership
                 </option>
-                <option value="compensation-plans">Compensation Plans</option>
+                <option value="compensation-plans">Program Overview</option>
                 <option value="lead-generation">
                   Lead Generation & Prospecting
                 </option>
