@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "../contexts/RefContext";
 import { Mail, Phone, ExternalLink, ChevronDown, Instagram, Facebook, Youtube, Twitter } from "lucide-react";
 import { useState } from "react";
@@ -96,10 +97,10 @@ export default function Footer() {
                 <Youtube className="w-5 h-5" style={{ color: 'var(--primary)' }} />
               </a>
               <a href="https://www.tiktok.com/@clubpash" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="TikTok">
-                <img src="/logos/tiktok-logo.png" alt="TikTok" className="w-5 h-5" loading="lazy" />
+                <Image src="/logos/tiktok-logo.png" alt="TikTok" width={20} height={20} />
               </a>
               <a href="https://www.whatsapp.com/channel/0029Vb6a4msBVJlCcJb4wc2W" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="WhatsApp">
-                <img src="/logos/whatsapp-logo.png" alt="WhatsApp" className="w-5 h-5" loading="lazy" />
+                <Image src="/logos/whatsapp-logo.png" alt="WhatsApp" width={20} height={20} />
               </a>
             </div>
           </div>
