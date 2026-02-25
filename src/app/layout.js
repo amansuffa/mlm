@@ -13,8 +13,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata = {
-  title: "MLM App",
-  description: "A simple MLM app built with Next.js and MongoDB",
+  title: "PASH CLUB | Upgrade Your Digital Skills",
+  description:
+    "Upgrade your digital skills with PASH CLUB — a modern training platform offering structured learning, implementation guidance, AI-assisted tools, and a global professional development community.",
+     keywords: [
+    "digital skills training",
+    "professional development",
+    "online business education",
+    "management development",
+    "digital marketing training",
+    "productivity systems",
+    "AI learning tools"
+  ],
 };
 
 export default async function RootLayout({ children }) {
