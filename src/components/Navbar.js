@@ -67,6 +67,20 @@ export default function Navbar() {
               >
                 Mission
               </Link>
+              <Link 
+                href={getUrlWithRef("/products")} 
+                className="font-medium transition-all duration-200 hover:opacity-80"
+                style={{ color: 'var(--text)' }}
+              >
+                Resources
+              </Link>
+                 <Link 
+                href={getUrlWithRef("/partner-program")} 
+                className="font-medium transition-all duration-200 hover:opacity-80"
+                style={{ color: 'var(--text)' }}
+              >
+                Partner Program
+              </Link>
               <Link
                 href={getUrlWithRef("/blogs")}
                 className="font-medium transition-all duration-200 hover:opacity-80"
@@ -219,6 +233,20 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Mission
+              </Link>
+                <Link 
+                href={getUrlWithRef("/products")} 
+                className="font-medium transition-all duration-200 hover:opacity-80"
+                style={{ color: 'var(--text)' }}
+              >
+                Resources
+              </Link>
+                <Link 
+                href={getUrlWithRef("/partner-program")} 
+                className="font-medium transition-all duration-200 hover:opacity-80"
+                style={{ color: 'var(--text)' }}
+              >
+                Partner Program
               </Link>
               <Link
                 href={getUrlWithRef("/blogs")}

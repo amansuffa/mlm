@@ -232,7 +232,7 @@ export default function HomePage() {
                 >
                 
                   <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-                  <span className="text-sm font-medium">Limited Time Launch Offer</span>
+                  <span className="text-sm font-medium">Your Invitation to an Elevated Lifestyle</span>
                 </motion.div>
                 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold lg:px-16 mb-6" style={{ color: 'var(--text)' }}>

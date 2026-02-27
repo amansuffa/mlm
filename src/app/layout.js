@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata = {
-  title: "PASH CLUB | Upgrade Your Digital Skills",
+  title: "PASH.CLUB | AN INVITATION TO AN ELEVATED LIFESTYLE",
   description:
     "Upgrade your digital skills with PASH CLUB — a modern training platform offering structured learning, implementation guidance, AI-assisted tools, and a global professional development community.",
      keywords: [

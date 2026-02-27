@@ -18,111 +18,27 @@ export default function Footer() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Main Grid */}
-        <div className="grid md:grid-cols-6 gap-10 mb-12">
-          {/* Brand */}
-          <div>
-            <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--text)' }}>PASH.CLUB</h3>
-            <p className="text-sm opacity-80 mb-6" style={{ color: 'var(--text)' }}>
-              Professional training platform for digital skills development.
-            </p>
-          </div>
 
-          {/* Explore */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Explore</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href={getUrlWithRef("/")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Home</Link></li>
-              <li><Link href={getUrlWithRef("/about")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>About</Link></li>
-              <li><Link href={getUrlWithRef("/faq")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>FAQ</Link></li>
-              <li><Link href={getUrlWithRef("/contact")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Contact</Link></li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href={getUrlWithRef("/privacy")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Privacy</Link></li>
-              <li><Link href={getUrlWithRef("/terms")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Terms</Link></li>
-              <li><Link href={getUrlWithRef("/payment-policies")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Payment Policies</Link></li>
-              <li><Link href={getUrlWithRef("/affiliate")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Affiliate</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Contact</h4>
-            <div className="space-y-2 text-sm">
-              <a href="mailto:info@pash.club" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>
-                <Mail className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-                <span>info@pash.club</span>
-              </a>
-              <a href="tel:+16313266177" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>
-                <Phone className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-                <span>+1 (631) 326 6177</span>
-              </a>
-            </div>
-          </div>
-
-          {/* Offices */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Offices</h4>
-            <div className="space-y-3 text-sm">
-              <div>
-                <p className="font-semibold mb-1" style={{ color: 'var(--text)' }}>🇨🇦 Canada</p>
-                <p className="opacity-80 text-xs" style={{ color: 'var(--text)' }}>35 Shoreham Dr, Toronto, ON M3N 1S5</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-1" style={{ color: 'var(--text)' }}>🇺🇸 United States</p>
-                <p className="opacity-80 text-xs" style={{ color: 'var(--text)' }}>1209 Mountain Road Pl NE, Albuquerque, NM 87110</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Social */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Follow Us</h4>
-            <div className="flex gap-3 flex-wrap">
-              <a href="https://www.instagram.com/PASH.CLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="Instagram">
-                <Instagram className="w-5 h-5" style={{ color: 'var(--primary)' }} />
-              </a>
-              <a href="https://www.facebook.com/PASH.CLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="Facebook">
-                <Facebook className="w-5 h-5" style={{ color: 'var(--primary)' }} />
-              </a>
-              <a href="https://x.com/PASHCLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="Twitter/X">
-                <Twitter className="w-5 h-5" style={{ color: 'var(--primary)' }} />
-              </a>
-              <a href="https://www.youtube.com/@PASHCLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="YouTube">
-                <Youtube className="w-5 h-5" style={{ color: 'var(--primary)' }} />
-              </a>
-              <a href="https://www.tiktok.com/@clubpash" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="TikTok">
-                <Image src="/logos/tiktok-logo.png" alt="TikTok" width={20} height={20} />
-              </a>
-              <a href="https://www.whatsapp.com/channel/0029Vb6a4msBVJlCcJb4wc2W" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="WhatsApp">
-                <Image src="/logos/whatsapp-logo.png" alt="WhatsApp" width={20} height={20} />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Certifications & Trust Badges */}
-        <div className="border-t mb-8 pt-8" style={{ borderColor: 'var(--border)' }}>
+  {/* Certifications & Trust Badges */}
+        <div className="mb-8">
           <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Certifications & Trust</h4>
-          <div className="flex gap-4 flex-wrap items-center">
-            <a href="https://www.trustpilot.com/review/pash.club" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }} title="Trustpilot Reviews">
-              <span>⭐</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" style={{ maxWidth: '1000px' }}>
+            <a href="https://www.trustpilot.com/review/pash.club" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }} title="Trustpilot Reviews">
+                <Image src="/logos/Trust-Pilot.png" alt="Trust Pilot" width={50} height={30} />
               <span>Trustpilot</span>
             </a>
-            <a href="https://www.bbb.org/us/nm/albuquerque/profile/affiliate-marketing/pash-club-llc-0806-99186609" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }} title="BBB Better Business Bureau">
-              <span>🏢</span>
+            <a href="https://www.bbb.org/us/nm/albuquerque/profile/affiliate-marketing/pash-club-llc-0806-99186609" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }} title="BBB Better Business Bureau">
+                <Image src="/logos/BBB.png" alt="BBB" width={50} height={30} />
               <span>BBB Better Business Bureau®</span>
             </a>
-            <a href="https://www.dnb.com/business-directory/company-profiles.pash_club_llc.d21f23ae29222c5dcd079a78aea15f08.html" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }} title="Dun & Bradstreet">
-              <span>📊</span>
+            <a href="https://www.dnb.com/business-directory/company-profiles.pash_club_llc.d21f23ae29222c5dcd079a78aea15f08.html" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }} title="Dun & Bradstreet">
+                <Image src="/logos/DUN-and-Bradstreet.png" alt="DUN-and-Bradstreet" width={35} height={30} />
               <span>Dun & Bradstreet</span>
             </a>
           </div>
+          <p className="mt-4 text-xs opacity-75" style={{ color: 'var(--text)' }}>
+            <strong>PASH CLUB™</strong> name, logo, and slogan are protected trademarks™. Unauthorized use is prohibited. Contact <a href="mailto:info@pash.club" className="underline hover:opacity-80">admin</a> for permission.
+          </p>
         </div>
 
         {/* Disclaimers - Accordion */}
@@ -155,6 +71,97 @@ export default function Footer() {
             ))}
           </div>
         </div>
+
+        {/* Main Grid */}
+        <div className="grid md:grid-cols-6 gap-10 mb-12 border-t pt-8" style={{ borderColor: 'var(--border)' }}>
+          {/* Brand */}
+          <div>
+            <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--text)' }}>PASH.CLUB</h3>
+            <p className="text-sm opacity-80 mb-6" style={{ color: 'var(--text)' }}>
+              Professional training platform for digital skills development.
+            </p>
+          </div>
+
+          {/* Explore */}
+          <div>
+            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Explore</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href={getUrlWithRef("/")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Home</Link></li>
+              <li><Link href={getUrlWithRef("/about")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>About</Link></li>
+              <li><Link href={getUrlWithRef("/faq")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>FAQ</Link></li>
+              <li><Link href={getUrlWithRef("/contact")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Contact</Link></li>
+                   <li><Link href={getUrlWithRef("/products")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Resources</Link></li>
+              <li><Link href={getUrlWithRef("/blogs")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Training</Link></li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Legal</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href={getUrlWithRef("/privacy")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Privacy</Link></li>
+              <li><Link href={getUrlWithRef("/terms")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Terms</Link></li>
+              <li><Link href={getUrlWithRef("/payment-policies")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Payment Policies</Link></li>
+              <li><Link href={getUrlWithRef("/affiliate")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Affiliate</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Contact</h4>
+            <div className="space-y-2 text-sm">
+              <a href="mailto:info@pash.club" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>
+                <Mail className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                <span>info@pash.club</span>
+              </a>
+              <a href="tel:+16313266177" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>
+                <Image src="/logos/whatsapp-logo.png" alt="WhatsApp" width={18} height={18} />
+                <span>+1 (289) 796 8899 </span>
+              </a>
+            </div>
+          </div>
+
+          {/* Offices */}
+          <div>
+            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Offices</h4>
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="font-semibold mb-1" style={{ color: 'var(--text)' }}>🇨🇦 Canada</p>
+                <p className="opacity-80 text-xs" style={{ color: 'var(--text)' }}>35 Shoreham Dr, Toronto, ON M3N 1S5</p>
+              </div>
+              <div>
+                <p className="font-semibold mb-1" style={{ color: 'var(--text)' }}>🇺🇸 United States</p>
+                <p className="opacity-80 text-xs" style={{ color: 'var(--text)' }}>1209 Mountain Road Pl NE #7943, Albuquerque, NM 87110</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Social */}
+          <div>
+            <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Follow Us</h4>
+            <div className="flex gap-3 flex-wrap">
+              <a href="https://www.instagram.com/PASH.CLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="Instagram">
+                <Instagram className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+              </a>
+              <a href="https://www.facebook.com/PASH.CLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="Facebook">
+                <Facebook className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+              </a>
+              <a href="https://x.com/PASHCLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="Twitter/X">
+                <Twitter className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+              </a>
+              <a href="https://www.youtube.com/@PASHCLUB" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="YouTube">
+                <Youtube className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+              </a>
+              <a href="https://www.tiktok.com/@clubpash" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="TikTok">
+                <Image src="/logos/tiktok-logo.png" alt="TikTok" width={20} height={20} />
+              </a>
+              <a href="https://www.whatsapp.com/channel/0029Vb6a4msBVJlCcJb4wc2W" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-lg hover:scale-110 transition-all duration-200" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }} title="WhatsApp">
+                <Image src="/logos/whatsapp-logo.png" alt="WhatsApp" width={20} height={20} />
+              </a>
+            </div>
+          </div>
+        </div>
+
 
         {/* Copyright */}
         <div 
