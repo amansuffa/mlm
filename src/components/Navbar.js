@@ -51,7 +51,7 @@ export default function Navbar() {
             </Link>
 
             {/* Navigation Links - Desktop */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-6">
               <Link
                 href={getUrlWithRef("/")}
                 className="font-medium transition-all duration-200 hover:opacity-80"
@@ -114,7 +114,7 @@ export default function Navbar() {
             <ThemeToggleButton />
 
             {/* Auth Buttons - Desktop */}
-            <div className="hidden sm:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
             <TranslateWidget />
               {!session?.user ? (
                 <>
@@ -141,7 +141,7 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-4">
                   <Logout />
-                  <Link href={getUrlWithRef("/user/profile")} className="hidden md:block">
+                  <Link href={getUrlWithRef("/user/profile")} className="hidden lg:block">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm overflow-hidden"
                       style={{ backgroundColor: "var(--primary)" }}
@@ -168,7 +168,7 @@ export default function Navbar() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 rounded-lg transition-colors duration-200"
+              className="lg:hidden p-2 rounded-lg transition-colors duration-200"
               style={{
                 backgroundColor: "var(--card)",
                 color: "var(--text)",
@@ -204,7 +204,7 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div
-            className="md:hidden absolute top-16 left-0 right-0 shadow-lg border-t"
+            className="lg:hidden absolute top-16 left-0 right-0 shadow-lg border-t"
             style={{
               backgroundColor: "var(--background)",
               borderColor: "var(--border)",
@@ -234,17 +234,25 @@ export default function Navbar() {
               >
                 Mission
               </Link>
-                <Link 
+              <Link 
                 href={getUrlWithRef("/products")} 
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: 'var(--text)' }}
+                className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
+                style={{ 
+                  backgroundColor: 'var(--card)',
+                  color: 'var(--text)'
+                }}
+                onClick={() => setIsMenuOpen(false)}
               >
                 Resources
               </Link>
-                <Link 
+              <Link 
                 href={getUrlWithRef("/partner-program")} 
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: 'var(--text)' }}
+                className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
+                style={{ 
+                  backgroundColor: 'var(--card)',
+                  color: 'var(--text)'
+                }}
+                onClick={() => setIsMenuOpen(false)}
               >
                 Partner Program
               </Link>

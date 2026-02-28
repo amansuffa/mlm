@@ -522,8 +522,7 @@ export default function HomePage() {
                   color: 'var(--text)'
                 }}>
                 <Clock className="w-4 h-4 mr-2" style={{ color: 'var(--primary)' }} />
-                Early-stage Access Available
-              </div>
+Your Invitation to an Elevated Lifestyle              </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text)' }}>
                 Early Access - Platform Evolving with New Features
               </h2>

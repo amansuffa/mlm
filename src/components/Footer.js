@@ -111,11 +111,11 @@ export default function Footer() {
             <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Contact</h4>
             <div className="space-y-2 text-sm">
               <a href="mailto:info@pash.club" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>
-                <Mail className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                <Mail className="w-5 h-5 min-w-[12px]" style={{ color: 'var(--primary)' }} />
                 <span>info@pash.club</span>
               </a>
               <a href="tel:+16313266177" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>
-                <Image src="/logos/whatsapp-logo.png" alt="WhatsApp" width={18} height={18} />
+                <Image src="/logos/whatsapp-logo.png" alt="WhatsApp" width={20} height={20} className="min-w-[12px]" />
                 <span>+1 (289) 796 8899 </span>
               </a>
             </div>
