@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Logout from "./Logout";
 import Image from "next/image";
 import { useState } from "react";
@@ -13,6 +14,12 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { getUrlWithRef } = useRef();
+  const pathname = usePathname();
+
+  const isActive = (path) => {
+    if (path === "/") return pathname === "/";
+    return pathname.startsWith(path);
+  };
 
   return (
     <nav
@@ -23,8 +30,8 @@ export default function Navbar() {
         backdropFilter: "blur(10px)",
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+        <div className="flex justify-between items-center h-20">
           {/* Left Side - Logo & Navigation Links */}
           <div className="flex items-center gap-8">
             {/* Logo */}
@@ -51,55 +58,54 @@ export default function Navbar() {
             </Link>
 
             {/* Navigation Links - Desktop */}
-            <div className="hidden lg:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-8">
               <Link
                 href={getUrlWithRef("/")}
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: "var(--text)" }}
+                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 pb-1 ${isActive("/") ? "border-b-2" : ""}`}
+                style={{ color: isActive("/") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
               >
                 Home
               </Link>
-          
               <Link 
                 href={getUrlWithRef("/about")} 
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: 'var(--text)' }}
+                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 pb-1 ${isActive("/about") ? "border-b-2" : ""}`}
+                style={{ color: isActive("/about") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
               >
                 Mission
               </Link>
               <Link 
                 href={getUrlWithRef("/products")} 
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: 'var(--text)' }}
+                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 pb-1 ${isActive("/products") ? "border-b-2" : ""}`}
+                style={{ color: isActive("/products") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
               >
                 Resources
               </Link>
-                 <Link 
+              <Link 
                 href={getUrlWithRef("/partner-program")} 
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: 'var(--text)' }}
+                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 whitespace-nowrap pb-1 ${isActive("/partner-program") ? "border-b-2" : ""}`}
+                style={{ color: isActive("/partner-program") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
               >
                 Partner Program
               </Link>
               <Link
                 href={getUrlWithRef("/blogs")}
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: "var(--text)" }}
+                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 pb-1 ${isActive("/blogs") ? "border-b-2" : ""}`}
+                style={{ color: isActive("/blogs") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
               >
                 Training
               </Link>
               <Link 
                 href={getUrlWithRef("/contact")} 
-                className="font-medium transition-all duration-200 hover:opacity-80"
-                style={{ color: 'var(--text)' }}
+                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 pb-1 ${isActive("/contact") ? "border-b-2" : ""}`}
+                style={{ color: isActive("/contact") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
               >
                 Contact
               </Link>
               {session?.user && (
                 <Link
                   href={getUrlWithRef("/dashboard")}
-                  className="font-medium transition-all duration-200 hover:opacity-80"
-                  style={{ color: "var(--text)" }}
+                  className={`text-base font-semibold transition-all duration-200 hover:opacity-80 pb-1 ${isActive("/dashboard") ? "border-b-2" : ""}`}
+                  style={{ color: isActive("/dashboard") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
                 >
                   Dashboard
                 </Link>
@@ -108,19 +114,19 @@ export default function Navbar() {
           </div>
 
           {/* Right Side - Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
      
             {/* Theme Toggle */}
             <ThemeToggleButton />
 
             {/* Auth Buttons - Desktop */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-2">
             <TranslateWidget />
               {!session?.user ? (
                 <>
                   <Link href={getUrlWithRef("/login")}>
                     <button
-                      className="px-4 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg"
+                      className="px-3 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg text-sm"
                       style={{
                         color: "var(--accent)",
                         border: "1px solid var(--accent)",
@@ -132,7 +138,7 @@ export default function Navbar() {
                   </Link>
          
                   <Link href={getUrlWithRef("/signup")}>
-                    <button className="button px-4 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg">
+                    <button className="button px-3 py-2 font-medium rounded-lg transition-all duration-200 hover:shadow-lg text-sm">
                       Join now
                     </button>
                   </Link>
@@ -215,8 +221,8 @@ export default function Navbar() {
                 href={getUrlWithRef("/")}
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{
-                  backgroundColor: "var(--card)",
-                  color: "var(--text)",
+                  backgroundColor: isActive("/") ? "var(--primary)" : "var(--card)",
+                  color: isActive("/") ? "var(--background)" : "var(--text)",
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -227,8 +233,8 @@ export default function Navbar() {
                 href={getUrlWithRef("/about")} 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
-                  backgroundColor: 'var(--card)',
-                  color: 'var(--text)'
+                  backgroundColor: isActive("/about") ? "var(--primary)" : "var(--card)",
+                  color: isActive("/about") ? "var(--background)" : "var(--text)"
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -238,8 +244,8 @@ export default function Navbar() {
                 href={getUrlWithRef("/products")} 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
-                  backgroundColor: 'var(--card)',
-                  color: 'var(--text)'
+                  backgroundColor: isActive("/products") ? "var(--primary)" : "var(--card)",
+                  color: isActive("/products") ? "var(--background)" : "var(--text)"
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -249,8 +255,8 @@ export default function Navbar() {
                 href={getUrlWithRef("/partner-program")} 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
-                  backgroundColor: 'var(--card)',
-                  color: 'var(--text)'
+                  backgroundColor: isActive("/partner-program") ? "var(--primary)" : "var(--card)",
+                  color: isActive("/partner-program") ? "var(--background)" : "var(--text)"
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -260,8 +266,8 @@ export default function Navbar() {
                 href={getUrlWithRef("/blogs")}
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{
-                  backgroundColor: "var(--card)",
-                  color: "var(--text)",
+                  backgroundColor: isActive("/blogs") ? "var(--primary)" : "var(--card)",
+                  color: isActive("/blogs") ? "var(--background)" : "var(--text)",
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -271,8 +277,8 @@ export default function Navbar() {
                 href={getUrlWithRef("/contact")} 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
-                  backgroundColor: 'var(--card)',
-                  color: 'var(--text)'
+                  backgroundColor: isActive("/contact") ? "var(--primary)" : "var(--card)",
+                  color: isActive("/contact") ? "var(--background)" : "var(--text)"
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -283,8 +289,8 @@ export default function Navbar() {
                   href={getUrlWithRef("/dashboard")}
                   className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                   style={{
-                    backgroundColor: "var(--card)",
-                    color: "var(--text)",
+                    backgroundColor: isActive("/dashboard") ? "var(--primary)" : "var(--card)",
+                    color: isActive("/dashboard") ? "var(--background)" : "var(--text)",
                   }}
                   onClick={() => setIsMenuOpen(false)}
                 >
