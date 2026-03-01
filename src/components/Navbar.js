@@ -37,9 +37,9 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="flex justify-center overflow-hidden h-full">
+                <div className="flex justify-center items-center overflow-hidden h-20">
                   <Image
-                    className="object-cover mb-1"
+                    className="object-cover mb-4"
                     src={logo}
                     alt="Logo"
                     width={180}
