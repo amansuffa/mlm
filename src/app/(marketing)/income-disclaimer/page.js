@@ -410,7 +410,7 @@ export default function IncomeDisclaimer() {
                     Testimonials Vary
                   </h3>
                   <p className="text-sm opacity-80 leading-relaxed" style={{ color: 'var(--text)' }}>
-                    Success stories represent individual experiences and may not reflect what you'll achieve.
+                    Success stories represent individual experiences and may not reflect what you&apos;ll achieve.
                   </p>
                 </div>
                 

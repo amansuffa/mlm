@@ -542,7 +542,7 @@ export default function PartnerProgram() {
                       <Star key={i} className="w-4 h-4" style={{ color: 'var(--primary)' }} fill="var(--primary)" />
                     ))}
                   </div>
-                  <p className="italic mb-4 opacity-90" style={{ color: 'var(--text)' }}>"{testimonial.text}"</p>
+                  <p className="italic mb-4 opacity-90" style={{ color: 'var(--text)' }}>&quot;{testimonial.text}&quot;</p>
                   <div>
                     <p className="font-bold" style={{ color: 'var(--text)' }}>{testimonial.name}</p>
                     <p className="text-sm opacity-70" style={{ color: 'var(--text)' }}>{testimonial.role}</p>
@@ -608,10 +608,10 @@ export default function PartnerProgram() {
                     A Message from Pasha
                   </h2>
                   <p className="text-lg opacity-80 mb-6" style={{ color: 'var(--text)' }}>
-                    "The Partner Program was designed to create genuine peer-to-peer relationships. No middleman, no hidden fees - just direct connections between motivated professionals."
+                    &quot;The Partner Program was designed to create genuine peer-to-peer relationships. No middleman, no hidden fees - just direct connections between motivated professionals.&quot;
                   </p>
                   <p className="opacity-80 mb-6" style={{ color: 'var(--text)' }}>
-                    When you become a partner, you're not just paying a fee - you're investing in a relationship with someone who will guide you and help you succeed. That's why payments are peer-to-peer, not processed by us.
+                    When you become a partner, you&apos;re not just paying a fee - you&apos;re investing in a relationship with someone who will guide you and help you succeed. That&apos;s why payments are peer-to-peer, not processed by us.
                   </p>
                   <p className="text-lg font-semibold" style={{ color: 'var(--primary)' }}>
                     Your success is built on trust and direct collaboration.
