@@ -99,10 +99,12 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-sm mb-4 uppercase tracking-wide" style={{ color: 'var(--primary)' }}>Legal</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href={getUrlWithRef("/privacy")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Privacy</Link></li>
-              <li><Link href={getUrlWithRef("/terms")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Terms</Link></li>
-              <li><Link href={getUrlWithRef("/payment-policies")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Payment Policies</Link></li>
-              <li><Link href={getUrlWithRef("/affiliate")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Affiliate</Link></li>
+              <li><Link href={getUrlWithRef("/privacy")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Privacy & GDPR</Link></li>
+              <li><Link href={getUrlWithRef("/terms")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Terms & Conditions</Link></li>
+              <li><Link href={getUrlWithRef("/payment-policies")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Refund Policies</Link></li>
+              <li><Link href={getUrlWithRef("/affiliate")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Partner Program</Link></li>
+              <li><Link href={getUrlWithRef("/income-disclaimer")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>Income Disclaimer</Link></li>
+              <li><Link href={getUrlWithRef("/dmca")} className="opacity-80 hover:opacity-100 transition-opacity" style={{ color: 'var(--text)' }}>DMCA</Link></li>
             </ul>
           </div>
 

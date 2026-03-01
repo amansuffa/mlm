@@ -81,9 +81,9 @@ export default function Navbar() {
                 Resources
               </Link>
               <Link 
-                href={getUrlWithRef("/partner-program")} 
-                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 whitespace-nowrap pb-1 ${isActive("/partner-program") ? "border-b-2" : ""}`}
-                style={{ color: isActive("/partner-program") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
+                href={getUrlWithRef("/affiliate")} 
+                className={`text-base font-semibold transition-all duration-200 hover:opacity-80 whitespace-nowrap pb-1 ${isActive("/affiliate") ? "border-b-2" : ""}`}
+                style={{ color: isActive("/affiliate") ? "var(--primary)" : "var(--text)", borderColor: "var(--primary)" }}
               >
                 Partner Program
               </Link>
@@ -252,11 +252,11 @@ export default function Navbar() {
                 Resources
               </Link>
               <Link 
-                href={getUrlWithRef("/partner-program")} 
+                href={getUrlWithRef("/affiliate")} 
                 className="block py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 style={{ 
-                  backgroundColor: isActive("/partner-program") ? "var(--primary)" : "var(--card)",
-                  color: isActive("/partner-program") ? "var(--background)" : "var(--text)"
+                  backgroundColor: isActive("/affiliate") ? "var(--primary)" : "var(--card)",
+                  color: isActive("/affiliate") ? "var(--background)" : "var(--text)"
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
